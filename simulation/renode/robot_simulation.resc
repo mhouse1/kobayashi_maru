@@ -5,7 +5,7 @@
 # Include official platform description for FRDM-MCXN947
 using sysbus
 mach create "robot"
-using "platforms/boards/frdm_mcxn947.repl"
+machine LoadPlatformDescription @platforms/boards/frdm_mcxn947.repl
 
 # Set up UART terminals for debugging
 showAnalyzer uart0 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
