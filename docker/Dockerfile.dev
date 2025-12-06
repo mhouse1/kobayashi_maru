@@ -1,0 +1,80 @@
+# Kobayashi Maru Development Environment
+# Multi-stage Docker build for embedded development
+
+FROM ubuntu:24.04 as base
+
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=UTC
+ENV PATH="/opt/arm-gnu-toolchain/bin:${PATH}"
+
+# Install base packages
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \
+    git \
+    curl \
+    wget \
+    unzip \
+    python3 \
+    python3-pip \
+    ca-certificates \
+    gnupg \
+    && rm -rf /var/lib/apt/lists/*
+
+# ARM Development Stage
+FROM base as arm-dev
+
+# Install ARM GCC Toolchain
+RUN mkdir -p /opt/arm-gnu-toolchain && \
+    cd /tmp && \
+    wget -q "https://developer.arm.com/-/media/Files/downloads/gnu/13.2.rel1/binrel/arm-gnu-toolchain-13.2.rel1-x86_64-arm-none-eabi.tar.xz" && \
+    tar -xf arm-gnu-toolchain-13.2.rel1-x86_64-arm-none-eabi.tar.xz -C /opt/arm-gnu-toolchain --strip-components=1 && \
+    rm arm-gnu-toolchain-13.2.rel1-x86_64-arm-none-eabi.tar.xz
+
+# Install Python packages for simulation
+RUN python3 -m pip install --break-system-packages \
+    numpy \
+    scipy \
+    matplotlib \
+    pyserial \
+    pytest
+
+# Simulation Stage
+FROM arm-dev as simulation
+
+# Install Mono for Renode
+RUN apt-get update && apt-get install -y \
+    mono-complete \
+    gtk-sharp2-gapi \
+    libglade2.0-cil-dev \
+    libglib2.0-cil-dev \
+    libgtk2.0-cil-dev \
+    policykit-1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Renode
+RUN cd /tmp && \
+    wget -q "https://github.com/renode/renode/releases/download/v1.15.0/renode_1.15.0_amd64.deb" && \
+    dpkg -i renode_1.15.0_amd64.deb || apt-get install -f -y && \
+    rm renode_1.15.0_amd64.deb
+
+# Final Development Image
+FROM simulation as kobayashi-dev
+
+# Create workspace
+WORKDIR /workspace
+
+# Create entrypoint script
+RUN echo '#!/bin/bash\n\
+echo "Kobayashi Maru Development Environment"\n\
+echo "ARM GCC: $(arm-none-eabi-gcc --version | head -1)"\n\
+echo "Renode: $(renode --version 2>/dev/null || echo \"Available\")"\n\
+echo "Python: $(python3 --version)"\n\
+echo "Workspace: /workspace"\n\
+echo ""\n\
+exec "$@"\n\
+' > /entrypoint.sh && chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/bin/bash"]

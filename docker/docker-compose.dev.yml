@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  # Development container for building and testing
+  kobayashi-dev:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.dev
+      target: kobayashi-dev
+    container_name: kobayashi-maru-dev
+    volumes:
+      - ..:/workspace
+      - build-cache:/workspace/build
+    working_dir: /workspace
+    tty: true
+    stdin_open: true
+    networks:
+      - kobayashi-net
+
+  # Renode simulation container (headless)
+  renode-sim:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.dev
+      target: simulation
+    container_name: renode-simulator
+    volumes:
+      - ../simulation:/workspace/simulation
+      - ../firmware:/workspace/firmware
+    working_dir: /workspace/simulation/renode
+    command: renode --console --disable-xwt robot_simulation.resc
+    ports:
+      - "3456:3456"  # Pixel terminal
+    networks:
+      - kobayashi-net
+
+  # Jenkins agent container (optional - if you want Jenkins in Docker too)
+  jenkins-agent:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.dev
+    container_name: jenkins-kobayashi-agent
+    volumes:
+      - ..:/workspace
+      - jenkins-workspace:/var/jenkins_home
+    environment:
+      - JENKINS_URL=http://host.docker.internal:8080
+      - JENKINS_AGENT_NAME=kobayashi-docker-agent
+    command: |
+      bash -c "
+      echo 'Jenkins Agent Ready'
+      echo 'Workspace: /workspace'
+      echo 'Tools available: ARM GCC, Renode, Python'
+      tail -f /dev/null
+      "
+    networks:
+      - kobayashi-net
+
+volumes:
+  build-cache:
+  jenkins-workspace:
+
+networks:
+  kobayashi-net:
+    driver: bridge
