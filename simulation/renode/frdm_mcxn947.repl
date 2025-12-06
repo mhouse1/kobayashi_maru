@@ -46,11 +46,7 @@ adc0: Analog.STM32F0_ADC @ sysbus 0x400A0000
     IRQ -> nvic0@42
 
 // GPIO for general purpose I/O
-gpio0: GPIOPort.STM32F4GPIOPort @ sysbus 0x40096000
-    numberOfPins: 32
-
-gpio1: GPIOPort.STM32F4GPIOPort @ sysbus 0x40098000
-    numberOfPins: 32
+// GPIO peripherals temporarily removed - STM32F4GPIOPort not compatible with NXP MCX platform
 
 // Timer for system tick and QP time events
 timer0: Timers.STM32_Timer @ sysbus 0x40034000
