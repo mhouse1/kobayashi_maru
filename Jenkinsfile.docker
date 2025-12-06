@@ -149,7 +149,7 @@ except ImportError as e:
                                     find . -name '*.py' | head -10
                                     
                                     echo 'Python syntax check:'
-                                    find . -name '*.py' -exec python3 -m py_compile {} \; || echo 'Some syntax issues found'
+                                    find . -name '*.py' -exec python3 -m py_compile {} \\; || echo 'Some syntax issues found'
                                 "
                             '''
                         }
