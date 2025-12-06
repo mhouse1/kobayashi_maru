@@ -54,10 +54,6 @@ RUN apt-get update && apt-get install -y \
     && apt-get install -y \
     mono-complete \
     dotnet-runtime-8.0 \
-    gtk-sharp2-gapi \
-    libglade2.0-cil-dev \
-    libglib2.0-cil-dev \
-    libgtk2.0-cil-dev \
     screen \
     policykit-1 \
     && rm -rf /var/lib/apt/lists/*
@@ -65,7 +61,7 @@ RUN apt-get update && apt-get install -y \
 # Try to install Renode (may fail, but that's OK for now)
 RUN cd /tmp && \
     wget -q "https://github.com/renode/renode/releases/download/v1.16.0/renode_1.16.0_amd64.deb" && \
-    (dpkg -i renode_1.16.0_amd64.deb || echo "Renode installation failed - continuing without it") && \
+    (dpkg -i renode_1.16.0_amd64.deb --force-depends || echo "Renode installation failed - continuing without it") && \
     rm -f renode_1.16.0_amd64.deb
 
 # Final Development Image
