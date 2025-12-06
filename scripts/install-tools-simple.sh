@@ -19,7 +19,9 @@ echo "=============================================="
 
 # Install build tools
 log "Installing build tools..."
-sudo apt update --fix-missing
+sudo apt update --fix-missing || {
+    warning "Package update had issues, continuing anyway..."
+}
 sudo apt install -y build-essential cmake git python3 python3-pip wget
 
 # Install ARM GCC Toolchain
