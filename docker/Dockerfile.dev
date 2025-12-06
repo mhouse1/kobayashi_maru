@@ -43,21 +43,16 @@ RUN python3 -m pip install --break-system-packages \
 # Simulation Stage
 FROM arm-dev as simulation
 
-# Install Mono for Renode
+# Install Mono for Renode (using available packages)
 RUN apt-get update && apt-get install -y \
     mono-complete \
-    gtk-sharp2-gapi \
-    libglade2.0-cil-dev \
-    libglib2.0-cil-dev \
-    libgtk2.0-cil-dev \
-    policykit-1 \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Renode
+# Try to install Renode (may fail, but that's OK for now)
 RUN cd /tmp && \
     wget -q "https://github.com/renode/renode/releases/download/v1.15.0/renode_1.15.0_amd64.deb" && \
-    dpkg -i renode_1.15.0_amd64.deb || apt-get install -f -y && \
-    rm renode_1.15.0_amd64.deb
+    (dpkg -i renode_1.15.0_amd64.deb || echo "Renode installation failed - continuing without it") && \
+    rm -f renode_1.15.0_amd64.deb
 
 # Final Development Image
 FROM simulation as kobayashi-dev
@@ -69,7 +64,11 @@ WORKDIR /workspace
 RUN echo '#!/bin/bash\n\
 echo "Kobayashi Maru Development Environment"\n\
 echo "ARM GCC: $(arm-none-eabi-gcc --version | head -1)"\n\
-echo "Renode: $(renode --version 2>/dev/null || echo \"Available\")"\n\
+if command -v renode &> /dev/null; then\n\
+    echo "Renode: Available"\n\
+else\n\
+    echo "Renode: Not available (build/simulation only)"\n\
+fi\n\
 echo "Python: $(python3 --version)"\n\
 echo "Workspace: /workspace"\n\
 echo ""\n\

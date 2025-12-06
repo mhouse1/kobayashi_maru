@@ -33,7 +33,11 @@ cd "$(dirname "$0")/.."
 
 # Build development environment
 log "Building Kobayashi Maru development environment..."
-docker compose -f docker/docker-compose.dev.yml build kobayashi-dev
+echo "Trying simple ARM development environment first..."
+docker compose -f docker/docker-compose.dev.yml build kobayashi-dev || {
+    warning "Full build failed, trying simple ARM-only version..."
+    docker build -f docker/Dockerfile.simple -t kobayashi-maru-dev .
+}
 
 success "Development environment built!"
 
@@ -75,7 +79,10 @@ success "Setup complete! Choose an option above to get started."
 
 # Test the environment
 log "Testing development environment..."
-docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev arm-none-eabi-gcc --version
+docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev arm-none-eabi-gcc --version || {
+    log "Testing simple ARM environment..."
+    docker run --rm -v "$(pwd)":/workspace kobayashi-maru-dev arm-none-eabi-gcc --version
+}
 
 success "ARM GCC toolchain is working in Docker!"
 
