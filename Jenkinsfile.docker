@@ -172,7 +172,7 @@ except ImportError as e:
                             
                             # Test Python environment
                             echo 'Python environment:'
-                            python3 -c 'import numpy; print(\"NumPy working:\", numpy.__version__)'
+                            python3 -c \\"import numpy; print('NumPy working:', numpy.__version__)\\\"
                             
                             # Test Renode availability
                             echo 'Renode:'
