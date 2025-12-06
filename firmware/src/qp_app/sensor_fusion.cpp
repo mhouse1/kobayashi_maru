@@ -10,6 +10,9 @@
 
 namespace Robot {
 
+// Mathematical constant
+constexpr double PI = 3.14159265358979323846;
+
 //==========================================================================
 // Sensor Fusion Active Object Class
 //==========================================================================
@@ -95,7 +98,7 @@ void SensorFusionAO::updateEstimate() {
         // Calculate heading from magnetometer
         std::int32_t heading = 0;
         if (m_magX != 0 || m_magY != 0) {
-            heading = static_cast<std::int32_t>(std::atan2(m_magY, m_magX) * 18000.0 / 3.14159265);
+            heading = static_cast<std::int32_t>(std::atan2(m_magY, m_magX) * 18000.0 / PI);
         }
         
         // Complementary filter: 90% GPS heading, 10% magnetometer
@@ -110,9 +113,9 @@ void SensorFusionAO::updateEstimate() {
             std::sqrt(m_accelX*m_accelX + m_accelY*m_accelY + m_accelZ*m_accelZ));
         if (accelMag > 0) {
             m_estPitch = static_cast<std::int16_t>(
-                std::asin(static_cast<double>(m_accelX) / accelMag) * 18000.0 / 3.14159265);
+                std::asin(static_cast<double>(m_accelX) / accelMag) * 18000.0 / PI);
             m_estRoll = static_cast<std::int16_t>(
-                std::atan2(m_accelY, m_accelZ) * 18000.0 / 3.14159265);
+                std::atan2(m_accelY, m_accelZ) * 18000.0 / PI);
         }
     }
     

@@ -10,6 +10,7 @@
 #define BSP_HPP
 
 #include <cstdint>
+#include <string>
 
 // Include C drivers with extern "C" linkage
 extern "C" {

@@ -96,7 +96,7 @@ class TurretModel:
         self.tilt_setpoint = 0
         self.pan_actual = 0
         self.tilt_actual = 0
-        self.status |= self.STATUS_HOMED
+        self.status = self.STATUS_HOMED  # Clear other status flags when homing
         
     def update(self):
         """Update turret position based on setpoints"""
