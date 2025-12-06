@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  jenkins-agent:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: kobayashi-maru-agent
+    hostname: kobayashi-maru-agent
+    restart: unless-stopped
+    
+    # Environment variables
+    environment:
+      - JAVA_OPTS=-Xmx2g -Xms1g
+      - JENKINS_URL=${JENKINS_URL:-http://jenkins:8080}
+      - JENKINS_SECRET=${JENKINS_SECRET:-}
+      - JENKINS_AGENT_NAME=${JENKINS_AGENT_NAME:-kobayashi-maru-agent}
+      
+    # Volumes for persistence and Docker socket
+    volumes:
+      - jenkins_workspace:/opt/jenkins/workspace
+      - jenkins_home:/home/jenkins
+      # Uncomment below if you need Docker-in-Docker capability
+      # - /var/run/docker.sock:/var/run/docker.sock
+      
+    # Ports
+    ports:
+      - "2222:22"  # SSH access
+      - "3456:3456"  # Renode Pixel terminal
+      
+    # Network
+    networks:
+      - jenkins-network
+      
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 8G
+        reservations:
+          cpus: '2.0'
+          memory: 4G
+          
+    # Health check
+    healthcheck:
+      test: ["CMD", "systemctl", "is-active", "ssh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: Local Jenkins master for development
+  jenkins-master:
+    image: jenkins/jenkins:lts-alpine
+    container_name: jenkins-master
+    hostname: jenkins-master
+    restart: unless-stopped
+    
+    environment:
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false -Xmx2g
+      
+    volumes:
+      - jenkins_master_home:/var/jenkins_home
+      - ./jenkins/plugins.txt:/usr/share/jenkins/ref/plugins.txt:ro
+      
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+      
+    networks:
+      - jenkins-network
+
+volumes:
+  jenkins_workspace:
+    driver: local
+  jenkins_home:
+    driver: local
+  jenkins_master_home:
+    driver: local
+
+networks:
+  jenkins-network:
+    driver: bridge
