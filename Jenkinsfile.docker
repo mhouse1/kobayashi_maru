@@ -68,20 +68,20 @@ pipeline {
                         echo "=== Testing Python Simulation Models ==="
                         docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
                             cd simulation/models
-                            python3 -c '
+                            python3 -c \\"
 import sys
 try:
     import numpy
     import scipy
     import matplotlib
-    print(\"✓ All Python packages available\")
-    print(\"  NumPy:\", numpy.__version__)
-    print(\"  SciPy:\", scipy.__version__)
-    print(\"  Matplotlib:\", matplotlib.__version__)
+    print('✓ All Python packages available')
+    print('  NumPy:', numpy.__version__)
+    print('  SciPy:', scipy.__version__)
+    print('  Matplotlib:', matplotlib.__version__)
 except ImportError as e:
-    print(\"❌ Missing Python package:\", e)
+    print('❌ Missing Python package:', e)
     sys.exit(1)
-                            '
+\\"
                         "
                     '''
                 }
