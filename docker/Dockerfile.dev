@@ -50,9 +50,9 @@ RUN apt-get update && apt-get install -y \
 
 # Try to install Renode (may fail, but that's OK for now)
 RUN cd /tmp && \
-    wget -q "https://github.com/renode/renode/releases/download/v1.15.0/renode_1.15.0_amd64.deb" && \
-    (dpkg -i renode_1.15.0_amd64.deb || echo "Renode installation failed - continuing without it") && \
-    rm -f renode_1.15.0_amd64.deb
+    wget -q "https://github.com/renode/renode/releases/download/v1.16.0/renode_1.16.0_amd64.deb" && \
+    (dpkg -i renode_1.16.0_amd64.deb || echo "Renode installation failed - continuing without it") && \
+    rm -f renode_1.16.0_amd64.deb
 
 # Final Development Image
 FROM simulation as kobayashi-dev
