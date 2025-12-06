@@ -36,11 +36,11 @@ uart1: UART.NS16550 @ sysbus 0x40107000
 
 // CAN-FD controller 0 for motor modules
 canfd0: CAN.MCAN @ sysbus 0x4009C000
-    CanInterrupt -> nvic0@46
+    IRQ -> nvic0@46
 
 // CAN-FD controller 1 for sensor modules
 canfd1: CAN.MCAN @ sysbus 0x4009D000
-    CanInterrupt -> nvic0@47
+    IRQ -> nvic0@47
 
 // I2C for local sensors
 i2c0: I2C.OpenCoresI2C @ sysbus 0x40094000
