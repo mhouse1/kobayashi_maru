@@ -104,10 +104,8 @@ except ImportError as e:
                             fi
                             
                             # Run Renode with timeout - capture output and check for errors
-                            set +e
                             timeout 30s renode --console --disable-xwt robot_simulation.resc 2>&1 | tee renode_output.log
-                            RENODE_EXIT_CODE=\${PIPESTATUS[0]}
-                            set -e
+                            RENODE_EXIT_CODE=\\$?
                             
                             # Check for specific error patterns
                             if grep -q 'Could not find any suitable constructor\\|Could not resolve type\\|Error E[0-9]\\+:' renode_output.log; then
@@ -117,12 +115,12 @@ except ImportError as e:
                             fi
                             
                             # Exit code 124 is timeout, which is expected for simulation
-                            if [ \$RENODE_EXIT_CODE -eq 124 ]; then
+                            if [ \\$RENODE_EXIT_CODE -eq 124 ]; then
                                 echo '✓ Renode simulation started successfully (timed out as expected)'
-                            elif [ \$RENODE_EXIT_CODE -eq 0 ]; then
+                            elif [ \\$RENODE_EXIT_CODE -eq 0 ]; then
                                 echo '✓ Renode simulation completed successfully'
                             else
-                                echo '❌ Renode simulation failed with exit code:' \$RENODE_EXIT_CODE
+                                echo '❌ Renode simulation failed with exit code:' \\$RENODE_EXIT_CODE
                                 exit 1
                             fi
                             
