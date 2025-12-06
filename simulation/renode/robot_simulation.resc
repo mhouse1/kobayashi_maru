@@ -1,0 +1,43 @@
+# Robot Simulation Script for Renode
+# 4WD Heavy Duty Robot with GPS, Vision, Path Planning, and Turret
+# FRDM-MCXN947 Freedom Board + Google Pixel 10 Pro Architecture
+
+# Include platform description
+using sysbus
+mach create "robot"
+machine LoadPlatformDescription @frdm_mcxn947.repl
+
+# Set up UART terminals for debugging
+showAnalyzer uart0 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
+showAnalyzer uart1 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
+
+# Create terminal for Pixel 10 Pro Android communication
+emulation CreateServerSocketTerminal 3456 "pixel_terminal" false
+connector Connect uart1 pixel_terminal
+
+# Create external simulation models
+machine LoadPlatformDescriptionFromString "motor_fl: Python.PythonPeripheral @ sysbus 0x50001000 { size: 0x100; initable: true; filename: \"models/motor_model.py\" }"
+machine LoadPlatformDescriptionFromString "motor_fr: Python.PythonPeripheral @ sysbus 0x50001100 { size: 0x100; initable: true; filename: \"models/motor_model.py\" }"
+machine LoadPlatformDescriptionFromString "motor_rl: Python.PythonPeripheral @ sysbus 0x50001200 { size: 0x100; initable: true; filename: \"models/motor_model.py\" }"
+machine LoadPlatformDescriptionFromString "motor_rr: Python.PythonPeripheral @ sysbus 0x50001300 { size: 0x100; initable: true; filename: \"models/motor_model.py\" }"
+machine LoadPlatformDescriptionFromString "turret_sim: Python.PythonPeripheral @ sysbus 0x50002000 { size: 0x100; initable: true; filename: \"models/turret_model.py\" }"
+machine LoadPlatformDescriptionFromString "canfd_sim: Python.PythonPeripheral @ sysbus 0x50003000 { size: 0x100; initable: true; filename: \"models/canfd_model.py\" }"
+
+# Load firmware
+sysbus LoadELF @../../firmware/build/robot_firmware.elf
+
+# Set quantum value for time synchronization (1ms)
+emulation SetGlobalQuantum "0.001"
+
+# Start simulation
+logLevel 3
+start
+
+echo "============================================"
+echo "Robot Simulation Started"
+echo "============================================"
+echo "Pixel 10 Pro terminal: port 3456"
+echo "Debug console: UART0"
+echo "CAN-FD Bus 0: Motor modules"
+echo "CAN-FD Bus 1: Sensor modules"
+echo "============================================"
