@@ -4,6 +4,52 @@
 
 This document describes the system architecture for a heavy-duty 4-wheel drive (4WD) robot with GPS capability, vision processing, path planning, and a pan/tilt turret. The system uses a hybrid architecture combining a Google Pixel 10 Pro smartphone for high-level processing and sensor fusion with an NXP FRDM-MCXN947 Freedom Board for real-time embedded control.
 
+## Hybrid C/C++ Architecture
+
+The firmware uses a hybrid C/C++ approach, which is common in embedded systems:
+
+### C++ is used for:
+- **MCU Modules (QP/C++ Framework)** - Active Objects with hierarchical state machines
+- **Middleware Integration** - Event-driven communication between subsystems
+- **Turret and High-Level Motion Control** - Object-oriented servo control
+- **Vision + Path Planning Code** - Complex algorithms on Pixel 10 Pro
+
+### C is used for:
+- **Low-level drivers** - Direct hardware register access
+- **ISRs (Interrupt Service Routines)** - Time-critical interrupt handlers
+- **Performance-critical routines** - Optimized peripheral access
+- **Board Support Package (BSP)** - Hardware abstraction layer
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    C++ LAYER (High-Level)                   │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐           │
+│  │ QP Active   │ │  Turret     │ │   Path      │           │
+│  │  Objects    │ │  Control    │ │  Planner    │           │
+│  │  (Classes)  │ │  (Class)    │ │  (Class)    │           │
+│  └──────┬──────┘ └──────┬──────┘ └──────┬──────┘           │
+│         │               │               │                   │
+│  ┌──────┴───────────────┴───────────────┴──────┐           │
+│  │            BSP C++ Wrapper Classes          │           │
+│  │  (CanFD, Uart, Pwm, Adc, Gpio, Led)        │           │
+│  └─────────────────────┬───────────────────────┘           │
+└────────────────────────┼────────────────────────────────────┘
+                         │ extern "C"
+┌────────────────────────┼────────────────────────────────────┐
+│                        ▼                                    │
+│                    C LAYER (Low-Level)                      │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │              bsp_drivers.c / bsp_drivers.h          │   │
+│  │  - BSP_canfdInit(), BSP_canfdSend(), ...            │   │
+│  │  - BSP_uartInit(), BSP_uartPutchar(), ...           │   │
+│  │  - BSP_pwmInit(), BSP_pwmSetDuty(), ...             │   │
+│  │  - Interrupt handlers (SysTick_Handler, etc.)       │   │
+│  └─────────────────────────────────────────────────────┘   │
+│                                                             │
+│                    HARDWARE REGISTERS                       │
+└─────────────────────────────────────────────────────────────┘
+```
+
 ## System Architecture Diagram
 
 ```

@@ -13,7 +13,28 @@ This project implements a heavy-duty 4-wheel drive (4WD) robot with:
 - **Pan/tilt turret** for camera/sensor pointing
 - **CAN-FD communication** between modules
 - **Renode simulation** for development and testing
-- **Quantum QP Framework** for real-time middleware
+- **Quantum QP/C++ Framework** for real-time middleware
+
+## Hybrid C/C++ Architecture
+
+The firmware uses a recommended hybrid approach common in embedded systems:
+
+| Language | Usage |
+|----------|-------|
+| **C++** | MCU modules (QP framework), middleware integration, turret control, high-level motion control, vision + path planning on Pixel 10 Pro |
+| **C** | Low-level drivers, ISRs, performance-critical routines |
+
+```
+┌──────────────────────────────────────────────────────┐
+│           C++ LAYER (QP/C++ Active Objects)          │
+│  Robot::MotorCtrlAO, TurretCtrlAO, PathPlannerAO... │
+│  BSP::CanFD, BSP::Uart, BSP::Pwm (C++ wrappers)     │
+├──────────────────────────────────────────────────────┤
+│              C LAYER (Low-Level Drivers)             │
+│  bsp_drivers.c - Direct hardware access              │
+│  ISRs: SysTick_Handler, CANFD0_IRQHandler, etc.      │
+└──────────────────────────────────────────────────────┘
+```
 
 ## System Architecture
 
@@ -31,7 +52,7 @@ This project implements a heavy-duty 4-wheel drive (4WD) robot with:
                            ▼
 ┌────────────────────────────────────────────────────────────────────┐
 │                    FRDM-MCXN947 FREEDOM BOARD                      │
-│                    (Quantum QP Framework)                          │
+│                    (Quantum QP/C++ Framework)                      │
 │  ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐          │
 │  │Supervisor │ │ Android   │ │  Sensor   │ │   Path    │          │
 │  │    AO     │ │  Comm AO  │ │ Fusion AO │ │ Planner   │          │
