@@ -205,8 +205,8 @@ except ImportError as e:
                     # Copy any build artifacts from container
                     docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
                         find /workspace -name '*.elf' -o -name '*.hex' -o -name '*.bin' | while read file; do
-                            if [ -f \"\$file\" ]; then
-                                cp \"\$file\" /workspace/artifacts/ 2>/dev/null || true
+                            if [ -f \"\\\$file\" ]; then
+                                cp \"\\\$file\" /workspace/artifacts/ 2>/dev/null || true
                             fi
                         done
                     " || true

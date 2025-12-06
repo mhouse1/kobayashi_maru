@@ -31,6 +31,20 @@ else
     sysbus LoadELF $firmware_path
     echo "Loaded firmware: $firmware_path"
 
+# Create CAN-FD networks
+emulation CreateCANHub "motor_network"
+emulation CreateCANHub "sensor_network"
+
+# Connect CAN controllers to networks
+connector Connect canfd0 motor_network
+connector Connect canfd1 sensor_network
+
+# Configure CAN-FD settings
+canfd0 MaxFrameLength 64    # CAN-FD max payload
+canfd1 MaxFrameLength 64
+canfd0 FlexibleDataRate true
+canfd1 FlexibleDataRate true
+
 # Set quantum value for time synchronization (1ms)
 emulation SetGlobalQuantum "0.001"
 
