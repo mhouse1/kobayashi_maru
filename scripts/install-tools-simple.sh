@@ -44,21 +44,35 @@ sudo apt install -y mono-complete || {
     sudo apt install -y mono-runtime mono-devel || true
 }
 
-# Install Renode
+# Install Renode with dependencies
 log "Installing Renode..."
 if ! command -v renode &> /dev/null; then
+    # Install Renode dependencies first
+    sudo apt install -y gtk-sharp2-gapi libglade2.0-cil-dev libglib2.0-cil-dev libgtk2.0-cil-dev policykit-1 || true
+    
     cd /tmp
     wget -q "https://github.com/renode/renode/releases/download/v1.15.0/renode_1.15.0_amd64.deb"
-    sudo dpkg -i renode_1.15.0_amd64.deb || sudo apt-get install -f -y
+    sudo dpkg -i renode_1.15.0_amd64.deb || {
+        warning "Renode dpkg failed, trying to fix dependencies..."
+        sudo apt-get install -f -y || true
+    }
     rm renode_1.15.0_amd64.deb
-    success "Renode installed"
+    
+    if command -v renode &> /dev/null; then
+        success "Renode installed"
+    else
+        warning "Renode installation failed - you may need to install manually"
+    fi
 else
     success "Renode already installed"
 fi
 
 # Install Python packages
 log "Installing Python packages..."
-python3 -m pip install --user numpy scipy matplotlib pyserial pytest
+python3 -m pip install --user --break-system-packages numpy scipy matplotlib pyserial pytest || {
+    warning "User pip install failed, trying system packages..."
+    sudo apt install -y python3-numpy python3-scipy python3-matplotlib python3-serial python3-pytest || true
+}
 
 # Add ARM toolchain to PATH
 log "Configuring PATH..."
@@ -75,7 +89,9 @@ if id "jenkins" &>/dev/null; then
 # Kobayashi Maru Tools
 export PATH="/opt/arm-gnu-toolchain/bin:$PATH"
 EOF
-    sudo -u jenkins python3 -m pip install --user numpy scipy matplotlib pyserial pytest 2>/dev/null || true
+    sudo -u jenkins python3 -m pip install --user --break-system-packages numpy scipy matplotlib pyserial pytest 2>/dev/null || {
+        warning "Jenkins user pip install failed, system packages should work"
+    }
     success "Jenkins user configured"
 fi
 
@@ -131,4 +147,5 @@ echo "  1. Access Jenkins at http://192.168.50.65:8080"
 echo "  2. Create Pipeline job with the Jenkinsfile"
 echo "  3. Restart Jenkins: sudo systemctl restart jenkins"
 echo
-warning "Reboot recommended: sudo reboot"
+warning "IMPORTANT: Kernel upgrade detected - reboot required!"
+warning "sudo reboot"
