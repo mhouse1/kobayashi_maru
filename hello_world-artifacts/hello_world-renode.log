@@ -1,0 +1,410 @@
+15:59:53.5888 [INFO] System bus created.
+15:59:54.8973 [INFO] sysbus: Loading block of 26396 bytes length at 0x10000000.
+15:59:54.9071 [INFO] sysbus: Loading block of 376 bytes length at 0x1000671C.
+15:59:54.9072 [INFO] sysbus: Loading block of 4 bytes length at 0x10006894.
+15:59:54.9072 [INFO] sysbus: Loading block of 4072 bytes length at 0x30000178.
+15:59:54.9511 [INFO] cpu0: Symbol 'CONFIG_TICKLESS_KERNEL' detected in the binary is known to affect the Zephyr Mode. You may want to disable it if you experience issues with `cpu0 EnableZephyrMode "CONFIG_TICKLESS_KERNEL"`
+15:59:54.9886 [INFO] cpu0: Setting initial values: PC = 0x1000195D, SP = 0x30001160.
+15:59:55.0030 [INFO] frdm_mcxn947_mcxn947_cpu0: Machine started.
+15:59:55.0459 [WARNING] sysbus: [cpu0: 0x10002A14] ReadDoubleWord from non existing peripheral at 0xE002ED88.
+15:59:55.0463 [WARNING] sysbus: [cpu0: 0x10002A1C] WriteDoubleWord to non existing peripheral at 0xE002ED88, value 0xF.
+15:59:55.0470 [WARNING] nvic0: Unhandled read from offset 0xD8C.
+15:59:55.0474 [WARNING] nvic0: Unhandled write to offset 0xD8C, value 0xC03.
+15:59:55.0861 [WARNING] sysbus: [cpu0: 0x10002A52] ReadDoubleWord from non existing peripheral at 0x50026028.
+15:59:55.0868 [WARNING] sysbus: [cpu0: 0x10002A5C] WriteDoubleWord to non existing peripheral at 0x50026028, value 0x80000.
+15:59:55.0869 [WARNING] sysbus: [cpu0: 0x10002A5E] ReadDoubleWord from non existing peripheral at 0x5002602C.
+15:59:55.0869 [WARNING] sysbus: [cpu0: 0x10002A68] WriteDoubleWord to non existing peripheral at 0x5002602C, value 0x80000.
+15:59:55.0870 [WARNING] sysbus: [cpu0: 0x10002A6C] ReadDoubleWord from non existing peripheral at 0x50045100.
+15:59:55.0870 [WARNING] sysbus: [cpu0: 0x10002A74] WriteDoubleWord to non existing peripheral at 0x50045100, value 0x1000.
+15:59:55.0871 [WARNING] sysbus: [cpu0: 0x10002A78] ReadDoubleWord from non existing peripheral at 0x50045144.
+15:59:55.0871 [WARNING] sysbus: [cpu0: 0x10002A80] WriteDoubleWord to non existing peripheral at 0x50045144, value 0x0.
+15:59:55.0872 [WARNING] sysbus: [cpu0: 0x10002A86] WriteDoubleWord to non existing peripheral at 0x50045144, value 0x3C.
+15:59:55.0872 [WARNING] sysbus: [cpu0: 0x10002A8A] ReadDoubleWord from non existing peripheral at 0x50045144.
+15:59:55.0873 [WARNING] sysbus: [cpu0: 0x10002A92] WriteDoubleWord to non existing peripheral at 0x50045144, value 0x10000.
+15:59:55.0873 [WARNING] sysbus: [cpu0: 0x10002A96] ReadDoubleWord from non existing peripheral at 0x50026028.
+15:59:55.0874 [WARNING] sysbus: [cpu0: 0x10002AA0] WriteDoubleWord to non existing peripheral at 0x50026028, value 0x2.
+15:59:55.0875 [WARNING] sysbus: [cpu0: 0x10002AA2] ReadDoubleWord from non existing peripheral at 0x5002602C.
+15:59:55.0875 [WARNING] sysbus: [cpu0: 0x10002AAC] WriteDoubleWord to non existing peripheral at 0x5002602C, value 0x2.
+15:59:55.0876 [WARNING] sysbus: [cpu0: 0x10002AB2] WriteDoubleWord to non existing peripheral at 0x50024008, value 0x0.
+15:59:55.0876 [WARNING] sysbus: [cpu0: 0x10002AB8] WriteDoubleWord to non existing peripheral at 0x50025008, value 0x0.
+15:59:55.0877 [WARNING] sysbus: [cpu0: 0x10002ABA] ReadDoubleWord from non existing peripheral at 0x50045300.
+15:59:55.0877 [WARNING] sysbus: [cpu0: 0x10002AC2] WriteDoubleWord to non existing peripheral at 0x50045300, value 0x1000000.
+15:59:55.0948 [WARNING] nvic0: Changing value of the SHCSR register to 0x70000, the register isn't supported by Renode
+15:59:55.0990 [WARNING] nvic0: Unhandled write to offset 0xD24. Unhandled bits: [19] when writing value 0xF0000. Tags: RESERVED (0x1).
+15:59:55.0991 [WARNING] nvic0: Unhandled write to offset 0xD38, value 0x0.
+15:59:55.1011 [WARNING] nvic0: Unhandled write to offset 0xD2C, value 0xFFFFFFFF.
+15:59:55.1053 [WARNING] sysbus: [cpu0: 0x1000510E] ReadDoubleWord from non existing peripheral at 0x50045010.
+15:59:55.1054 [WARNING] sysbus: [cpu0: 0x100050E4] ReadDoubleWord from non existing peripheral at 0x50045100.
+15:59:55.1055 [WARNING] sysbus: [cpu0: 0x10005136] ReadDoubleWord from non existing peripheral at 0x50045010.
+15:59:55.1056 [WARNING] sysbus: [cpu0: 0x10005082] ReadDoubleWord from non existing peripheral at 0x50045010.
+15:59:55.1057 [WARNING] sysbus: [cpu0: 0x1000508C] ReadDoubleWord from non existing peripheral at 0x50045100.
+15:59:55.1059 [WARNING] sysbus: [cpu0: 0x10004FEE] (tag: 'UNKNOWN1') WriteDoubleWord to non existing peripheral at 0x50045040, value 0x3.
+15:59:55.1060 [WARNING] sysbus: [cpu0: 0x10004FF4] (tag: 'UNKNOWN1') ReadDoubleWord from non existing peripheral at 0x50045040, returning 0xF0000000.
+15:59:55.1060 [WARNING] sysbus: [cpu0: 0x10004FFA] (tag: 'UNKNOWN1') WriteDoubleWord to non existing peripheral at 0x50045040, value 0xF0000000.
+15:59:55.1061 [WARNING] sysbus: [cpu0: 0x10004FFC] (tag: 'UNKNOWN1') ReadDoubleWord from non existing peripheral at 0x50045040, returning 0xF0000000.
+15:59:55.1061 [WARNING] sysbus: [cpu0: 0x10005002] (tag: 'UNKNOWN1') ReadDoubleWord from non existing peripheral at 0x50045040, returning 0xF0000000.
+15:59:55.1062 [WARNING] sysbus: [cpu0: 0x10005008] (tag: 'UNKNOWN1') WriteDoubleWord to non existing peripheral at 0x50045040, value 0xB0000000.
+15:59:55.1064 [WARNING] sysbus: [cpu0: 0x10002D9C] ReadDoubleWord from non existing peripheral at 0x50044014.
+15:59:55.1065 [WARNING] sysbus: [cpu0: 0x10002DA8] WriteDoubleWord to non existing peripheral at 0x50044014, value 0x2000000.
+15:59:55.1085 [WARNING] sysbus: [cpu0: 0x10002062] (tag: 'ftfe') ReadDoubleWord from non existing peripheral at 0x50043008, returning 0x00000000.
+15:59:55.1086 [WARNING] sysbus: [cpu0: 0x1000206E] (tag: 'ftfe') WriteDoubleWord to non existing peripheral at 0x50043008, value 0x3.
+15:59:55.1087 [WARNING] sysbus: [cpu0: 0x10002BD2] WriteDoubleWord to non existing peripheral at 0x50044308, value 0x0.
+15:59:55.1087 [WARNING] sysbus: [cpu0: 0x10002BD6] (tag: 'UNKNOWN2') ReadDoubleWord from non existing peripheral at 0x50044300, returning 0x0F000000.
+15:59:55.1088 [WARNING] sysbus: [cpu0: 0x10002BDE] (tag: 'UNKNOWN2') WriteDoubleWord to non existing peripheral at 0x50044300, value 0xF000000.
+15:59:55.1088 [WARNING] sysbus: [cpu0: 0x10002BE2] (tag: 'UNKNOWN2') ReadDoubleWord from non existing peripheral at 0x50044300, returning 0x0F000000.
+15:59:55.1089 [WARNING] sysbus: [cpu0: 0x10002BEA] (tag: 'UNKNOWN2') WriteDoubleWord to non existing peripheral at 0x50044300, value 0xF000010.
+15:59:55.1089 [WARNING] sysbus: [cpu0: 0x10002BEE] (tag: 'UNKNOWN2') ReadDoubleWord from non existing peripheral at 0x50044300, returning 0x0F000000.
+15:59:55.1090 [WARNING] sysbus: [cpu0: 0x10002BF6] (tag: 'UNKNOWN2') WriteDoubleWord to non existing peripheral at 0x50044300, value 0xF000020.
+15:59:55.1091 [WARNING] sysbus: [cpu0: 0x10002BFA] (tag: 'UNKNOWN2') ReadDoubleWord from non existing peripheral at 0x50044300, returning 0x0F000000.
+15:59:55.1091 [WARNING] sysbus: [cpu0: 0x10002C02] (tag: 'UNKNOWN2') WriteDoubleWord to non existing peripheral at 0x50044300, value 0xF000001.
+15:59:55.1092 [WARNING] sysbus: [cpu0: 0x10002C06] (tag: 'UNKNOWN2') ReadDoubleWord from non existing peripheral at 0x50044300, returning 0x0F000000.
+15:59:55.1093 [WARNING] sysbus: [cpu0: 0x10003066] ReadDoubleWord from non existing peripheral at 0x50044800.
+15:59:55.1094 [WARNING] sysbus: [cpu0: 0x1000306E] WriteDoubleWord to non existing peripheral at 0x50044800, value 0x1.
+15:59:55.1095 [WARNING] sysbus: [cpu0: 0x10003072] (tag: 'UNKNOWN3') ReadDoubleWord from non existing peripheral at 0x50044500, returning 0x0F000000.
+15:59:55.1095 [WARNING] sysbus: [cpu0: 0x1000307A] (tag: 'UNKNOWN3') WriteDoubleWord to non existing peripheral at 0x50044500, value 0xF000000.
+15:59:55.1096 [WARNING] sysbus: [cpu0: 0x10003080] WriteDoubleWord to non existing peripheral at 0x50044504, value 0x20035B0.
+15:59:55.1096 [WARNING] sysbus: [cpu0: 0x10003086] WriteDoubleWord to non existing peripheral at 0x5004450C, value 0x8.
+15:59:55.1097 [WARNING] sysbus: [cpu0: 0x1000308E] WriteDoubleWord to non existing peripheral at 0x5004450C, value 0x80000008.
+15:59:55.1097 [WARNING] sysbus: [cpu0: 0x10003094] WriteDoubleWord to non existing peripheral at 0x50044514, value 0x1.
+15:59:55.1098 [WARNING] sysbus: [cpu0: 0x1000309C] WriteDoubleWord to non existing peripheral at 0x50044514, value 0x80000001.
+15:59:55.1098 [WARNING] sysbus: [cpu0: 0x100030A2] WriteDoubleWord to non existing peripheral at 0x50044510, value 0x32.
+15:59:55.1099 [WARNING] sysbus: [cpu0: 0x100030AA] WriteDoubleWord to non existing peripheral at 0x50044510, value 0x80000032.
+15:59:55.1099 [WARNING] sysbus: [cpu0: 0x100030B0] WriteDoubleWord to non existing peripheral at 0x50044524, value 0x0.
+15:59:55.1100 [WARNING] sysbus: [cpu0: 0x100030B6] WriteDoubleWord to non existing peripheral at 0x50044528, value 0x0.
+15:59:55.1100 [WARNING] sysbus: [cpu0: 0x100030BC] WriteDoubleWord to non existing peripheral at 0x50044008, value 0x5A5A0001.
+15:59:55.1101 [WARNING] sysbus: [cpu0: 0x10002DD8] ReadDoubleWord from non existing peripheral at 0x50044504.
+15:59:55.1102 [WARNING] sysbus: [cpu0: 0x10002B36] ReadDoubleWord from non existing peripheral at 0x50044100.
+15:59:55.1103 [WARNING] sysbus: [cpu0: 0x100030C2] ReadDoubleWord from non existing peripheral at 0x50044504.
+15:59:55.1104 [WARNING] sysbus: [cpu0: 0x100030CC] ReadDoubleWord from non existing peripheral at 0x5004450C.
+15:59:55.1105 [WARNING] sysbus: [cpu0: 0x100030EE] WriteDoubleWord to non existing peripheral at 0x50044518, value 0x12C.
+15:59:55.1105 [WARNING] sysbus: [cpu0: 0x100030F2] (tag: 'UNKNOWN3') ReadDoubleWord from non existing peripheral at 0x50044500, returning 0x0F000000.
+15:59:55.1106 [WARNING] sysbus: [cpu0: 0x100030FA] (tag: 'UNKNOWN3') WriteDoubleWord to non existing peripheral at 0x50044500, value 0xF000003.
+15:59:55.1106 [WARNING] sysbus: [cpu0: 0x100030FE] (tag: 'UNKNOWN3') ReadDoubleWord from non existing peripheral at 0x50044500, returning 0x0F000000.
+15:59:55.1107 [WARNING] sysbus: [cpu0: 0x10002DD8] ReadDoubleWord from non existing peripheral at 0x50044504.
+15:59:55.1108 [WARNING] sysbus: [cpu0: 0x10002B36] ReadDoubleWord from non existing peripheral at 0x50044100.
+15:59:55.1109 [WARNING] sysbus: [cpu0: 0x10002E24] (tag: 'UNKNOWN3') ReadDoubleWord from non existing peripheral at 0x50044500, returning 0x0F000000.
+15:59:55.1109 [WARNING] sysbus: [cpu0: 0x10002E2C] ReadDoubleWord from non existing peripheral at 0x50044504.
+15:59:55.1110 [WARNING] sysbus: [cpu0: 0x10002E34] ReadDoubleWord from non existing peripheral at 0x5004450C.
+15:59:55.1110 [WARNING] sysbus: [cpu0: 0x10002E42] ReadDoubleWord from non existing peripheral at 0x50044504.
+15:59:55.1111 [WARNING] sysbus: [cpu0: 0x10002E4A] ReadDoubleWord from non existing peripheral at 0x50044504.
+15:59:55.1112 [WARNING] sysbus: [cpu0: 0x10002E4E] ReadDoubleWord from non existing peripheral at 0x50044514.
+15:59:55.1112 [WARNING] sysbus: [cpu0: 0x10002E78] ReadDoubleWord from non existing peripheral at 0x50044528.
+15:59:55.1113 [WARNING] sysbus: [cpu0: 0x10002E80] ReadDoubleWord from non existing peripheral at 0x50044510.
+15:59:55.1119 [WARNING] sysbus: [cpu0: 0x10002D5A] (tag: 'UNKNOWN3') ReadDoubleWord from non existing peripheral at 0x50044500, returning 0x0F000000.
+15:59:55.1120 [WARNING] sysbus: [cpu0: 0x10002D64] (tag: 'UNKNOWN3') WriteDoubleWord to non existing peripheral at 0x50044500, value 0xF000000.
+15:59:55.1120 [WARNING] sysbus: [cpu0: 0x10002D9C] ReadDoubleWord from non existing peripheral at 0x50044014.
+15:59:55.1121 [WARNING] sysbus: [cpu0: 0x10002DA8] WriteDoubleWord to non existing peripheral at 0x50044014, value 0x5000000.
+15:59:55.1123 [WARNING] sysbus: [cpu0: 0x10002C54] ReadDoubleWord from non existing peripheral at 0x50044100.
+15:59:55.1124 [WARNING] sysbus: [cpu0: 0x10002C5C] ReadDoubleWord from non existing peripheral at 0x50044504.
+15:59:55.1124 [WARNING] sysbus: [cpu0: 0x10002C66] (tag: 'UNKNOWN3') ReadDoubleWord from non existing peripheral at 0x50044500, returning 0x0F000000.
+15:59:55.1126 [WARNING] sysbus: [cpu0: 0x1000312A] ReadDoubleWord from non existing peripheral at 0x50044800.
+15:59:55.1127 [WARNING] sysbus: [cpu0: 0x10003132] WriteDoubleWord to non existing peripheral at 0x50044800, value 0x1.
+15:59:55.1127 [WARNING] sysbus: [cpu0: 0x10003136] (tag: 'UNKNOWN4') ReadDoubleWord from non existing peripheral at 0x50044600, returning 0x0F000000.
+15:59:55.1128 [WARNING] sysbus: [cpu0: 0x1000313E] (tag: 'UNKNOWN4') WriteDoubleWord to non existing peripheral at 0x50044600, value 0xF000000.
+15:59:55.1128 [WARNING] sysbus: [cpu0: 0x10003144] WriteDoubleWord to non existing peripheral at 0x50044604, value 0x2000430.
+15:59:55.1129 [WARNING] sysbus: [cpu0: 0x1000314A] WriteDoubleWord to non existing peripheral at 0x5004460C, value 0x19.
+15:59:55.1129 [WARNING] sysbus: [cpu0: 0x10003152] WriteDoubleWord to non existing peripheral at 0x5004460C, value 0x80000019.
+15:59:55.1130 [WARNING] sysbus: [cpu0: 0x10003158] WriteDoubleWord to non existing peripheral at 0x50044614, value 0xA.
+15:59:55.1130 [WARNING] sysbus: [cpu0: 0x10003160] WriteDoubleWord to non existing peripheral at 0x50044614, value 0x8000000A.
+15:59:55.1131 [WARNING] sysbus: [cpu0: 0x10003166] WriteDoubleWord to non existing peripheral at 0x50044610, value 0x100.
+15:59:55.1132 [WARNING] sysbus: [cpu0: 0x1000316E] WriteDoubleWord to non existing peripheral at 0x50044610, value 0x80000100.
+15:59:55.1132 [WARNING] sysbus: [cpu0: 0x10003174] WriteDoubleWord to non existing peripheral at 0x50044624, value 0x0.
+15:59:55.1133 [WARNING] sysbus: [cpu0: 0x1000317A] WriteDoubleWord to non existing peripheral at 0x50044628, value 0x0.
+15:59:55.1133 [WARNING] sysbus: [cpu0: 0x10003180] WriteDoubleWord to non existing peripheral at 0x50044008, value 0x5A5A0001.
+15:59:55.1134 [WARNING] sysbus: [cpu0: 0x10002F02] ReadDoubleWord from non existing peripheral at 0x50044604.
+15:59:55.1135 [WARNING] sysbus: [cpu0: 0x10002B36] ReadDoubleWord from non existing peripheral at 0x50044100.
+15:59:55.1135 [WARNING] sysbus: [cpu0: 0x10003186] ReadDoubleWord from non existing peripheral at 0x50044604.
+15:59:55.1136 [WARNING] sysbus: [cpu0: 0x10003190] ReadDoubleWord from non existing peripheral at 0x5004460C.
+15:59:55.1137 [WARNING] sysbus: [cpu0: 0x100031B2] WriteDoubleWord to non existing peripheral at 0x50044618, value 0x12C.
+15:59:55.1137 [WARNING] sysbus: [cpu0: 0x100031B6] (tag: 'UNKNOWN4') ReadDoubleWord from non existing peripheral at 0x50044600, returning 0x0F000000.
+15:59:55.1138 [WARNING] sysbus: [cpu0: 0x100031BE] (tag: 'UNKNOWN4') WriteDoubleWord to non existing peripheral at 0x50044600, value 0xF000003.
+15:59:55.1138 [WARNING] sysbus: [cpu0: 0x100031C2] (tag: 'UNKNOWN4') ReadDoubleWord from non existing peripheral at 0x50044600, returning 0x0F000000.
+15:59:55.1139 [WARNING] sysbus: [cpu0: 0x10002F02] ReadDoubleWord from non existing peripheral at 0x50044604.
+15:59:55.1140 [WARNING] sysbus: [cpu0: 0x10002B36] ReadDoubleWord from non existing peripheral at 0x50044100.
+15:59:55.1141 [WARNING] sysbus: [cpu0: 0x10002F36] (tag: 'UNKNOWN4') ReadDoubleWord from non existing peripheral at 0x50044600, returning 0x0F000000.
+15:59:55.1141 [WARNING] sysbus: [cpu0: 0x10002F3E] ReadDoubleWord from non existing peripheral at 0x50044604.
+15:59:55.1142 [WARNING] sysbus: [cpu0: 0x10002F46] ReadDoubleWord from non existing peripheral at 0x5004460C.
+15:59:55.1142 [WARNING] sysbus: [cpu0: 0x10002F52] ReadDoubleWord from non existing peripheral at 0x50044604.
+15:59:55.1143 [WARNING] sysbus: [cpu0: 0x10002F5A] ReadDoubleWord from non existing peripheral at 0x50044604.
+15:59:55.1144 [WARNING] sysbus: [cpu0: 0x10002F5E] ReadDoubleWord from non existing peripheral at 0x50044614.
+15:59:55.1145 [WARNING] sysbus: [cpu0: 0x10002F7E] ReadDoubleWord from non existing peripheral at 0x50044628.
+15:59:55.1145 [WARNING] sysbus: [cpu0: 0x10002F86] ReadDoubleWord from non existing peripheral at 0x50044610.
+15:59:55.1199 [WARNING] sysbus: [cpu0: 0x10002170] ReadDoubleWord from non existing peripheral at 0x50045104.
+15:59:55.1200 [WARNING] sysbus: [cpu0: 0x1000217A] WriteDoubleWord to non existing peripheral at 0x50045104, value 0x10.
+15:59:55.1221 [WARNING] sysbus: [cpu0: 0x100021FC] ReadDoubleWord from non existing peripheral at 0x50045104.
+15:59:55.1222 [WARNING] sysbus: [cpu0: 0x10002204] WriteDoubleWord to non existing peripheral at 0x50045104, value 0x1.
+15:59:55.1224 [WARNING] sysbus: [cpu0: 0x10002226] ReadDoubleWord from non existing peripheral at 0x50045104.
+15:59:55.1224 [WARNING] sysbus: [cpu0: 0x10002230] WriteDoubleWord to non existing peripheral at 0x50045104, value 0x110000.
+15:59:55.1225 [WARNING] sysbus: [cpu0: 0x10002234] ReadDoubleWord from non existing peripheral at 0x50045104.
+15:59:55.1226 [WARNING] sysbus: [cpu0: 0x1000223C] WriteDoubleWord to non existing peripheral at 0x50045104, value 0x100.
+15:59:55.1227 [WARNING] sysbus: [cpu0: 0x10002D16] ReadDoubleWord from non existing peripheral at 0x50059200.
+15:59:55.1227 [WARNING] sysbus: [cpu0: 0x10002D1E] WriteDoubleWord to non existing peripheral at 0x50059200, value 0x1.
+15:59:55.1228 [WARNING] sysbus: [cpu0: 0x10002D22] ReadDoubleWord from non existing peripheral at 0x50059204.
+15:59:55.1228 [WARNING] sysbus: [cpu0: 0x10002D2A] WriteDoubleWord to non existing peripheral at 0x50059204, value 0x0.
+15:59:55.1229 [WARNING] sysbus: [cpu0: 0x10002D2E] ReadDoubleWord from non existing peripheral at 0x50059218.
+15:59:55.1229 [WARNING] sysbus: [cpu0: 0x10002D36] WriteDoubleWord to non existing peripheral at 0x50059218, value 0x1.
+15:59:55.1230 [WARNING] sysbus: [cpu0: 0x10002D3A] ReadDoubleWord from non existing peripheral at 0x5005921C.
+15:59:55.1230 [WARNING] sysbus: [cpu0: 0x10002D42] WriteDoubleWord to non existing peripheral at 0x5005921C, value 0x0.
+15:59:55.1231 [WARNING] sysbus: [cpu0: 0x10002D46] ReadDoubleWord from non existing peripheral at 0x50059220.
+15:59:55.1231 [WARNING] sysbus: [cpu0: 0x10002D4C] WriteDoubleWord to non existing peripheral at 0x50059220, value 0x2.
+15:59:55.1315 [WARNING] sysbus: [cpu0: 0x10002D16] ReadDoubleWord from non existing peripheral at 0x50059200.
+15:59:55.1316 [WARNING] sysbus: [cpu0: 0x10002D1E] WriteDoubleWord to non existing peripheral at 0x50059200, value 0x1.
+15:59:55.1316 [WARNING] sysbus: [cpu0: 0x10002D22] ReadDoubleWord from non existing peripheral at 0x50059204.
+15:59:55.1317 [WARNING] sysbus: [cpu0: 0x10002D2A] WriteDoubleWord to non existing peripheral at 0x50059204, value 0x0.
+15:59:55.1317 [WARNING] sysbus: [cpu0: 0x10002D2E] ReadDoubleWord from non existing peripheral at 0x50059218.
+15:59:55.1318 [WARNING] sysbus: [cpu0: 0x10002D36] WriteDoubleWord to non existing peripheral at 0x50059218, value 0x1.
+15:59:55.1319 [WARNING] sysbus: [cpu0: 0x10002D3A] ReadDoubleWord from non existing peripheral at 0x5005921C.
+15:59:55.1319 [WARNING] sysbus: [cpu0: 0x10002D42] WriteDoubleWord to non existing peripheral at 0x5005921C, value 0x0.
+15:59:55.1320 [WARNING] sysbus: [cpu0: 0x10002D46] ReadDoubleWord from non existing peripheral at 0x50059220.
+15:59:55.1320 [WARNING] sysbus: [cpu0: 0x10002D4C] WriteDoubleWord to non existing peripheral at 0x50059220, value 0x9.
+15:59:55.1322 [WARNING] sysbus: [cpu0: 0x10002D16] ReadDoubleWord from non existing peripheral at 0x50059200.
+15:59:55.1323 [WARNING] sysbus: [cpu0: 0x10002D1E] WriteDoubleWord to non existing peripheral at 0x50059200, value 0x1.
+15:59:55.1323 [WARNING] sysbus: [cpu0: 0x10002D22] ReadDoubleWord from non existing peripheral at 0x50059204.
+15:59:55.1324 [WARNING] sysbus: [cpu0: 0x10002D2A] WriteDoubleWord to non existing peripheral at 0x50059204, value 0x0.
+15:59:55.1324 [WARNING] sysbus: [cpu0: 0x10002D2E] ReadDoubleWord from non existing peripheral at 0x50059218.
+15:59:55.1325 [WARNING] sysbus: [cpu0: 0x10002D36] WriteDoubleWord to non existing peripheral at 0x50059218, value 0x1.
+15:59:55.1325 [WARNING] sysbus: [cpu0: 0x10002D3A] ReadDoubleWord from non existing peripheral at 0x5005921C.
+15:59:55.1326 [WARNING] sysbus: [cpu0: 0x10002D42] WriteDoubleWord to non existing peripheral at 0x5005921C, value 0x0.
+15:59:55.1326 [WARNING] sysbus: [cpu0: 0x10002D46] ReadDoubleWord from non existing peripheral at 0x50059220.
+15:59:55.1327 [WARNING] sysbus: [cpu0: 0x10002D4C] WriteDoubleWord to non existing peripheral at 0x50059220, value 0x9.
+15:59:55.1328 [WARNING] sysbus: [cpu0: 0x10002D16] ReadDoubleWord from non existing peripheral at 0x50059200.
+15:59:55.1329 [WARNING] sysbus: [cpu0: 0x10002D1E] WriteDoubleWord to non existing peripheral at 0x50059200, value 0x1.
+15:59:55.1329 [WARNING] sysbus: [cpu0: 0x10002D22] ReadDoubleWord from non existing peripheral at 0x50059204.
+15:59:55.1330 [WARNING] sysbus: [cpu0: 0x10002D2A] WriteDoubleWord to non existing peripheral at 0x50059204, value 0x0.
+15:59:55.1330 [WARNING] sysbus: [cpu0: 0x10002D2E] ReadDoubleWord from non existing peripheral at 0x50059218.
+15:59:55.1331 [WARNING] sysbus: [cpu0: 0x10002D36] WriteDoubleWord to non existing peripheral at 0x50059218, value 0x1.
+15:59:55.1331 [WARNING] sysbus: [cpu0: 0x10002D3A] ReadDoubleWord from non existing peripheral at 0x5005921C.
+15:59:55.1332 [WARNING] sysbus: [cpu0: 0x10002D42] WriteDoubleWord to non existing peripheral at 0x5005921C, value 0x0.
+15:59:55.1332 [WARNING] sysbus: [cpu0: 0x10002D46] ReadDoubleWord from non existing peripheral at 0x50059220.
+15:59:55.1333 [WARNING] sysbus: [cpu0: 0x10002D4C] WriteDoubleWord to non existing peripheral at 0x50059220, value 0x9.
+15:59:55.1335 [WARNING] sysbus: [cpu0: 0x10002D16] ReadDoubleWord from non existing peripheral at 0x50059200.
+15:59:55.1335 [WARNING] sysbus: [cpu0: 0x10002D1E] WriteDoubleWord to non existing peripheral at 0x50059200, value 0x1.
+15:59:55.1336 [WARNING] sysbus: [cpu0: 0x10002D22] ReadDoubleWord from non existing peripheral at 0x50059204.
+15:59:55.1336 [WARNING] sysbus: [cpu0: 0x10002D2A] WriteDoubleWord to non existing peripheral at 0x50059204, value 0x0.
+15:59:55.1337 [WARNING] sysbus: [cpu0: 0x10002D2E] ReadDoubleWord from non existing peripheral at 0x50059218.
+15:59:55.1337 [WARNING] sysbus: [cpu0: 0x10002D36] WriteDoubleWord to non existing peripheral at 0x50059218, value 0x1.
+15:59:55.1338 [WARNING] sysbus: [cpu0: 0x10002D3A] ReadDoubleWord from non existing peripheral at 0x5005921C.
+15:59:55.1338 [WARNING] sysbus: [cpu0: 0x10002D42] WriteDoubleWord to non existing peripheral at 0x5005921C, value 0x0.
+15:59:55.1339 [WARNING] sysbus: [cpu0: 0x10002D46] ReadDoubleWord from non existing peripheral at 0x50059220.
+15:59:55.1339 [WARNING] sysbus: [cpu0: 0x10002D4C] WriteDoubleWord to non existing peripheral at 0x50059220, value 0x9.
+15:59:55.1377 [WARNING] flexcomm1: Unhandled write to offset 0xFF8. Unhandled bits: [4-6, 12-13, 20] when writing value 0x2. Tags: UARTPRESENT (0x0), SPIPRESENT (0x0), I2CPRESENT (0x0), ID (0x0).
+15:59:55.1384 [WARNING] flexcomm2lpuart2: Unhandled write to offset 0xFF8. Unhandled bits: [4-6, 12-13, 20] when writing value 0x7. Tags: UARTPRESENT (0x0), SPIPRESENT (0x0), I2CPRESENT (0x0), ID (0x0).
+15:59:55.1387 [WARNING] flexcomm3: Unhandled write to offset 0xFF8. Unhandled bits: [4-6, 12-13, 20] when writing value 0x3. Tags: UARTPRESENT (0x0), SPIPRESENT (0x0), I2CPRESENT (0x0), ID (0x0).
+15:59:55.1390 [WARNING] flexcomm4lpuart4: Unhandled write to offset 0xFF8. Unhandled bits: [4-6, 12-13, 20] when writing value 0x1. Tags: UARTPRESENT (0x0), SPIPRESENT (0x0), I2CPRESENT (0x0), ID (0x0).
+15:59:55.1393 [WARNING] flexcomm7: Unhandled write to offset 0xFF8. Unhandled bits: [4-6, 12-13, 20] when writing value 0x3. Tags: UARTPRESENT (0x0), SPIPRESENT (0x0), I2CPRESENT (0x0), ID (0x0).
+15:59:55.1396 [WARNING] sysbus: [cpu0: 0x10002D16] ReadDoubleWord from non existing peripheral at 0x50059200.
+15:59:55.1396 [WARNING] sysbus: [cpu0: 0x10002D1E] WriteDoubleWord to non existing peripheral at 0x50059200, value 0x1.
+15:59:55.1397 [WARNING] sysbus: [cpu0: 0x10002D22] ReadDoubleWord from non existing peripheral at 0x50059204.
+15:59:55.1397 [WARNING] sysbus: [cpu0: 0x10002D2A] WriteDoubleWord to non existing peripheral at 0x50059204, value 0x0.
+15:59:55.1398 [WARNING] sysbus: [cpu0: 0x10002D2E] ReadDoubleWord from non existing peripheral at 0x50059218.
+15:59:55.1399 [WARNING] sysbus: [cpu0: 0x10002D36] WriteDoubleWord to non existing peripheral at 0x50059218, value 0x1.
+15:59:55.1399 [WARNING] sysbus: [cpu0: 0x10002D3A] ReadDoubleWord from non existing peripheral at 0x5005921C.
+15:59:55.1400 [WARNING] sysbus: [cpu0: 0x10002D42] WriteDoubleWord to non existing peripheral at 0x5005921C, value 0x0.
+15:59:55.1400 [WARNING] sysbus: [cpu0: 0x10002D46] ReadDoubleWord from non existing peripheral at 0x50059220.
+15:59:55.1401 [WARNING] sysbus: [cpu0: 0x10002D4C] WriteDoubleWord to non existing peripheral at 0x50059220, value 0x9.
+15:59:55.1403 [WARNING] sysbus: [cpu0: 0x10002D16] ReadDoubleWord from non existing peripheral at 0x50059200.
+15:59:55.1403 [WARNING] sysbus: [cpu0: 0x10002D1E] WriteDoubleWord to non existing peripheral at 0x50059200, value 0x1.
+15:59:55.1404 [WARNING] sysbus: [cpu0: 0x10002D22] ReadDoubleWord from non existing peripheral at 0x50059204.
+15:59:55.1404 [WARNING] sysbus: [cpu0: 0x10002D2A] WriteDoubleWord to non existing peripheral at 0x50059204, value 0x0.
+15:59:55.1405 [WARNING] sysbus: [cpu0: 0x10002D2E] ReadDoubleWord from non existing peripheral at 0x50059218.
+15:59:55.1406 [WARNING] sysbus: [cpu0: 0x10002D36] WriteDoubleWord to non existing peripheral at 0x50059218, value 0x1.
+15:59:55.1406 [WARNING] sysbus: [cpu0: 0x10002D3A] ReadDoubleWord from non existing peripheral at 0x5005921C.
+15:59:55.1407 [WARNING] sysbus: [cpu0: 0x10002D42] WriteDoubleWord to non existing peripheral at 0x5005921C, value 0x0.
+15:59:55.1407 [WARNING] sysbus: [cpu0: 0x10002D46] ReadDoubleWord from non existing peripheral at 0x50059220.
+15:59:55.1408 [WARNING] sysbus: [cpu0: 0x10002D4C] WriteDoubleWord to non existing peripheral at 0x50059220, value 0x9.
+15:59:55.1413 [WARNING] sysbus: [cpu0: 0x10002380] (tag: 'porte') ReadDoubleWord from non existing peripheral at 0x5011A088, returning 0x00000000.
+15:59:55.1414 [WARNING] sysbus: [cpu0: 0x1000238A] (tag: 'porte') WriteDoubleWord to non existing peripheral at 0x5011A088, value 0x1203.
+15:59:55.1414 [WARNING] sysbus: [cpu0: 0x10002380] (tag: 'porte') ReadDoubleWord from non existing peripheral at 0x5011A08C, returning 0x00000000.
+15:59:55.1415 [WARNING] sysbus: [cpu0: 0x1000238A] (tag: 'porte') WriteDoubleWord to non existing peripheral at 0x5011A08C, value 0x1203.
+15:59:55.1455 [WARNING] flexcomm2lpuart2: Read (0x18) for unsupported FLEXCOMM mode: UARTI2C - returning 0x0.
+15:59:55.1456 [WARNING] flexcomm2lpuart2: Write (0x18 with 0x80000) for unsupported FLEXCOMM mode: UARTI2C - ignoring write.
+15:59:55.1457 [WARNING] sysbus: [cpu0: 0x10002380] (tag: 'porte') ReadDoubleWord from non existing peripheral at 0x5011A088, returning 0x00000000.
+15:59:55.1458 [WARNING] sysbus: [cpu0: 0x1000238A] (tag: 'porte') WriteDoubleWord to non existing peripheral at 0x5011A088, value 0x1203.
+15:59:55.1458 [WARNING] sysbus: [cpu0: 0x10002380] (tag: 'porte') ReadDoubleWord from non existing peripheral at 0x5011A08C, returning 0x00000000.
+15:59:55.1459 [WARNING] sysbus: [cpu0: 0x1000238A] (tag: 'porte') WriteDoubleWord to non existing peripheral at 0x5011A08C, value 0x1203.
+15:59:55.1461 [WARNING] sysbus: [cpu0: 0x10002380] (tag: 'portb') ReadDoubleWord from non existing peripheral at 0x501170A0, returning 0x00000000.
+15:59:55.1462 [WARNING] sysbus: [cpu0: 0x1000238A] (tag: 'portb') WriteDoubleWord to non existing peripheral at 0x501170A0, value 0x1203.
+15:59:55.1463 [WARNING] sysbus: [cpu0: 0x10002380] (tag: 'portb') ReadDoubleWord from non existing peripheral at 0x501170A4, returning 0x00000000.
+15:59:55.1463 [WARNING] sysbus: [cpu0: 0x1000238A] (tag: 'portb') WriteDoubleWord to non existing peripheral at 0x501170A4, value 0x1203.
+15:59:55.1474 [WARNING] sysbus: [cpu0: 0x10002380] (tag: 'portb') ReadDoubleWord from non existing peripheral at 0x501170A0, returning 0x00000000.
+15:59:55.1474 [WARNING] sysbus: [cpu0: 0x1000238A] (tag: 'portb') WriteDoubleWord to non existing peripheral at 0x501170A0, value 0x1203.
+15:59:55.1475 [WARNING] sysbus: [cpu0: 0x10002380] (tag: 'portb') ReadDoubleWord from non existing peripheral at 0x501170A4, returning 0x00000000.
+15:59:55.1476 [WARNING] sysbus: [cpu0: 0x1000238A] (tag: 'portb') WriteDoubleWord to non existing peripheral at 0x501170A4, value 0x1203.
+15:59:55.1551 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1551 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1584 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1584 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1586 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1587 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1588 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1588 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1589 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1590 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1591 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1591 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1592 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1593 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1594 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1594 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1595 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1596 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1597 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1597 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1598 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1599 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1599 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1600 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1601 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1601 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1602 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1602 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1603 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1604 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1605 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1605 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1606 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1607 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1608 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1608 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1609 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1609 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1610 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1611 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1611 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1612 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1613 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1613 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1614 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1615 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1615 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1616 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1617 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1617 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1618 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1619 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1619 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1620 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1621 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1621 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1622 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1622 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1623 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1624 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1625 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1625 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1626 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1627 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1627 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1628 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1629 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1629 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1630 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1630 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1631 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1632 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1633 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1633 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1634 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1634 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1635 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1636 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1637 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1637 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1638 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1638 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1639 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1640 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1641 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1641 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1642 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1642 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1643 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1644 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1645 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1645 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1647 [INFO] flexcomm4lpuart4: [host: 0.68s (+0.68s)|virt: 0.15ms (+0.15ms)] *** Booting Zephyr OS build 9463d9a51d9c ***
+15:59:55.1718 [INFO] frdm_mcxn947_mcxn947_cpu0: Machine paused.
+15:59:55.1843 [INFO] frdm_mcxn947_mcxn947_cpu0: Machine resumed.
+15:59:55.1994 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1995 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1996 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1996 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1996 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1996 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1997 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1997 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1997 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1997 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.1998 [WARNING] Unhandled read from offset 0x44.
+15:59:55.1998 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2006 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2007 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2008 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2008 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2009 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2010 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2011 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2011 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2012 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2013 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2014 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2014 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2015 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2016 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2019 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2019 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2020 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2021 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2022 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2022 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2023 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2024 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2025 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2025 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2026 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2027 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2028 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2028 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2029 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2030 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2031 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2031 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2032 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2033 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2033 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2034 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2035 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2036 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2036 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2037 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2044 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2045 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2046 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2047 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2048 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2048 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2049 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2050 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2050 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2051 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2052 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2052 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2053 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2054 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2055 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2055 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2056 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2057 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2058 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2058 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2059 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2060 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2061 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2061 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2062 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2063 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2064 [WARNING] Unhandled read from offset 0x44.
+15:59:55.2064 [WARNING] Unhandled read from offset 0x5C.
+15:59:55.2065 [INFO] flexcomm4lpuart4: [host: 0.72s (+41.9ms)|virt: 0.2ms (+46.68µs)] Hello World! frdm_mcxn947/mcxn947/cpu0
+15:59:55.2066 [INFO] frdm_mcxn947_mcxn947_cpu0: Machine paused.
+15:59:55.3179 [INFO] frdm_mcxn947_mcxn947_cpu0: Disposed.
