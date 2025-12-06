@@ -19,10 +19,10 @@ pipeline {
                     sh '''
                         echo "=== Building Development Environment ==="
                         cd docker
-                        docker-compose -f docker-compose.dev.yml build kobayashi-dev
+                        docker compose -f docker compose.dev.yml build kobayashi-dev
                         
                         echo "=== Testing Environment ==="
-                        docker-compose -f docker-compose.dev.yml run --rm kobayashi-dev arm-none-eabi-gcc --version
+                        docker compose -f docker compose.dev.yml run --rm kobayashi-dev arm-none-eabi-gcc --version
                     '''
                 }
             }
@@ -40,7 +40,7 @@ pipeline {
                 script {
                     sh '''
                         echo "=== Building Firmware in Container ==="
-                        docker-compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
+                        docker compose -f docker/docker compose.dev.yml run --rm kobayashi-dev bash -c "
                             cd firmware
                             if [ -f 'Makefile' ]; then
                                 make clean || true
@@ -66,7 +66,7 @@ pipeline {
                 script {
                     sh '''
                         echo "=== Testing Python Simulation Models ==="
-                        docker-compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
+                        docker compose -f docker/docker compose.dev.yml run --rm kobayashi-dev bash -c "
                             cd simulation/models
                             python3 -c '
 import sys
@@ -93,7 +93,7 @@ except ImportError as e:
                 script {
                     sh '''
                         echo "=== Running Renode Simulation Test ==="
-                        docker-compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
+                        docker compose -f docker/docker compose.dev.yml run --rm kobayashi-dev bash -c "
                             cd simulation/renode
                             echo 'Starting Renode simulation test...'
                             
@@ -122,7 +122,7 @@ except ImportError as e:
                         script {
                             sh '''
                                 echo "=== Running Firmware Static Analysis ==="
-                                docker-compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
+                                docker compose -f docker/docker compose.dev.yml run --rm kobayashi-dev bash -c "
                                     cd firmware
                                     
                                     # Simple code structure analysis
@@ -142,7 +142,7 @@ except ImportError as e:
                         script {
                             sh '''
                                 echo "=== Running Simulation Model Analysis ==="
-                                docker-compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
+                                docker compose -f docker/docker compose.dev.yml run --rm kobayashi-dev bash -c "
                                     cd simulation/models
                                     
                                     echo 'Python model files:'
@@ -163,7 +163,7 @@ except ImportError as e:
                 script {
                     sh '''
                         echo "=== Running Integration Test ==="
-                        docker-compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
+                        docker compose -f docker/docker compose.dev.yml run --rm kobayashi-dev bash -c "
                             echo 'Testing complete toolchain...'
                             
                             # Test ARM GCC
@@ -191,7 +191,7 @@ except ImportError as e:
             script {
                 sh '''
                     echo "=== Build Artifacts ==="
-                    docker-compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev find /workspace -name "*.elf" -o -name "*.hex" -o -name "*.bin" | head -10
+                    docker compose -f docker/docker compose.dev.yml run --rm kobayashi-dev find /workspace -name "*.elf" -o -name "*.hex" -o -name "*.bin" | head -10
                 '''
             }
         }
@@ -203,7 +203,7 @@ except ImportError as e:
                     mkdir -p artifacts
                     
                     # Copy any build artifacts from container
-                    docker-compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
+                    docker compose -f docker/docker compose.dev.yml run --rm kobayashi-dev bash -c "
                         find /workspace -name '*.elf' -o -name '*.hex' -o -name '*.bin' | while read file; do
                             if [ -f \"\$file\" ]; then
                                 cp \"\$file\" /workspace/artifacts/ 2>/dev/null || true
@@ -227,7 +227,7 @@ except ImportError as e:
             script {
                 // Clean up containers
                 sh '''
-                    docker-compose -f docker/docker-compose.dev.yml down || true
+                    docker compose -f docker/docker compose.dev.yml down || true
                     docker system prune -f || true
                 '''
             }

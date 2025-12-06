@@ -33,7 +33,7 @@ cd "$(dirname "$0")/.."
 
 # Build development environment
 log "Building Kobayashi Maru development environment..."
-docker-compose -f docker/docker-compose.dev.yml build kobayashi-dev
+docker compose -f docker/docker-compose.dev.yml build kobayashi-dev
 
 success "Development environment built!"
 
@@ -44,22 +44,22 @@ echo "========================================"
 echo
 
 echo "🔨 FIRMWARE DEVELOPMENT:"
-echo "  docker-compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev"
+echo "  docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev"
 echo "  # Then in container:"
 echo "  cd firmware && make"
 
 echo
 echo "🧪 SIMULATION TESTING:"
-echo "  docker-compose -f docker/docker-compose.dev.yml up renode-sim"
+echo "  docker compose -f docker/docker-compose.dev.yml up renode-sim"
 echo "  # Renode will be available on localhost:3456"
 
 echo
 echo "🔧 INTERACTIVE DEVELOPMENT:"
-echo "  docker-compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash"
+echo "  docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash"
 
 echo
 echo "⚡ QUICK BUILD & TEST:"
-echo "  docker-compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c '"
+echo "  docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c '"
 echo "    cd firmware && make && "
 echo "    cd ../simulation/renode && "
 echo "    timeout 30 renode --console --disable-xwt robot_simulation.resc"
@@ -68,14 +68,14 @@ echo "  '"
 echo
 echo "🏗️ JENKINS INTEGRATION:"
 echo "  # Use jenkins-agent service for Jenkins builds"
-echo "  docker-compose -f docker/docker-compose.dev.yml up jenkins-agent"
+echo "  docker compose -f docker/docker-compose.dev.yml up jenkins-agent"
 
 echo
 success "Setup complete! Choose an option above to get started."
 
 # Test the environment
 log "Testing development environment..."
-docker-compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev arm-none-eabi-gcc --version
+docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev arm-none-eabi-gcc --version
 
 success "ARM GCC toolchain is working in Docker!"
 
