@@ -34,14 +34,6 @@ uart0: UART.NS16550 @ sysbus 0x40106000
 uart1: UART.NS16550 @ sysbus 0x40107000
     IRQ -> nvic0@15
 
-// CAN-FD controller 0 for motor modules
-canfd0: CAN.LPC_CAN @ sysbus 0x4009C000
-    IRQ -> nvic0@46
-
-// CAN-FD controller 1 for sensor modules  
-canfd1: CAN.LPC_CAN @ sysbus 0x4009D000
-    IRQ -> nvic0@47
-
 // I2C for local sensors
 i2c0: I2C.OpenCoresI2C @ sysbus 0x40094000
     IRQ -> nvic0@25
@@ -55,6 +47,15 @@ pwm0: Timers.STM32_Timer @ sysbus 0x40088000
     frequency: 150000000
     initialLimit: 0xFFFF
     -> nvic0@39
+
+// CAN-FD controllers for motor and sensor communication (FlexCAN)
+can0: CAN.FlexCAN @ sysbus 0x4009C000
+    size: 0x1000
+    IRQ -> nvic0@43
+
+can1: CAN.FlexCAN @ sysbus 0x4009D000
+    size: 0x1000
+    IRQ -> nvic0@44
 
 // ADC for battery monitoring
 adc0: Analog.STM32F0_ADC @ sysbus 0x400A0000

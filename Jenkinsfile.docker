@@ -103,10 +103,28 @@ except ImportError as e:
                                 echo 'Dummy firmware for testing' > ../../firmware/build/robot_firmware.elf
                             fi
                             
-                            # Run Renode with timeout
-                            timeout 30s renode --console --disable-xwt robot_simulation.resc || {
-                                echo 'Renode test completed (may have timed out - this is expected)'
-                            }
+                            # Run Renode with timeout - capture output and check for errors
+                            set +e
+                            timeout 30s renode --console --disable-xwt robot_simulation.resc 2>&1 | tee renode_output.log
+                            RENODE_EXIT_CODE=\${PIPESTATUS[0]}
+                            set -e
+                            
+                            # Check for specific error patterns
+                            if grep -q 'Could not find any suitable constructor\\|Could not resolve type\\|Error E[0-9]\\+:' renode_output.log; then
+                                echo '❌ Renode simulation failed with configuration errors:'
+                                grep 'Could not find any suitable constructor\\|Could not resolve type\\|Error E[0-9]\\+:' renode_output.log
+                                exit 1
+                            fi
+                            
+                            # Exit code 124 is timeout, which is expected for simulation
+                            if [ \$RENODE_EXIT_CODE -eq 124 ]; then
+                                echo '✓ Renode simulation started successfully (timed out as expected)'
+                            elif [ \$RENODE_EXIT_CODE -eq 0 ]; then
+                                echo '✓ Renode simulation completed successfully'
+                            else
+                                echo '❌ Renode simulation failed with exit code:' \$RENODE_EXIT_CODE
+                                exit 1
+                            fi
                             
                             echo 'Renode simulation test finished'
                         "
