@@ -1,0 +1,78 @@
+// FRDM-MCXN947 Platform Description for Renode
+// NXP MCXN947 Freedom Board Platform
+// Cortex-M33 dual core microcontroller
+
+cpu0: CPU.CortexM @ sysbus
+    cpuType: "cortex-m33"
+    nvic: nvic0
+
+cpu1: CPU.CortexM @ sysbus
+    cpuType: "cortex-m33"
+    nvic: nvic1
+
+nvic0: IRQControllers.NVIC @ sysbus 0xE000E000
+    priorityMask: 0xF0
+    systickFrequency: 150000000
+    IRQ -> cpu0@0
+
+nvic1: IRQControllers.NVIC @ sysbus 0xE002E000
+    priorityMask: 0xF0
+    systickFrequency: 150000000
+    IRQ -> cpu1@0
+
+flash: Memory.MappedMemory @ sysbus 0x00000000
+    size: 0x200000
+
+sram: Memory.MappedMemory @ sysbus 0x20000000
+    size: 0x80000
+
+// UART for debug console
+uart0: UART.NS16550 @ sysbus 0x40106000
+    IRQ -> nvic0@14
+
+// UART for Android/Pixel 10 Pro communication
+uart1: UART.NS16550 @ sysbus 0x40107000
+    IRQ -> nvic0@15
+
+// CAN-FD controller 0 for motor modules
+canfd0: CAN.MCAN @ sysbus 0x4009C000
+    IRQ -> nvic0@46
+
+// CAN-FD controller 1 for sensor modules
+canfd1: CAN.MCAN @ sysbus 0x4009D000
+    IRQ -> nvic0@47
+
+// I2C for local sensors
+i2c0: I2C.OpenCoresI2C @ sysbus 0x40094000
+    IRQ -> nvic0@25
+
+// SPI for high-speed peripherals
+spi0: SPI.STM32SPI @ sysbus 0x4009E000
+    IRQ -> nvic0@36
+
+// PWM for turret servos
+pwm0: Timers.STM32_Timer @ sysbus 0x40088000
+    frequency: 150000000
+    initialLimit: 0xFFFF
+    -> nvic0@39
+
+// ADC for battery monitoring
+adc0: Analog.STM32F0_ADC @ sysbus 0x400A0000
+    IRQ -> nvic0@42
+
+// GPIO for general purpose I/O
+gpio0: GPIOPort.STM32F4GPIOPort @ sysbus 0x40096000
+    numberOfPins: 32
+
+gpio1: GPIOPort.STM32F4GPIOPort @ sysbus 0x40098000
+    numberOfPins: 32
+
+// Timer for system tick and QP time events
+timer0: Timers.STM32_Timer @ sysbus 0x40034000
+    frequency: 150000000
+    initialLimit: 0xFFFFFFFF
+    -> nvic0@28
+
+// Ethernet for network communication (optional)
+ethernet: Network.SynopsysEthernetMAC @ sysbus 0x40130000
+    IRQ -> nvic0@52
