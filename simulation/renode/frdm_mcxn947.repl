@@ -39,7 +39,7 @@ i2c0: I2C.OpenCoresI2C @ sysbus 0x40094000
 
 // SPI for high-speed peripherals
 spi0: SPI.STM32SPI @ sysbus 0x4009E000
-    -> nvic0@36
+    IRQ -> nvic0@36
 
 // PWM for turret servos
 pwm0: Timers.STM32_Timer @ sysbus 0x40088000
