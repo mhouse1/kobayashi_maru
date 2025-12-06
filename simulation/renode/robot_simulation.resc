@@ -15,16 +15,21 @@ showAnalyzer uart1 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
 emulation CreateServerSocketTerminal 3456 "pixel_terminal" false
 connector Connect uart1 pixel_terminal
 
-# Create external simulation models
-machine LoadPlatformDescriptionFromString "motor_fl: Python.PythonPeripheral @ sysbus 0x50001000 { size: 0x100; initable: true; filename: \"models/motor_model.py\" }"
-machine LoadPlatformDescriptionFromString "motor_fr: Python.PythonPeripheral @ sysbus 0x50001100 { size: 0x100; initable: true; filename: \"models/motor_model.py\" }"
-machine LoadPlatformDescriptionFromString "motor_rl: Python.PythonPeripheral @ sysbus 0x50001200 { size: 0x100; initable: true; filename: \"models/motor_model.py\" }"
-machine LoadPlatformDescriptionFromString "motor_rr: Python.PythonPeripheral @ sysbus 0x50001300 { size: 0x100; initable: true; filename: \"models/motor_model.py\" }"
-machine LoadPlatformDescriptionFromString "turret_sim: Python.PythonPeripheral @ sysbus 0x50002000 { size: 0x100; initable: true; filename: \"models/turret_model.py\" }"
-machine LoadPlatformDescriptionFromString "canfd_sim: Python.PythonPeripheral @ sysbus 0x50003000 { size: 0x100; initable: true; filename: \"models/canfd_model.py\" }"
+# Create external simulation models (with relative paths from simulation/renode)
+machine LoadPlatformDescriptionFromString "motor_fl: Python.PythonPeripheral @ sysbus 0x50001000 { size: 0x100; initable: true; filename: \"../models/motor_model.py\" }"
+machine LoadPlatformDescriptionFromString "motor_fr: Python.PythonPeripheral @ sysbus 0x50001100 { size: 0x100; initable: true; filename: \"../models/motor_model.py\" }"
+machine LoadPlatformDescriptionFromString "motor_rl: Python.PythonPeripheral @ sysbus 0x50001200 { size: 0x100; initable: true; filename: \"../models/motor_model.py\" }"
+machine LoadPlatformDescriptionFromString "motor_rr: Python.PythonPeripheral @ sysbus 0x50001300 { size: 0x100; initable: true; filename: \"../models/motor_model.py\" }"
+machine LoadPlatformDescriptionFromString "turret_sim: Python.PythonPeripheral @ sysbus 0x50002000 { size: 0x100; initable: true; filename: \"../models/turret_model.py\" }"
+machine LoadPlatformDescriptionFromString "canfd_sim: Python.PythonPeripheral @ sysbus 0x50003000 { size: 0x100; initable: true; filename: \"../models/canfd_model.py\" }"
 
-# Load firmware
-sysbus LoadELF @../../firmware/build/robot_firmware.elf
+# Load firmware if available (create dummy if not found)
+$firmware_path = @../../firmware/build/robot_firmware.elf
+if $firmware_path == ""
+    echo "No firmware found, running simulation without embedded code"
+else
+    sysbus LoadELF $firmware_path
+    echo "Loaded firmware: $firmware_path"
 
 # Set quantum value for time synchronization (1ms)
 emulation SetGlobalQuantum "0.001"
