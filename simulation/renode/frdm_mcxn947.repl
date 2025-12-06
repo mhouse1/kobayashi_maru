@@ -41,12 +41,6 @@ i2c0: I2C.OpenCoresI2C @ sysbus 0x40094000
 spi0: SPI.STM32SPI @ sysbus 0x4009E000
     IRQ -> nvic0@36
 
-// PWM for turret servos
-pwm0: Timers.STM32_Timer @ sysbus 0x40088000
-    frequency: 150000000
-    initialLimit: 0xFFFF
-    -> nvic0@39
-
 // ADC for battery monitoring
 adc0: Analog.STM32F0_ADC @ sysbus 0x400A0000
     IRQ -> nvic0@42
