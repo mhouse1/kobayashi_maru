@@ -43,9 +43,23 @@ RUN python3 -m pip install --break-system-packages \
 # Simulation Stage
 FROM arm-dev as simulation
 
-# Install Mono for Renode (using available packages)
+# Install dependencies for Renode 1.16.0
 RUN apt-get update && apt-get install -y \
+    wget \
+    gpg \
+    && wget https://packages.microsoft.com/config/ubuntu/24.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb \
+    && dpkg -i packages-microsoft-prod.deb \
+    && rm packages-microsoft-prod.deb \
+    && apt-get update \
+    && apt-get install -y \
     mono-complete \
+    dotnet-runtime-8.0 \
+    gtk-sharp2-gapi \
+    libglade2.0-cil-dev \
+    libglib2.0-cil-dev \
+    libgtk2.0-cil-dev \
+    screen \
+    policykit-1 \
     && rm -rf /var/lib/apt/lists/*
 
 # Try to install Renode (may fail, but that's OK for now)
