@@ -33,7 +33,11 @@ set(MCU_FLAGS
 # Compiler flags
 add_compile_options(${MCU_FLAGS})
 add_compile_options(-Wall -Wextra -fdata-sections -ffunction-sections)
-add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions -fno-rtti -std=c++17>)
+
+# C++ specific flags
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions -fno-rtti")
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Linker flags
 set(LINKER_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/mcxn947.ld")
@@ -41,8 +45,10 @@ add_link_options(${MCU_FLAGS})
 add_link_options(-T${LINKER_SCRIPT} -Wl,--gc-sections -Wl,-Map=${PROJECT_NAME}.map -specs=nano.specs -specs=nosys.specs)
 
 # Debug/Release specific flags
-add_compile_options($<$<CONFIG:Debug>:-O0 -g3>)
-add_compile_options($<$<CONFIG:Release>:-O2 -DNDEBUG>)
+set(CMAKE_C_FLAGS_DEBUG "-O0 -g3")
+set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g3")
+set(CMAKE_C_FLAGS_RELEASE "-O2 -DNDEBUG")
+set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
 
 # Source files
 file(GLOB_RECURSE C_SOURCES "src/**/*.c")
