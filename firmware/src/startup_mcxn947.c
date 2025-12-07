@@ -52,8 +52,8 @@ void Reset_Handler(void) {
     while(1);
 }
 
-// Vector table
-__attribute__((section(".isr_vector")))
+// Vector table - keep and used attributes prevent linker from discarding
+__attribute__((section(".isr_vector"), used))
 void (* const g_pfnVectors[])(void) = {
     (void (*)(void))(&_estack),     // Initial stack pointer
     Reset_Handler,                   // Reset handler
