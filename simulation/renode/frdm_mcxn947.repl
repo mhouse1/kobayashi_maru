@@ -76,7 +76,10 @@ unknown5: Python.PythonPeripheral @ sysbus 0x50044010
     initable: true
     script: "count = 0 if request.IsInit else (count + 1);request.Value = 0x2000000 if count < 2 else 0x5000000"
 
-flash: Memory.MappedMemory @ sysbus 0x10000000
+flash: Memory.MappedMemory @ {
+        sysbus 0x10000000;
+        sysbus 0x0
+    }
     size: 0x200000
 
 sramx: Memory.MappedMemory @ sysbus 0x14000000
