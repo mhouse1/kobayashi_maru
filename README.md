@@ -42,37 +42,42 @@ The firmware uses a recommended hybrid approach common in embedded systems:
 **Modular AI Architecture:** Ethernet-based communication allows swapping AI processing units (Pixel 10 Pro, Raspberry Pi, Jetson Nano, etc.) without firmware changes. Standard TCP/IP protocol provides platform independence.
 
 ```
-┌────────────────────────────────────────────────────────────────────┐
-│                GOOGLE PIXEL 10 PRO (AI Brain)                      │
-│  ┌─────────┐  ┌─────────┐  ┌──────────────┐  ┌─────────────┐      │
-│  │   GPS   │  │  IMU    │  │   Camera     │  │   TF Lite   │      │
-│  │ Fusion  │  │ Fusion  │  │   + Vision   │  │  / MediaPipe│      │
-│  └────┬────┘  └────┬────┘  └──────┬───────┘  └──────┬──────┘      │
-│       │            │              │                 │              │
-│       └────────────┴──────────────┴─────────────────┘              │
-│                          │ Android App                             │
-│                    ┌─────▼──────────┐                              │
-│                    │ Sensor Fusion  │                              │
-│                    │ AI Processing  │ Object detection, tracking   │
-│                    │ Path Planning  │ Target identification        │
-│                    └────────────────┘                              │
-└──────────────────────────┼─────────────────────────────────────────┘
-                           │ USB-C (1.5 MB/s - Control data only)
-                           │ ~30 bytes @ 50 Hz = 1.5 KB/s
+┌──────────────────────────────────────────────────────────────────┐
+│           AI PROCESSING UNIT (Modular - Hot-swappable)          │
+│  ┌────────────────┐  ┌────────────────┐  ┌────────────────┐    │
+│  │ Google Pixel   │  │ Raspberry Pi   │  │ Jetson Nano    │    │
+│  │ 10 Pro         │  │ Compute Module │  │ / Xavier NX    │    │
+│  │ (Current)      │  │ (Future)       │  │ (Future)       │    │
+│  └────────────────┘  └────────────────┘  └────────────────┘    │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │   GPS    │    IMU    │   Camera   │  TensorFlow Lite   │    │
+│  │  Fusion  │   Fusion  │  + Vision  │   / MediaPipe      │    │
+│  └─────┬────────────┬──────────┬────────────────┬──────────┘    │
+│        └────────────┴──────────┴────────────────┘                │
+│                          │ AI App                                │
+│                    ┌─────▼────────────┐                          │
+│                    │ Sensor Fusion    │                          │
+│                    │ Object Detection │                          │
+│                    │ Path Planning    │                          │
+│                    └──────────────────┘                          │
+└──────────────────────────┼───────────────────────────────────────┘
+                           │ Ethernet (100 Mbps - 12.5 MB/s)
+                           │ TCP/IP or UDP
+                           │ ControlMessage @ 50 Hz (~1.6 KB/s)
                            ▼
-┌────────────────────────────────────────────────────────────────────┐
-│              FRDM-MCXN947 FREEDOM BOARD (Motor Brain)              │
-│                    (Quantum QP/C++ Framework)                      │
-│  ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐          │
-│  │Supervisor │ │   USB     │ │   Path    │ │  Motor    │          │
-│  │    AO     │ │  Comm AO  │ │ Planner   │ │  Ctrl AO  │          │
-│  │  (State)  │ │ (Pixel)   │ │ (Local)   │ │ (CAN-FD)  │          │
-│  └───────────┘ └───────────┘ └───────────┘ └─────┬─────┘          │
-│  ┌───────────┐                                    │                │
-│  │  Turret   │                                    │                │
-│  │  Ctrl AO  │                                    │                │
-│  └─────┬─────┘                                    │                │
-└────────┼──────────────────────────────────────────┼────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│              FRDM-MCXN947 FREEDOM BOARD (Motor Brain)            │
+│                    (Quantum QP/C++ Framework)                    │
+│  ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐       │
+│  │Supervisor │ │ Ethernet  │ │   Path    │ │  Motor    │       │
+│  │    AO     │ │  Comm AO  │ │ Planner   │ │  Ctrl AO  │       │
+│  │  (State)  │ │ (TCP/UDP) │ │ (Local)   │ │ (CAN-FD)  │       │
+│  └───────────┘ └───────────┘ └───────────┘ └─────┬─────┘       │
+│  ┌───────────┐                                    │             │
+│  │  Turret   │                                    │             │
+│  │  Ctrl AO  │                                    │             │
+│  └─────┬─────┘                                    │             │
+└────────┼──────────────────────────────────────────┼─────────────┘
          │ PWM                                      │ CAN-FD
          ▼                                          ▼
 ┌────────────────┐                          ┌────────────────┐
