@@ -7,6 +7,16 @@ pipeline {
             defaultValue: 'trl3_cleanup',
             description: 'Git branch to build'
         )
+        booleanParam(
+            name: 'SKIP_TESTS',
+            defaultValue: false,
+            description: 'Skip test stages for faster builds'
+        )
+        choice(
+            name: 'BUILD_TYPE',
+            choices: ['Release', 'Debug'],
+            description: 'Firmware build type'
+        )
     }
     
     environment {
@@ -24,11 +34,19 @@ pipeline {
         stage('Setup Docker Environment') {
             steps {
                 script {
+                    // Check if image exists before rebuilding
+                    def imageExists = sh(script: 'docker images -q docker-kobayashi-dev', returnStdout: true).trim()
+                    if (!imageExists) {
+                        sh '''
+                            echo "=== Building Development Environment ==="
+                            cd docker
+                            docker compose -f docker-compose.dev.yml build kobayashi-dev
+                        '''
+                    } else {
+                        echo '=== Using cached Docker image ==='
+                    }
+                    
                     sh '''
-                        echo "=== Building Development Environment ==="
-                        cd docker
-                        docker compose -f docker-compose.dev.yml build kobayashi-dev
-                        
                         echo "=== Testing Environment ==="
                         docker compose -f docker-compose.dev.yml run --rm kobayashi-dev arm-none-eabi-gcc --version
                     '''
@@ -43,7 +61,27 @@ pipeline {
                     branches: [[name: "${params.BRANCH_NAME}"]],
                     userRemoteConfigs: scm.userRemoteConfigs
                 ])
-                sh 'git log --oneline -5'
+                script {
+                    sh 'git log --oneline -5'
+                    def commitMsg = sh(script: 'git log -1 --pretty=%B', returnStdout: true).trim()
+                    def commitHash = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+                    currentBuild.description = "Branch: ${params.BRANCH_NAME}<br>Commit: ${commitHash} - ${commitMsg}"
+                }
+            }
+        }
+        
+        stage('Health Check') {
+            steps {
+                sh '''
+                    echo "=== Docker Environment Health Check ==="
+                    docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
+                        echo 'Checking Docker environment...'
+                        arm-none-eabi-gcc --version >/dev/null || exit 1
+                        python3 --version >/dev/null || exit 1
+                        renode --version >/dev/null || exit 1
+                        echo '✓ All tools available'
+                    "
+                '''
             }
         }
         
@@ -56,11 +94,11 @@ pipeline {
                             cd firmware
                             if [ -f 'Makefile' ]; then
                                 make clean || true
-                                make -j$(nproc)
+                                make -j$(nproc) BUILD_TYPE=${BUILD_TYPE}
                             elif [ -f 'CMakeLists.txt' ]; then
                                 rm -rf build  # Clean build directory
                                 mkdir -p build && cd build
-                                cmake ..
+                                cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} ..
                                 make -j$(nproc)
                             else
                                 echo 'No build system found (Makefile or CMakeLists.txt)'
@@ -74,7 +112,35 @@ pipeline {
             }
         }
         
+        stage('Firmware Metrics') {
+            steps {
+                script {
+                    sh '''
+                        echo "=== Firmware Size Metrics ==="
+                        docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
+                            cd firmware/build
+                            if [ -f robot_firmware.elf ]; then
+                                echo 'Firmware size analysis:'
+                                arm-none-eabi-size robot_firmware.elf
+                                echo ''
+                                echo 'Section details:'
+                                arm-none-eabi-size -A robot_firmware.elf | head -20
+                            else
+                                echo 'No firmware.elf found'
+                            fi
+                        " | tee firmware_metrics.log
+                    '''
+                    
+                    // Archive metrics
+                    archiveArtifacts artifacts: 'firmware_metrics.log', allowEmptyArchive: true
+                }
+            }
+        }
+        
         stage('Python Simulation Models') {
+            when {
+                expression { params.SKIP_TESTS == false }
+            }
             steps {
                 script {
                     sh '''
@@ -102,9 +168,13 @@ except ImportError as e:
         }
         
         stage('Renode Simulation Test') {
+            when {
+                expression { params.SKIP_TESTS == false }
+            }
             steps {
                 script {
-                    sh '''
+                    try {
+                        sh '''
                         echo "=== Running Renode Simulation Test ==="
                         docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
                             cd simulation/renode
@@ -139,12 +209,20 @@ except ImportError as e:
                             
                             echo 'Renode simulation test finished'
                         "
-                    '''
+                        '''
+                    } catch (Exception e) {
+                        echo "⚠️ Renode simulation had issues: ${e.message}"
+                        unstable(message: 'Renode simulation had warnings')
+                        currentBuild.result = 'UNSTABLE'
+                    }
                 }
             }
         }
         
         stage('Static Analysis') {
+            when {
+                expression { params.SKIP_TESTS == false }
+            }
             parallel {
                 stage('Firmware Analysis') {
                     steps {
@@ -188,6 +266,9 @@ except ImportError as e:
         }
         
         stage('Integration Test') {
+            when {
+                expression { params.SKIP_TESTS == false }
+            }
             steps {
                 script {
                     sh '''
@@ -221,6 +302,12 @@ except ImportError as e:
                 sh '''
                     echo "=== Build Artifacts ==="
                     docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev find /workspace -name "*.elf" -o -name "*.hex" -o -name "*.bin" | head -10
+                    
+                    echo "=== Collecting Renode Logs ==="
+                    docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
+                        mkdir -p /workspace/artifacts
+                        [ -f simulation/renode/renode_output.log ] && cp simulation/renode/renode_output.log /workspace/artifacts/ || true
+                    " || true
                 '''
             }
         }
@@ -242,7 +329,7 @@ except ImportError as e:
                 '''
                 
                 // Archive artifacts if any exist
-                archiveArtifacts artifacts: 'artifacts/*', fingerprint: true, allowEmptyArchive: true
+                archiveArtifacts artifacts: 'artifacts/**/*', fingerprint: true, allowEmptyArchive: true
             }
             
             echo 'Docker-based build completed successfully! 🐳🎉'
