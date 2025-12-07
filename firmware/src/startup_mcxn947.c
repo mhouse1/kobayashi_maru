@@ -27,7 +27,8 @@ void Default_Handler(void) {
 __attribute__((weak)) void SystemInit(void) {
 }
 
-// Reset handler
+// Reset handler - must be visible to linker
+__attribute__((used, externally_visible))
 void Reset_Handler(void) {
     // Copy initialized data from flash to RAM
     uint32_t *src = &_sidata;

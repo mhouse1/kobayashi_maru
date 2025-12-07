@@ -8,9 +8,10 @@ MEMORY
     RAM (rwx)   : ORIGIN = 0x20000000, LENGTH = 512K
 }
 
-_estack = ORIGIN(RAM) + LENGTH(RAM);
-
 ENTRY(Reset_Handler)
+
+/* Stack top at end of RAM */
+PROVIDE(_estack = ORIGIN(RAM) + LENGTH(RAM));
 
 SECTIONS
 {
@@ -49,22 +50,22 @@ SECTIONS
     .data :
     {
         . = ALIGN(4);
-        _sdata = .;
+        PROVIDE(_sdata = .);
         *(.data)
         *(.data*)
         . = ALIGN(4);
-        _edata = .;
+        PROVIDE(_edata = .);
     } > RAM AT> FLASH
 
     .bss :
     {
         . = ALIGN(4);
-        _sbss = .;
+        PROVIDE(_sbss = .);
         *(.bss)
         *(.bss*)
         *(COMMON)
         . = ALIGN(4);
-        _ebss = .;
+        PROVIDE(_ebss = .);
     } > RAM
 
     .heap :
