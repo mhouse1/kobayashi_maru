@@ -19,9 +19,8 @@ connector Connect flexcomm6 pixel_terminal
 
 # External simulation models are now defined in frdm_mcxn947.repl
 
-# Load firmware if available (optional - simulation will run without it)
-# Uncomment and set correct path when firmware is ready:
-# sysbus LoadELF @/workspace/firmware/build/robot_firmware.elf
+# Load firmware (simulation will run even if firmware doesn't exist yet)
+sysbus LoadELF @/workspace/firmware/build/robot_firmware.elf
 
 # Test macros for validation
 macro reset_with_hello_world
