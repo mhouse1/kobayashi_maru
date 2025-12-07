@@ -8,6 +8,11 @@ pipeline {
             description: 'Git branch to build'
         )
         booleanParam(
+            name: 'CLEAN_BUILD',
+            defaultValue: false,
+            description: 'Force clean Docker rebuild (no cache) and clean firmware build'
+        )
+        booleanParam(
             name: 'SKIP_TESTS',
             defaultValue: false,
             description: 'Skip test stages for faster builds'
@@ -34,14 +39,25 @@ pipeline {
         stage('Setup Docker Environment') {
             steps {
                 script {
+                    if (params.CLEAN_BUILD) {
+                        echo '=== CLEAN BUILD: Removing Docker containers, images, and volumes ==='
+                        sh '''
+                            cd docker
+                            docker compose -f docker-compose.dev.yml down --volumes --rmi local || true
+                            echo "=== Cleaning Docker system (cached layers) ==="
+                            docker system prune -f
+                        '''
+                    }
+                    
                     // Check if image exists before rebuilding
                     def imageExists = sh(script: 'docker images -q docker-kobayashi-dev', returnStdout: true).trim()
-                    if (!imageExists) {
-                        sh '''
-                            echo "=== Building Development Environment ==="
+                    if (!imageExists || params.CLEAN_BUILD) {
+                        def buildArgs = params.CLEAN_BUILD ? '--no-cache' : ''
+                        sh """
+                            echo "=== Building Development Environment ${params.CLEAN_BUILD ? '(NO CACHE)' : ''} ==="
                             cd docker
-                            docker compose -f docker-compose.dev.yml build kobayashi-dev
-                        '''
+                            docker compose -f docker-compose.dev.yml build ${buildArgs} kobayashi-dev
+                        """
                     } else {
                         echo '=== Using cached Docker image ==='
                     }
@@ -89,18 +105,19 @@ pipeline {
         stage('Build Firmware') {
             steps {
                 script {
-                    sh '''
-                        echo "=== Building Firmware in Container ==="
+                    def cleanCmd = params.CLEAN_BUILD ? 'rm -rf build' : 'rm -rf build || true'
+                    sh """
+                        echo "=== Building Firmware in Container ${params.CLEAN_BUILD ? '(CLEAN BUILD)' : ''} ==="
                         docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
                             cd firmware
                             if [ -f 'Makefile' ]; then
                                 make clean || true
-                                make -j$(nproc) BUILD_TYPE=${BUILD_TYPE}
+                                make -j\$(nproc) BUILD_TYPE=\${BUILD_TYPE}
                             elif [ -f 'CMakeLists.txt' ]; then
-                                rm -rf build  # Clean build directory
+                                ${cleanCmd}
                                 mkdir -p build && cd build
-                                cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} ..
-                                make -j$(nproc)
+                                cmake -DCMAKE_BUILD_TYPE=\${BUILD_TYPE} ..
+                                make -j\$(nproc)
                             else
                                 echo 'No build system found (Makefile or CMakeLists.txt)'
                                 echo 'Creating dummy build for testing...'
@@ -108,7 +125,7 @@ pipeline {
                                 echo 'Dummy firmware build' > build/firmware.elf
                             fi
                         "
-                    '''
+                    """
                 }
             }
         }
