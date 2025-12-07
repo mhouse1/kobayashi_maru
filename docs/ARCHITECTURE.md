@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document describes the system architecture for a heavy-duty 4-wheel drive (4WD) robot with GPS capability, vision processing, path planning, and a pan/tilt turret. The system uses a hybrid architecture combining a Google Pixel 10 Pro smartphone for high-level processing and sensor fusion with an NXP FRDM-MCXN947 Freedom Board for real-time embedded control.
+This document describes the system architecture for a heavy-duty 4-wheel drive (4WD) robot with GPS capability, vision processing, path planning, and a pan/tilt turret. The system uses a hybrid architecture combining a modular AI processing unit (Google Pixel 10 Pro, Raspberry Pi, or NVIDIA Jetson) for high-level processing and sensor fusion with an NXP FRDM-MCXN947 Freedom Board for real-time embedded control. The AI unit communicates with the MCXN947 via Ethernet TCP/IP, enabling hot-swappable platform changes without firmware modifications.
 
 ## Hybrid C/C++ Architecture
 
@@ -12,7 +12,7 @@ The firmware uses a hybrid C/C++ approach, which is common in embedded systems:
 - **MCU Modules (QP/C++ Framework)** - Active Objects with hierarchical state machines
 - **Middleware Integration** - Event-driven communication between subsystems
 - **Turret and High-Level Motion Control** - Object-oriented servo control
-- **Vision + Path Planning Code** - Complex algorithms on Pixel 10 Pro
+- **Vision + Path Planning Code** - Complex algorithms on AI processing unit
 
 ### C is used for:
 - **Low-level drivers** - Direct hardware register access
@@ -58,28 +58,28 @@ The firmware uses a hybrid C/C++ approach, which is common in embedded systems:
 └─────────────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
-│                              AI PROCESSING LAYER                                        │
-│                              (Google Pixel 10 Pro - Tensor G4)                          │
+│                           MODULAR AI PROCESSING LAYER                                   │
+│          (Google Pixel 10 Pro | Raspberry Pi | NVIDIA Jetson - Hot-Swappable)          │
 ├─────────────────────────────────────────────────────────────────────────────────────────┤
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐  ┌──────────────┐            │
-│  │   GPS        │  │     IMU      │  │  50MP Camera     │  │  TensorFlow  │            │
-│  │   Sensor     │  │  9-axis DOF  │  │  + MediaPipe     │  │    Lite      │            │
-│  │   Fusion     │  │    Fusion    │  │  Vision Pipeline │  │  (AI Models) │            │
+│  │   GPS        │  │     IMU      │  │     Camera       │  │  AI Models   │            │
+│  │   Sensor     │  │  9-axis DOF  │  │  + MediaPipe     │  │  (TF Lite/   │            │
+│  │   Fusion     │  │    Fusion    │  │  Vision Pipeline │  │  TensorRT)   │            │
 │  └──────┬───────┘  └──────┬───────┘  └────────┬─────────┘  └──────┬───────┘            │
 │         │                 │                   │                   │                     │
 │         └─────────────────┴───────────────────┴───────────────────┘                     │
 │                                     │                                                   │
 │                          ┌──────────▼──────────────────┐                                │
-│                          │     Android App             │                                │
+│                          │   AI Unit Application       │                                │
 │                          │  • Object Detection         │                                │
 │                          │  • Target Tracking          │                                │
 │                          │  • Sensor Fusion (Kalman)   │                                │
 │                          │  • Path Planning (A*/RRT)   │                                │
 │                          └──────────┬──────────────────┘                                │
 └─────────────────────────────────────┼───────────────────────────────────────────────────┘
-                                      │ USB-C 3.2 (1.5 MB/s)
-                                      │ Binary Protocol (~1.6 KB/s actual)
-                                      │ ControlMessage @ 50 Hz
+                                      │ Ethernet 100 Mbps TCP/IP
+                                      │ 192.168.1.100:5000 ↔ 192.168.1.10:5001
+                                      │ ControlMessage @ 50 Hz (TCP)
                                       ▼
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
 │                           REAL-TIME CONTROL LAYER                                       │
@@ -90,7 +90,7 @@ The firmware uses a hybrid C/C++ approach, which is common in embedded systems:
 │  │                        QUANTUM QP FRAMEWORK (Middleware)                        │   │
 │  ├─────────────────────────────────────────────────────────────────────────────────┤   │
 │  │  ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐     │   │
-│  │  │ Supervisor │ │ Android    │ │  Sensor    │ │   Path     │ │  Motor     │     │   │
+│  │  │ Supervisor │ │ Ethernet   │ │  Sensor    │ │   Path     │ │  Motor     │     │   │
 │  │  │    AO      │ │  Comm AO   │ │ Fusion AO  │ │ Planner AO │ │  Ctrl AO   │     │   │
 │  │  └─────┬──────┘ └─────┬──────┘ └─────┬──────┘ └─────┬──────┘ └─────┬──────┘     │   │
 │  │        │              │              │              │              │             │   │
@@ -135,22 +135,22 @@ The firmware uses a hybrid C/C++ approach, which is common in embedded systems:
 
 ## Component Descriptions
 
-### High-Level Processing Layer (Google Pixel 10 Pro)
+### High-Level Processing Layer (Modular AI Unit)
 
 | Component | Description |
 |-----------|-------------|
-| **GPS Module** | Uses Pixel 10 Pro's native GPS for global positioning. Provides latitude, longitude, altitude, speed, and heading data. |
-| **Accelerometer/IMU** | Native accelerometer and gyroscope sensors for motion sensing, tilt detection, and orientation tracking. |
-| **Vision Processing** | Camera-based object detection, obstacle recognition, and target tracking using Android ML/TensorFlow Lite. |
+| **GPS Module** | Native or external GPS for global positioning. Provides latitude, longitude, altitude, speed, and heading data. |
+| **Accelerometer/IMU** | Native or external accelerometer and gyroscope sensors for motion sensing, tilt detection, and orientation tracking. |
+| **Vision Processing** | Camera-based object detection, obstacle recognition, and target tracking using TensorFlow Lite, TensorRT, or MediaPipe. |
 | **Path Planner** | High-level path planning algorithms (A*, RRT) for navigation between GPS waypoints. |
-| **Android App** | Central sensor fusion and command application that aggregates sensor data and communicates with the embedded controller. |
+| **AI Unit Application** | Central sensor fusion and command application that aggregates sensor data and communicates with the embedded controller via Ethernet. |
 
 ### Real-Time Control Layer (FRDM-MCXN947)
 
 | Component | Description |
 |-----------|-------------|
 | **Supervisor AO** | Master active object managing system state, emergency stops, and coordination between subsystems. |
-| **Android Comm AO** | Handles UART communication with Pixel 10 Pro, parsing commands and sensor data. |
+| **Ethernet Comm AO** | Handles TCP/IP communication with AI processing unit, parsing commands and sensor data. |
 | **Sensor Fusion AO** | Combines GPS, IMU, and vision data for accurate position and orientation estimation. |
 | **Path Planner AO** | Real-time path following and trajectory control based on high-level waypoints. |
 | **Motor Ctrl AO** | Direct motor speed and position control for all four wheels. |
@@ -174,16 +174,40 @@ CAN-FD Bus (5 Mbps)
 
 ## Communication Protocols
 
-### Pixel 10 Pro ↔ FRDM-MCXN947 (UART)
+### AI Unit ↔ FRDM-MCXN947 (Ethernet TCP/IP)
 
-| Direction | Message Type | Format |
-|-----------|--------------|--------|
-| Pixel → FRDM | GPS Data | `$GPS,lat,lon,alt,speed,heading,sats,fix*` |
-| Pixel → FRDM | IMU Data | `$IMU,ax,ay,az,gx,gy,gz,mx,my,mz*` |
-| Pixel → FRDM | Vision Target | `$VIS,x,y,w,h,class,conf*` |
-| Pixel → FRDM | Command | `$CMD,type,param1,param2,...*` |
-| FRDM → Pixel | Status | `$STS,state,battery,error*` |
-| FRDM → Pixel | Position | `$POS,x,y,heading,speed*` |
+**Network Configuration:**
+- AI Unit: `192.168.1.100:5000` (TCP server)
+- MCXN947: `192.168.1.10:5001` (TCP client)
+- Protocol: Binary messages with fixed-size structs
+- Control Messages: TCP @ 50 Hz (32 bytes)
+- Status Broadcasts: UDP @ 20 Hz (24 bytes)
+
+**ControlMessage (AI Unit → MCXN947):**
+```c
+struct ControlMessage {
+    uint8_t header[4];        // "CTRL"
+    float motor_speeds[4];    // FL, FR, RL, RR (-1.0 to 1.0)
+    float turret_pan;         // Pan angle in degrees
+    float turret_tilt;        // Tilt angle in degrees
+    uint8_t mode;             // MANUAL, AUTO, EMERGENCY_STOP
+    uint8_t checksum;
+};
+```
+
+**StatusMessage (MCXN947 → AI Unit):**
+```c
+struct StatusMessage {
+    uint8_t header[4];        // "STAT"
+    float position_x;
+    float position_y;
+    float heading;
+    uint8_t battery_percent;
+    uint8_t system_state;
+    uint8_t error_flags;
+    uint8_t checksum;
+};
+```
 
 ### CAN-FD Message IDs
 
@@ -211,9 +235,9 @@ CAN-FD Bus (5 Mbps)
 │              └──────────────────────────────────────────┘      │
 │                              │                                  │
 │  Priority 5: ┌───────────────┴───────────────┐                 │
-│              │        Android Comm AO         │                 │
-│              │  - UART RX/TX handling         │                 │
-│              │  - Protocol parsing            │                 │
+│              │       Ethernet Comm AO         │                 │
+│              │  - TCP/IP RX/TX handling       │                 │
+│              │  - Binary protocol parsing     │                 │
 │              │  - Command dispatch            │                 │
 │              └───────────────────────────────┘                 │
 │                              │                                  │
@@ -263,16 +287,31 @@ CAN-FD Bus (5 Mbps)
 | ADC | 16-bit SAR ADC |
 | GPIO | Multiple GPIO ports |
 
-### Google Pixel 10 Pro
+### Modular AI Processing Unit Options
 
+**Google Pixel 10 Pro** (Current)
 | Feature | Usage |
 |---------|-------|
-| GPS | Global positioning |
-| Accelerometer | Motion detection, tilt |
-| Gyroscope | Angular velocity |
-| Camera | Vision processing |
-| USB-C | UART connection to FRDM-MCXN947 |
-| Processor | High-level computation, ML inference |
+| Tensor G4 | On-device AI acceleration |
+| GPS + IMU | Native sensors |
+| 50MP Camera | Vision processing |
+| Ethernet Adapter | TCP/IP to MCXN947 |
+
+**Raspberry Pi CM4** (Future)
+| Feature | Usage |
+|---------|-------|
+| ARM Cortex-A72 | General processing |
+| Built-in Ethernet | Direct connection |
+| GPIO | Sensor expansion |
+| Linux | ROS support |
+
+**NVIDIA Jetson** (Future)
+| Feature | Usage |
+|---------|-------|
+| CUDA Cores | GPU acceleration |
+| TensorRT | Optimized inference |
+| Gigabit Ethernet | High-speed link |
+| Multiple cameras | Advanced vision |
 
 ### Motor Modules (x4)
 
@@ -301,7 +340,7 @@ The system can be simulated using Renode before deploying to physical hardware:
 # Start simulation
 renode simulation/renode/robot_simulation.resc
 
-# Connect to simulated Pixel terminal
+# Connect to simulated AI unit interface (Ethernet emulation)
 telnet localhost 3456
 ```
 
@@ -327,9 +366,9 @@ kobayashi_maru/
 ├── simulation/
 │   ├── renode/            # Renode platform files
 │   └── models/            # Python simulation models
-├── android/
-│   ├── app/               # Android application
-│   └── interface/         # Communication interface
 ├── docs/                  # Documentation
 └── tests/                 # Test files
+
+Note: AI unit applications (Android/Python/C++) are developed separately
+and communicate via standard Ethernet TCP/IP protocol.
 ```

@@ -105,12 +105,12 @@ kobayashi_maru/
 ├── simulation/            # Renode simulation files
 │   ├── renode/            # Platform descriptions and scripts
 │   └── models/            # Python peripheral models
-├── android/               # Android app for Pixel 10 Pro
-│   ├── app/               # Android application source
-│   └── interface/         # Communication interface
 ├── docs/                  # Documentation
 │   └── ARCHITECTURE.md    # System architecture details
 └── tests/                 # Test files
+
+Note: AI unit applications are developed separately and communicate
+via Ethernet TCP/IP (see docs/ARCHITECTURE.md for protocol details)
 ```
 
 ## Hardware Requirements

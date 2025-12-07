@@ -37,7 +37,7 @@
 - [ ] Test CAN-FD loopback communication
 
 ### 🔮 Future: TRL 5+ (System Integration)
-- Android app for telemetry and control
+- AI unit application for telemetry and control (Android/Python/ROS)
 - Motor controller CAN-FD integration
 - GPS/IMU sensor fusion
 - Autonomous navigation implementation
