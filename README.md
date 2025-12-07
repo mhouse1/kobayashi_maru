@@ -226,15 +226,23 @@ struct StatusMessage {  // 24 bytes total
 
 ## QP Framework Active Objects
 
+**Hardware Interrupts (Highest Priority):**
+- Emergency Stop GPIO - <1 μs response, immediately disables motors
+
+**Active Objects (Software Priorities):**
+
 | Active Object | Priority | Function |
 |---------------|----------|----------|
-| Supervisor | 6 | System state machine (IDLE/MANUAL/AUTO/EMERGENCY) |
-| EthernetComm | 5 | TCP/UDP communication with AI unit (platform-agnostic) |
-| PathPlanner | 3 | Local obstacle avoidance, waypoint tracking |
-| TurretCtrl | 2 | Pan/tilt servo control (aim at targets) |
-| MotorCtrl | 1 | 4WD motor control via CAN-FD buses |
+| Supervisor | 7 | System state machine, safety coordination, heartbeat monitoring |
+| MotorCtrl | 6 | 4WD motor control via CAN-FD @ 1 kHz (time-critical) |
+| TurretCtrl | 5 | Pan/tilt servo control, target tracking |
+| EthernetComm | 4 | TCP/UDP communication with AI unit (platform-agnostic) |
+| SensorFusion | 3 | Local sensor processing, position estimation |
+| PathPlanner | 2 | Local obstacle avoidance, waypoint tracking |
 
-**Note:** Sensor fusion and AI processing handled on external AI unit.
+**Priority Rationale:** Motor control and turret positioning require real-time guarantees, while network I/O runs at lower priority to prevent jitter in control loops.
+
+**Note:** High-level sensor fusion and AI processing handled on external AI unit.
 
 ## License
 
