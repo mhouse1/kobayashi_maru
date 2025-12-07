@@ -220,57 +220,75 @@ struct StatusMessage {
 | Motor RR | 0x103 | 0x113 | Speed/position control |
 | Turret | 0x200 | 0x210 | Pan/tilt control |
 
-## QP Framework Active Objects
+## Safety and Control Architecture
+
+### Hardware Interrupts (Highest Priority)
+**Emergency Stop GPIO Interrupt** - Preempts all software tasks, immediately disables motors
+- Response time: <1 μs (hardware interrupt)
+- Directly cuts motor power via hardware disable line
+- Posts EMERGENCY_STOP event to Supervisor AO for state cleanup
+
+### QP Framework Active Objects
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                    QP Active Object Hierarchy                   │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  Priority 6: ┌──────────────────────────────────────────┐      │
+│  Priority 7: ┌──────────────────────────────────────────┐      │
 │              │           Supervisor AO                   │      │
 │              │  - System state management                │      │
-│              │  - Emergency stop handling                │      │
+│              │  - Emergency stop coordination            │      │
 │              │  - Heartbeat monitoring                   │      │
+│              │  - Safety interlocks                      │      │
 │              └──────────────────────────────────────────┘      │
 │                              │                                  │
+│  Priority 6: ┌───────────────┴───────────────┐                 │
+│              │         Motor Ctrl AO          │                 │
+│              │  - Speed control               │                 │
+│              │  - Position control            │                 │
+│              │  - CAN-FD communication        │                 │
+│              │  - Current limiting            │                 │
+│              └───────────────────────────────┘                 │
+│                              │                                  │
 │  Priority 5: ┌───────────────┴───────────────┐                 │
-│              │       Ethernet Comm AO         │                 │
-│              │  - TCP/IP RX/TX handling       │                 │
-│              │  - Binary protocol parsing     │                 │
-│              │  - Command dispatch            │                 │
-│              └───────────────────────────────┘                 │
-│                              │                                  │
-│  Priority 4: ┌───────────────┴───────────────┐                 │
-│              │       Sensor Fusion AO         │                 │
-│              │  - GPS/IMU fusion              │                 │
-│              │  - Position estimation         │                 │
-│              │  - Obstacle detection          │                 │
-│              └───────────────────────────────┘                 │
-│                              │                                  │
-│  Priority 3: ┌───────────────┴───────────────┐                 │
-│              │        Path Planner AO         │                 │
-│              │  - Waypoint following          │                 │
-│              │  - Trajectory generation       │                 │
-│              │  - Obstacle avoidance          │                 │
-│              └───────────────────────────────┘                 │
-│                              │                                  │
-│  Priority 2: ┌───────────────┴───────────────┐                 │
 │              │        Turret Ctrl AO          │                 │
 │              │  - Pan/tilt positioning        │                 │
 │              │  - Target tracking             │                 │
 │              │  - Servo PWM control           │                 │
 │              └───────────────────────────────┘                 │
 │                              │                                  │
-│  Priority 1: ┌───────────────┴───────────────┐                 │
-│              │         Motor Ctrl AO          │                 │
-│              │  - Speed control               │                 │
-│              │  - Position control            │                 │
-│              │  - CAN-FD communication        │                 │
+│  Priority 4: ┌───────────────┴───────────────┐                 │
+│              │       Ethernet Comm AO         │                 │
+│              │  - TCP/IP RX/TX handling       │                 │
+│              │  - Binary protocol parsing     │                 │
+│              │  - Command dispatch            │                 │
+│              └───────────────────────────────┘                 │
+│                              │                                  │
+│  Priority 3: ┌───────────────┴───────────────┐                 │
+│              │       Sensor Fusion AO         │                 │
+│              │  - GPS/IMU fusion              │                 │
+│              │  - Position estimation         │                 │
+│              │  - Obstacle detection          │                 │
+│              └───────────────────────────────┘                 │
+│                              │                                  │
+│  Priority 2: ┌───────────────┴───────────────┐                 │
+│              │        Path Planner AO         │                 │
+│              │  - Waypoint following          │                 │
+│              │  - Trajectory generation       │                 │
+│              │  - Obstacle avoidance          │                 │
 │              └───────────────────────────────┘                 │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
+**Priority Rationale:**
+- **Supervisor (7):** Highest software priority for state coordination and safety
+- **Motor Control (6):** Time-critical motor commands at 1 kHz CAN-FD rate
+- **Turret Control (5):** Real-time servo positioning
+- **Ethernet (4):** Network I/O lower than control loops to prevent jitter
+- **Sensor Fusion (3):** Process sensor data for position estimation
+- **Path Planner (2):** Lowest priority - can tolerate delays
 
 ## Hardware Specifications
 

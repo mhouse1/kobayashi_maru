@@ -34,7 +34,18 @@
 **Trade-offs accepted:**
 - ⚠️ Larger footprint (~150KB vs ~50KB with QP) - acceptable for 2MB Flash
 - ⚠️ Threading model instead of event-driven - simpler for network I/O
-- ⚠️ Less deterministic than QP - mitigated with thread priorities
+- ⚠️ Less deterministic than QP **on single-core** - mitigated with thread priorities for TRL 4
+
+**Dual-Core Determinism Advantage:**
+- Single-core Zephyr (TRL 4): Network stack shares CPU with motor control (~50-200 μs jitter)
+- **Dual-core configuration (TRL 5+):** Core 1 runs bare-metal motor control with **<10 μs jitter**
+  - Core 0: Zephyr + Ethernet (non-deterministic networking isolated)
+  - Core 1: Bare-metal 1 kHz control loop (zero network interruptions)
+  - Inter-core communication via mailbox (predictable latency)
+  - **Result: Better determinism than single-core QP/C++ while keeping Ethernet benefits**
+- TRL 4 uses **Core 0 only** to validate architecture before dual-core optimization
+- Core 1 remains in reset/idle state during TRL 4
+- Asymmetric multiprocessing (AMP) with Zephyr + OpenAMP or Zephyr + bare-metal
 
 ---
 
