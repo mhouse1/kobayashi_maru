@@ -107,10 +107,10 @@ except ImportError as e:
                             timeout 30s renode --console --disable-xwt robot_simulation.resc 2>&1 | tee renode_output.log
                             RENODE_EXIT_CODE=\\$?
                             
-                            # Check for specific error patterns
-                            if grep -q 'Could not find any suitable constructor\\|Could not resolve type\\|Error E[0-9]\\+:' renode_output.log; then
+                            # Check for specific error patterns (broader regex to catch all error formats)
+                            if grep -qE 'Could not find|Could not resolve|Error E[0-9]+|There was an error|Exception was thrown' renode_output.log; then
                                 echo '❌ Renode simulation failed with configuration errors:'
-                                grep 'Could not find any suitable constructor\\|Could not resolve type\\|Error E[0-9]\\+:' renode_output.log
+                                grep -E 'Could not find|Could not resolve|Error E[0-9]+|There was an error|Exception was thrown' renode_output.log | head -20
                                 exit 1
                             fi
                             
