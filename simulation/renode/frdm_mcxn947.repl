@@ -163,3 +163,35 @@ sysbus:
         Tag <0x50044300 4> "UNKNOWN2" 0x0F000000
         Tag <0x50044500 4> "UNKNOWN3" 0x0F000000
         Tag <0x50044600 4> "UNKNOWN4" 0x0F000000
+
+// Robot simulation peripherals
+
+motor_fl: Python.PythonPeripheral @ sysbus 0x50001000
+    size: 0x100
+    initable: true
+    filename: "$ORIGIN/../models/motor_model.py"
+
+motor_fr: Python.PythonPeripheral @ sysbus 0x50001100
+    size: 0x100
+    initable: true
+    filename: "$ORIGIN/../models/motor_model.py"
+
+motor_rl: Python.PythonPeripheral @ sysbus 0x50001200
+    size: 0x100
+    initable: true
+    filename: "$ORIGIN/../models/motor_model.py"
+
+motor_rr: Python.PythonPeripheral @ sysbus 0x50001300
+    size: 0x100
+    initable: true
+    filename: "$ORIGIN/../models/motor_model.py"
+
+turret_sim: Python.PythonPeripheral @ sysbus 0x50002000
+    size: 0x100
+    initable: true
+    filename: "$ORIGIN/../models/turret_model.py"
+
+canfd_sim: Python.PythonPeripheral @ sysbus 0x50003000
+    size: 0x100
+    initable: true
+    filename: "$ORIGIN/../models/canfd_model.py"
