@@ -24,26 +24,25 @@ endif()
 
 # MCU Configuration for FRDM-MCXN947 (Cortex-M33)
 set(MCU_FLAGS 
-    -mcpu=cortex-m33
-    -mthumb
-    -mfloat-abi=hard
-    -mfpu=fpv5-sp-d16
+    "-mcpu=cortex-m33"
+    "-mthumb"
+    "-mfloat-abi=hard"
+    "-mfpu=fpv5-sp-d16"
 )
 
 # Compiler flags
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${MCU_FLAGS} -Wall -Wextra -fdata-sections -ffunction-sections")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MCU_FLAGS} -Wall -Wextra -fdata-sections -ffunction-sections -fno-exceptions -fno-rtti -std=c++17")
-set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} ${MCU_FLAGS}")
+add_compile_options(${MCU_FLAGS})
+add_compile_options(-Wall -Wextra -fdata-sections -ffunction-sections)
+add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions -fno-rtti -std=c++17>)
 
 # Linker flags
 set(LINKER_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/mcxn947.ld")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${MCU_FLAGS} -T${LINKER_SCRIPT} -Wl,--gc-sections -Wl,-Map=${PROJECT_NAME}.map -specs=nano.specs -specs=nosys.specs")
+add_link_options(${MCU_FLAGS})
+add_link_options(-T${LINKER_SCRIPT} -Wl,--gc-sections -Wl,-Map=${PROJECT_NAME}.map -specs=nano.specs -specs=nosys.specs)
 
 # Debug/Release specific flags
-set(CMAKE_C_FLAGS_DEBUG "-O0 -g3")
-set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g3")
-set(CMAKE_C_FLAGS_RELEASE "-O2 -DNDEBUG")
-set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
+add_compile_options($<$<CONFIG:Debug>:-O0 -g3>)
+add_compile_options($<$<CONFIG:Release>:-O2 -DNDEBUG>)
 
 # Source files
 file(GLOB_RECURSE C_SOURCES "src/**/*.c")
