@@ -6,6 +6,7 @@
  */
 
 #include "robot.hpp"
+#include <algorithm>
 #include <array>
 #include <cmath>
 
