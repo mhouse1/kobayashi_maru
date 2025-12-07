@@ -1,9 +1,15 @@
 /*
  * Robot Main Header - QP/C++ Framework Integration
- * FRDM-MCXN947 Freedom Board + Google Pixel 10 Pro Architecture
+ * FRDM-MCXN947 Freedom Board + Modular AI Processing Unit
  * 
  * This is the main header for the heavy duty 4WD robot firmware
  * using the Quantum QP/C++ Real-Time Embedded Framework.
+ * 
+ * Modular AI Architecture:
+ * - AI Unit (Swappable): Pixel 10 Pro / Raspberry Pi / Jetson Nano
+ *   Vision processing, sensor fusion, path planning
+ * - MCXN947 (Motor Brain): Real-time motor control, local obstacle avoidance
+ * - Ethernet Communication: TCP/IP protocol (platform-independent)
  * 
  * Architecture:
  * - C++ for: MCU modules (QP framework), middleware, turret control,

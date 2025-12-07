@@ -6,12 +6,13 @@ Leadership isn't just tested when we win—it's revealed in how we handle the un
 
 This project implements a heavy-duty 4-wheel drive (4WD) robot with:
 
-- **GPS navigation** (via Google Pixel 10 Pro)
-- **Accelerometer/IMU sensing** (via Google Pixel 10 Pro)
-- **Vision processing** (via Google Pixel 10 Pro camera)
+- **Modular AI processing unit** (Pixel 10 Pro, Raspberry Pi, or Jetson)
+- **GPS navigation** and sensor fusion
+- **Vision processing** with TensorFlow Lite
 - **Path planning** (A*/RRT algorithms)
 - **Pan/tilt turret** for camera/sensor pointing
-- **CAN-FD communication** between modules
+- **Ethernet communication** for platform-independent control
+- **CAN-FD communication** between motor modules
 - **Renode simulation** for development and testing
 - **Quantum QP/C++ Framework** for real-time middleware
 
@@ -38,38 +39,52 @@ The firmware uses a recommended hybrid approach common in embedded systems:
 
 ## System Architecture
 
+**Modular AI Architecture:** Ethernet-based communication allows swapping AI processing units (Pixel 10 Pro, Raspberry Pi, Jetson Nano, etc.) without firmware changes. Standard TCP/IP protocol provides platform independence.
+
 ```
-┌────────────────────────────────────────────────────────────────────┐
-│                    GOOGLE PIXEL 10 PRO                             │
-│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐               │
-│  │   GPS   │  │  Accel  │  │  Vision │  │  Path   │               │
-│  │         │  │  /IMU   │  │ Process │  │ Planner │               │
-│  └────┬────┘  └────┬────┘  └────┬────┘  └────┬────┘               │
-│       └────────────┴────────────┴────────────┘                     │
-│                          │ Android App                             │
-└──────────────────────────┼─────────────────────────────────────────┘
-                           │ UART (115200 baud)
+┌──────────────────────────────────────────────────────────────────┐
+│           AI PROCESSING UNIT (Modular - Hot-swappable)          │
+│  ┌────────────────┐  ┌────────────────┐  ┌────────────────┐    │
+│  │ Google Pixel   │  │ Raspberry Pi   │  │ Jetson Nano    │    │
+│  │ 10 Pro         │  │ Compute Module │  │ / Xavier NX    │    │
+│  │ (Current)      │  │ (Future)       │  │ (Future)       │    │
+│  └────────────────┘  └────────────────┘  └────────────────┘    │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │   GPS    │    IMU    │   Camera   │  TensorFlow Lite   │    │
+│  │  Fusion  │   Fusion  │  + Vision  │   / MediaPipe      │    │
+│  └─────┬────────────┬──────────┬────────────────┬──────────┘    │
+│        └────────────┴──────────┴────────────────┘                │
+│                          │ AI App                                │
+│                    ┌─────▼────────────┐                          │
+│                    │ Sensor Fusion    │                          │
+│                    │ Object Detection │                          │
+│                    │ Path Planning    │                          │
+│                    └──────────────────┘                          │
+└──────────────────────────┼───────────────────────────────────────┘
+                           │ Ethernet (100 Mbps - 12.5 MB/s)
+                           │ TCP/IP or UDP
+                           │ ControlMessage @ 50 Hz (~1.6 KB/s)
                            ▼
-┌────────────────────────────────────────────────────────────────────┐
-│                    FRDM-MCXN947 FREEDOM BOARD                      │
-│                    (Quantum QP/C++ Framework)                      │
-│  ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐          │
-│  │Supervisor │ │ Android   │ │  Sensor   │ │   Path    │          │
-│  │    AO     │ │  Comm AO  │ │ Fusion AO │ │ Planner   │          │
-│  └───────────┘ └───────────┘ └───────────┘ └───────────┘          │
-│  ┌───────────┐ ┌───────────┐                                       │
-│  │  Motor    │ │  Turret   │                                       │
-│  │  Ctrl AO  │ │  Ctrl AO  │                                       │
-│  └─────┬─────┘ └─────┬─────┘                                       │
-└────────┼─────────────┼─────────────────────────────────────────────┘
-         │             │
-         │ CAN-FD      │ PWM
-         ▼             ▼
-┌────────────────┐ ┌────────────────┐
-│ MOTOR MODULES  │ │    TURRET      │
-│ FL  FR  RL  RR │ │  Pan    Tilt   │
-│ 0x100-0x103    │ │     0x200      │
-└────────────────┘ └────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│              FRDM-MCXN947 FREEDOM BOARD (Motor Brain)            │
+│                    (Quantum QP/C++ Framework)                    │
+│  ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐       │
+│  │Supervisor │ │ Ethernet  │ │   Path    │ │  Motor    │       │
+│  │    AO     │ │  Comm AO  │ │ Planner   │ │  Ctrl AO  │       │
+│  │  (State)  │ │ (TCP/UDP) │ │ (Local)   │ │ (CAN-FD)  │       │
+│  └───────────┘ └───────────┘ └───────────┘ └─────┬─────┘       │
+│  ┌───────────┐                                    │             │
+│  │  Turret   │                                    │             │
+│  │  Ctrl AO  │                                    │             │
+│  └─────┬─────┘                                    │             │
+└────────┼──────────────────────────────────────────┼─────────────┘
+         │ PWM                                      │ CAN-FD
+         ▼                                          ▼
+┌────────────────┐                          ┌────────────────┐
+│    TURRET      │                          │ MOTOR MODULES  │
+│  Pan    Tilt   │                          │ FL  FR  RL  RR │
+│     0x200      │                          │ 0x100-0x103    │
+└────────────────┘                          └────────────────┘
 ```
 
 For detailed architecture documentation, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
@@ -90,12 +105,12 @@ kobayashi_maru/
 ├── simulation/            # Renode simulation files
 │   ├── renode/            # Platform descriptions and scripts
 │   └── models/            # Python peripheral models
-├── android/               # Android app for Pixel 10 Pro
-│   ├── app/               # Android application source
-│   └── interface/         # Communication interface
 ├── docs/                  # Documentation
 │   └── ARCHITECTURE.md    # System architecture details
 └── tests/                 # Test files
+
+Note: AI unit applications are developed separately and communicate
+via Ethernet TCP/IP (see docs/ARCHITECTURE.md for protocol details)
 ```
 
 ## Hardware Requirements
@@ -103,15 +118,34 @@ kobayashi_maru/
 ### FRDM-MCXN947 Freedom Board
 - Dual Arm Cortex-M33 @ 150 MHz
 - 2 MB Flash, 512 KB RAM
+- **Ethernet 10/100** (or external PHY module)
 - 2x CAN-FD controllers
 - Multiple FlexComm (UART, SPI, I2C)
 - FlexPWM for servo control
 
-### Google Pixel 10 Pro
-- GPS for global positioning
-- Accelerometer and gyroscope for motion sensing
-- Camera for vision processing
-- USB-C for UART connection
+### AI Processing Unit (Modular - Choose One)
+
+**Option 1: Google Pixel 10 Pro** (Current)
+- **Tensor G4 chip** - On-device AI acceleration
+- **TensorFlow Lite / MediaPipe** - Object detection, tracking
+- **GPS + IMU** - 9-axis sensor fusion
+- **50 MP camera** - Vision processing
+- **USB-C to Ethernet adapter** - Network connectivity
+
+**Option 2: Raspberry Pi Compute Module 4** (Future)
+- **Quad-core ARM Cortex-A72** @ 1.5 GHz
+- **Built-in Ethernet** (Gigabit on CM4)
+- **GPIO expansion** for additional sensors
+- **Full Linux** - ROS support, easier development
+- **Lower cost** - ~$35-75 vs $1000 phone
+
+**Option 3: NVIDIA Jetson Nano / Xavier NX** (Future)
+- **GPU acceleration** - 128/384 CUDA cores
+- **TensorRT** - Optimized inference
+- **Gigabit Ethernet** built-in
+- **Best for** - Advanced vision AI, multiple cameras
+
+**All options communicate via standard Ethernet TCP/IP** - No firmware changes needed to swap
 
 ### Motor Modules (x4)
 - Brushless DC motors with encoders
@@ -129,8 +163,9 @@ kobayashi_maru/
 
 - [Renode](https://renode.io/) - For simulation
 - ARM GCC Toolchain - For firmware compilation
-- Android Studio - For Android app development
+- AI Unit Application - Android/Python app for chosen platform
 - QP/C Framework - Real-time embedded framework
+- Ethernet network (100 Mbps recommended)
 
 ### Running the Simulation
 
@@ -139,7 +174,7 @@ kobayashi_maru/
 cd simulation/renode
 renode robot_simulation.resc
 
-# Connect to Pixel terminal (in another terminal)
+# Connect to AI unit terminal (in another terminal)
 telnet localhost 3456
 ```
 
@@ -153,33 +188,53 @@ make
 
 ### Communication Protocol
 
-#### Pixel 10 Pro → FRDM-MCXN947
+**Ethernet-Based Protocol:** TCP for reliable control commands, UDP for high-frequency sensor data. Platform-independent (works with any device supporting TCP/IP).
 
-| Message | Format | Description |
-|---------|--------|-------------|
-| GPS | `$GPS,lat,lon,alt,speed,heading,sats,fix*` | GPS position data |
-| IMU | `$IMU,ax,ay,az,gx,gy,gz,mx,my,mz*` | Accelerometer/gyro/mag data |
-| Vision | `$VIS,x,y,w,h,class,conf*` | Detected object info |
-| Command | `$CMD,type,param1,param2,...*` | Control commands |
+#### AI Unit → MCXN947 (Control Messages - TCP)
 
-#### FRDM-MCXN947 → Pixel 10 Pro
+```cpp
+struct ControlMessage {  // 32 bytes total
+    uint8_t msg_type;           // 1=GPS, 2=TARGET, 3=CMD, 4=IMU
+    uint8_t reserved[3];        // Alignment
+    float target_x, target_y;   // Vision: Target position (meters)
+    float target_distance;      // Vision: Range to target (meters)
+    float heading;              // IMU: Robot orientation (degrees)
+    float gps_lat, gps_lon;     // GPS: Current position
+    uint8_t command;            // STOP=0, GO=1, FIRE=2, AUTO=3
+    uint8_t target_class;       // Object class ID (0-255)
+    uint16_t confidence;        // Detection confidence (0-1000)
+}; // Sent at 50 Hz = 1.6 KB/s
+```
 
-| Message | Format | Description |
-|---------|--------|-------------|
-| Status | `$STS,state,battery,error*` | Robot status |
-| Position | `$POS,x,y,heading,speed*` | Estimated position |
-| Acknowledge | `$ACK,msg*` | Command acknowledgment |
+#### MCXN947 → AI Unit (Status Messages - UDP)
+
+```cpp
+struct StatusMessage {  // 24 bytes total
+    uint8_t msg_type;           // STATUS=1, ACK=2, ERROR=3
+    uint8_t robot_state;        // IDLE=0, MANUAL=1, AUTO=2, EMERGENCY=3
+    uint16_t battery_mv;        // Battery voltage (millivolts)
+    float position_x, position_y;  // Odometry position (meters)
+    float velocity;             // Current speed (m/s)
+    uint32_t error_flags;       // Error bitfield
+    uint32_t timestamp_ms;      // Milliseconds since boot
+}; // Sent at 20 Hz = 480 bytes/s
+```
+
+**Network Configuration:**
+- AI Unit: 192.168.1.100:5000 (TCP Server for commands)
+- MCXN947: 192.168.1.10:5001 (UDP for status broadcasts)
 
 ## QP Framework Active Objects
 
 | Active Object | Priority | Function |
 |---------------|----------|----------|
-| Supervisor | 6 | System state, emergency stops |
-| AndroidComm | 5 | UART communication with Pixel |
-| SensorFusion | 4 | GPS/IMU data fusion |
-| PathPlanner | 3 | Waypoint navigation |
-| TurretCtrl | 2 | Pan/tilt servo control |
-| MotorCtrl | 1 | 4WD motor control via CAN-FD |
+| Supervisor | 6 | System state machine (IDLE/MANUAL/AUTO/EMERGENCY) |
+| EthernetComm | 5 | TCP/UDP communication with AI unit (platform-agnostic) |
+| PathPlanner | 3 | Local obstacle avoidance, waypoint tracking |
+| TurretCtrl | 2 | Pan/tilt servo control (aim at targets) |
+| MotorCtrl | 1 | 4WD motor control via CAN-FD buses |
+
+**Note:** Sensor fusion and AI processing handled on external AI unit.
 
 ## License
 

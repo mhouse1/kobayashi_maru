@@ -54,11 +54,11 @@ sudo reboot
 - **OpenOCD** - For debugging and flashing
 - **CAN utilities** - For CAN-FD development
 
-### Android Development
-- **Android SDK** - Command line tools
-- **Platform tools** - ADB, fastboot
-- **Build tools** (34.0.0)
-- **Platform** (API 34)
+### AI Unit Development (Optional)
+- **Python** - For Raspberry Pi / Jetson development
+- **Android SDK** - For Google Pixel development (optional)
+- **ROS** - For advanced robotics integration (optional)
+- **TensorFlow Lite / TensorRT** - For AI model deployment
 
 ### Python Packages
 - numpy, scipy, matplotlib
@@ -97,7 +97,7 @@ The included `Jenkinsfile` provides:
 
 - **Multi-stage build pipeline**
 - **Firmware compilation** (ARM GCC)
-- **Android app building** (if present)
+- **AI unit app building** (if present)
 - **Static analysis** (cppcheck, clang-tidy, flake8)
 - **Unit testing**
 - **Renode simulation testing**
@@ -108,7 +108,7 @@ The included `Jenkinsfile` provides:
 1. **Environment Setup** - Verify tools and environment
 2. **Checkout** - Source code retrieval
 3. **Build Firmware** - Compile embedded firmware
-4. **Build Android App** - Compile Android application
+4. **Build AI Unit App** - Compile AI processing application (if present)
 5. **Static Analysis** - Code quality checks
 6. **Unit Tests** - Run test suites
 7. **Renode Simulation Tests** - Hardware simulation tests
