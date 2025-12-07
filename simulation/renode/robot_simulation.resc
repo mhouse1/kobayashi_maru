@@ -20,13 +20,9 @@ connector Connect flexcomm6 pixel_terminal
 # External simulation models are now defined in frdm_mcxn947.repl
 
 
-# Load firmware if available (create dummy if not found)
-$firmware_path = @../../firmware/build/robot_firmware.elf
-if $firmware_path == ""
-    echo "No firmware found, running simulation without embedded code"
-else
-    sysbus LoadELF $firmware_path
-    echo "Loaded firmware: $firmware_path"
+# Load firmware if available
+$firmware_path?=@../../firmware/build/robot_firmware.elf
+sysbus LoadELF $firmware_path
 
 # Test macros for validation
 macro reset_with_hello_world
