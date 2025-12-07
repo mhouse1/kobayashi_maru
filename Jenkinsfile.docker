@@ -47,7 +47,7 @@ pipeline {
                                 make -j$(nproc)
                             elif [ -f 'CMakeLists.txt' ]; then
                                 mkdir -p build && cd build
-                                cmake .. -DCMAKE_TOOLCHAIN_FILE=../arm-none-eabi.cmake
+                                cmake ..
                                 make -j$(nproc)
                             else
                                 echo 'No build system found (Makefile or CMakeLists.txt)'
