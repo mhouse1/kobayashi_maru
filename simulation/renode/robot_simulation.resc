@@ -3,10 +3,11 @@
 # FRDM-MCXN947 Freedom Board + Google Pixel 10 Pro Architecture
 
 # Include official platform description for FRDM-MCXN947
+$repl?=$ORIGIN/frdm_mcxn947.repl
+
 using sysbus
 mach create "robot"
-# Load platform from script directory using path macro
-machine LoadPlatformDescription @$CWD/../renode/frdm_mcxn947.repl
+machine LoadPlatformDescription $repl
 
 # Set up UART terminals for debugging (using official FRDM-MCXN947 peripherals)
 showAnalyzer flexcomm4lpuart4 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
