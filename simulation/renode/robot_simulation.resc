@@ -5,9 +5,8 @@
 # Include official platform description for FRDM-MCXN947
 using sysbus
 mach create "robot"
-# Load platform from script directory
-$platform_file = $CWD + "/frdm_mcxn947.repl"
-machine LoadPlatformDescription $platform_file
+# Load platform from script directory using path macro
+machine LoadPlatformDescription @$CWD/../renode/frdm_mcxn947.repl
 
 # Set up UART terminals for debugging (using official FRDM-MCXN947 peripherals)
 showAnalyzer flexcomm4lpuart4 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
