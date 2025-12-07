@@ -67,7 +67,7 @@
 **Decision:** NXP FRDM-MCXN947 Freedom Board
 
 **Specifications:**
-- **MCU:** MCX N947 (Arm Cortex-M33 @ 150 MHz)
+- **MCU:** MCX N947 (Dual Arm Cortex-M33 @ 150 MHz each)
 - **Memory:** 2MB Flash, 512KB SRAM
 - **Ethernet:** 10/100 Mbps with integrated PHY (ENET QOS)
 - **CAN:** 2x CAN-FD controllers (for motor modules)
@@ -75,9 +75,10 @@
 - **Cost:** ~$100 (readily available)
 
 **Rationale:**
+- **Dual-Core Architecture:** Two Cortex-M33 cores enable optimal trade-off between ease of development and hard real-time performance. Core 0 runs Zephyr with Ethernet networking (non-deterministic but feature-rich), while Core 1 can run bare-metal motor control loop with <10 μs jitter. This achieves **better determinism than single-core QP/C++** while retaining Ethernet advantages. TRL 4 uses Core 0 only; Core 1 optimization planned for TRL 5+.
 - **Integrated Ethernet PHY:** No external PHY chip required, reduces BOM cost and board complexity
 - **CAN-FD Support:** Native dual CAN-FD for motor module communication (1 Mbps+)
-- **Sufficient Performance:** 150 MHz Cortex-M33 handles control loops, sensor fusion, TCP/IP stack
+- **Sufficient Performance:** 150 MHz per core handles control loops, sensor fusion, TCP/IP stack
 - **Memory Capacity:** 2MB Flash accommodates Zephyr (~150KB) with room for application code
 - **FlexComm Peripherals:** Flexible serial interfaces for UART debug, future sensor expansion
 - **Development Ecosystem:** Official NXP board with SDK support, schematics available
