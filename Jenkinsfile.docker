@@ -48,7 +48,7 @@ pipeline {
                     
                     sh '''
                         echo "=== Testing Environment ==="
-                        docker compose -f docker-compose.dev.yml run --rm kobayashi-dev arm-none-eabi-gcc --version
+                        docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev arm-none-eabi-gcc --version
                     '''
                 }
             }
