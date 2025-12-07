@@ -19,14 +19,15 @@ connector Connect flexcomm6 pixel_terminal
 
 # Create external simulation models using $ORIGIN for absolute paths
 $motor_model?=$ORIGIN/../models/motor_model.py
-machine LoadPlatformDescriptionFromString "motor_fl: Python.PythonPeripheral @ sysbus 0x50001000 { size: 0x100; initable: true; filename: \"$motor_model\" }"
-machine LoadPlatformDescriptionFromString "motor_fr: Python.PythonPeripheral @ sysbus 0x50001100 { size: 0x100; initable: true; filename: \"$motor_model\" }"
-machine LoadPlatformDescriptionFromString "motor_rl: Python.PythonPeripheral @ sysbus 0x50001200 { size: 0x100; initable: true; filename: \"$motor_model\" }"
-machine LoadPlatformDescriptionFromString "motor_rr: Python.PythonPeripheral @ sysbus 0x50001300 { size: 0x100; initable: true; filename: \"$motor_model\" }"
 $turret_model?=$ORIGIN/../models/turret_model.py
-machine LoadPlatformDescriptionFromString "turret_sim: Python.PythonPeripheral @ sysbus 0x50002000 { size: 0x100; initable: true; filename: \"$turret_model\" }"
 $canfd_model?=$ORIGIN/../models/canfd_model.py
-machine LoadPlatformDescriptionFromString "canfd_sim: Python.PythonPeripheral @ sysbus 0x50003000 { size: 0x100; initable: true; filename: \"$canfd_model\" }"
+
+machine LoadPlatformDescriptionFromString $"motor_fl: Python.PythonPeripheral @ sysbus 0x50001000 { size: 0x100; initable: true; filename: \"{0}\" }" $motor_model
+machine LoadPlatformDescriptionFromString $"motor_fr: Python.PythonPeripheral @ sysbus 0x50001100 { size: 0x100; initable: true; filename: \"{0}\" }" $motor_model
+machine LoadPlatformDescriptionFromString $"motor_rl: Python.PythonPeripheral @ sysbus 0x50001200 { size: 0x100; initable: true; filename: \"{0}\" }" $motor_model
+machine LoadPlatformDescriptionFromString $"motor_rr: Python.PythonPeripheral @ sysbus 0x50001300 { size: 0x100; initable: true; filename: \"{0}\" }" $motor_model
+machine LoadPlatformDescriptionFromString $"turret_sim: Python.PythonPeripheral @ sysbus 0x50002000 { size: 0x100; initable: true; filename: \"{0}\" }" $turret_model
+machine LoadPlatformDescriptionFromString $"canfd_sim: Python.PythonPeripheral @ sysbus 0x50003000 { size: 0x100; initable: true; filename: \"{0}\" }" $canfd_model
 
 # Load firmware if available (create dummy if not found)
 $firmware_path = @../../firmware/build/robot_firmware.elf
