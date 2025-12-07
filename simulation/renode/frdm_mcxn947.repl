@@ -164,5 +164,36 @@ sysbus:
         Tag <0x50044500 4> "UNKNOWN3" 0x0F000000
         Tag <0x50044600 4> "UNKNOWN4" 0x0F000000
 
-// Robot simulation peripherals are now added via robot_simulation.resc
+// Robot simulation peripherals - using inline script files
+// Files must be in same directory as this .repl file
+
+motor_fl: Python.PythonPeripheral @ sysbus 0x50001000
+    size: 0x100
+    initable: true
+    filename: "motor_model.py"
+
+motor_fr: Python.PythonPeripheral @ sysbus 0x50001100
+    size: 0x100
+    initable: true
+    filename: "motor_model.py"
+
+motor_rl: Python.PythonPeripheral @ sysbus 0x50001200
+    size: 0x100
+    initable: true
+    filename: "motor_model.py"
+
+motor_rr: Python.PythonPeripheral @ sysbus 0x50001300
+    size: 0x100
+    initable: true
+    filename: "motor_model.py"
+
+turret_sim: Python.PythonPeripheral @ sysbus 0x50002000
+    size: 0x100
+    initable: true
+    filename: "turret_model.py"
+
+canfd_sim: Python.PythonPeripheral @ sysbus 0x50003000
+    size: 0x100
+    initable: true
+    filename: "canfd_model.py"
 
