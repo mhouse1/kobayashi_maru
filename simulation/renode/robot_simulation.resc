@@ -2,29 +2,41 @@
 # 4WD Heavy Duty Robot with GPS, Vision, Path Planning, and Turret
 # FRDM-MCXN947 Freedom Board + Google Pixel 10 Pro Architecture
 
-# Include platform description
+# Include official platform description for FRDM-MCXN947
+$repl?=$ORIGIN/frdm_mcxn947.repl
+
 using sysbus
 mach create "robot"
-machine LoadPlatformDescription @frdm_mcxn947.repl
+machine LoadPlatformDescription $repl
 
-# Set up UART terminals for debugging
-showAnalyzer uart0 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
-showAnalyzer uart1 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
+# Set up UART terminals for debugging (using official FRDM-MCXN947 peripherals)
+showAnalyzer flexcomm4lpuart4 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
+showAnalyzer flexcomm6 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
 
 # Create terminal for Pixel 10 Pro Android communication
 emulation CreateServerSocketTerminal 3456 "pixel_terminal" false
-connector Connect uart1 pixel_terminal
+connector Connect flexcomm6 pixel_terminal
 
-# Create external simulation models
-machine LoadPlatformDescriptionFromString "motor_fl: Python.PythonPeripheral @ sysbus 0x50001000 { size: 0x100; initable: true; filename: \"models/motor_model.py\" }"
-machine LoadPlatformDescriptionFromString "motor_fr: Python.PythonPeripheral @ sysbus 0x50001100 { size: 0x100; initable: true; filename: \"models/motor_model.py\" }"
-machine LoadPlatformDescriptionFromString "motor_rl: Python.PythonPeripheral @ sysbus 0x50001200 { size: 0x100; initable: true; filename: \"models/motor_model.py\" }"
-machine LoadPlatformDescriptionFromString "motor_rr: Python.PythonPeripheral @ sysbus 0x50001300 { size: 0x100; initable: true; filename: \"models/motor_model.py\" }"
-machine LoadPlatformDescriptionFromString "turret_sim: Python.PythonPeripheral @ sysbus 0x50002000 { size: 0x100; initable: true; filename: \"models/turret_model.py\" }"
-machine LoadPlatformDescriptionFromString "canfd_sim: Python.PythonPeripheral @ sysbus 0x50003000 { size: 0x100; initable: true; filename: \"models/canfd_model.py\" }"
+# External simulation models are now defined in frdm_mcxn947.repl
 
-# Load firmware
-sysbus LoadELF @../../firmware/build/robot_firmware.elf
+# Load firmware (simulation will run even if firmware doesn't exist yet)
+sysbus LoadELF @/workspace/firmware/build/robot_firmware.elf
+
+# Test macros for validation
+macro reset_with_hello_world
+"""
+    sysbus LoadELF @hello_world-artifacts/hello_world.elf
+    cpu0 VectorTableOffset `sysbus GetSymbolAddress "_vector_table"`
+    cpu0 EnableZephyrMode
+"""
+
+macro test_platform
+"""
+    reset_with_hello_world
+    start
+    pause
+    echo "Platform test completed - check UART output"
+"""
 
 # Set quantum value for time synchronization (1ms)
 emulation SetGlobalQuantum "0.001"

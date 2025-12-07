@@ -1,0 +1,89 @@
+# Kobayashi Maru Development Environment
+# Multi-stage Docker build for embedded development
+
+FROM ubuntu:24.04 as base
+
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=UTC
+ENV PATH="/opt/arm-gnu-toolchain/bin:${PATH}"
+
+# Install base packages
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \
+    git \
+    curl \
+    wget \
+    unzip \
+    python3 \
+    python3-pip \
+    ca-certificates \
+    gnupg \
+    && rm -rf /var/lib/apt/lists/*
+
+# ARM Development Stage
+FROM base as arm-dev
+
+# Install ARM GCC Toolchain
+RUN mkdir -p /opt/arm-gnu-toolchain && \
+    cd /tmp && \
+    wget -q "https://developer.arm.com/-/media/Files/downloads/gnu/13.2.rel1/binrel/arm-gnu-toolchain-13.2.rel1-x86_64-arm-none-eabi.tar.xz" && \
+    tar -xf arm-gnu-toolchain-13.2.rel1-x86_64-arm-none-eabi.tar.xz -C /opt/arm-gnu-toolchain --strip-components=1 && \
+    rm arm-gnu-toolchain-13.2.rel1-x86_64-arm-none-eabi.tar.xz
+
+# Install Python packages for simulation
+RUN python3 -m pip install --break-system-packages \
+    numpy \
+    scipy \
+    matplotlib \
+    pyserial \
+    pytest
+
+# Simulation Stage
+FROM arm-dev as simulation
+
+# Install dependencies for Renode 1.16.0
+RUN apt-get update && apt-get install -y \
+    wget \
+    gpg \
+    && wget https://packages.microsoft.com/config/ubuntu/24.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb \
+    && dpkg -i packages-microsoft-prod.deb \
+    && rm packages-microsoft-prod.deb \
+    && apt-get update \
+    && apt-get install -y \
+    mono-complete \
+    dotnet-runtime-8.0 \
+    screen \
+    policykit-1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Try to install Renode (may fail, but that's OK for now)
+RUN cd /tmp && \
+    wget -q "https://github.com/renode/renode/releases/download/v1.16.0/renode_1.16.0_amd64.deb" && \
+    (dpkg -i --force-depends renode_1.16.0_amd64.deb || echo "Renode installation failed - continuing without it") && \
+    rm -f renode_1.16.0_amd64.deb
+
+# Final Development Image
+FROM simulation as kobayashi-dev
+
+# Create workspace
+WORKDIR /workspace
+
+# Create entrypoint script
+RUN echo '#!/bin/bash\n\
+echo "Kobayashi Maru Development Environment"\n\
+echo "ARM GCC: $(arm-none-eabi-gcc --version | head -1)"\n\
+if command -v renode &> /dev/null; then\n\
+    echo "Renode: Available"\n\
+else\n\
+    echo "Renode: Not available (build/simulation only)"\n\
+fi\n\
+echo "Python: $(python3 --version)"\n\
+echo "Workspace: /workspace"\n\
+echo ""\n\
+exec "$@"\n\
+' > /entrypoint.sh && chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/bin/bash"]

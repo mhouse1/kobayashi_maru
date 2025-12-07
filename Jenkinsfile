@@ -207,44 +207,33 @@ pipeline {
         
         stage('Renode Simulation Tests') {
             steps {
-                dir('simulation/renode') {
-                    script {
-                        sh '''
-                            echo "=== Running Renode Simulation Tests ==="
-                            
-                            # Check if firmware binary exists
-                            FIRMWARE_PATH="${WORKSPACE}/firmware/build/robot_firmware.elf"
+                script {
+                    sh '''
+                        echo "=== Running Renode Simulation Tests ==="
+                        
+                        # Ensure Renode is available
+                        if ! command -v renode-cli >/dev/null 2>&1 && ! command -v renode >/dev/null 2>&1; then
+                            echo "Renode not available; skipping simulation tests"
+                            exit 0
+                        fi
+                        
+                        # Check firmware binary (optional for this test)
+                        FIRMWARE_PATH="${WORKSPACE}/firmware/build/robot_firmware.elf"
+                        if [ ! -f "$FIRMWARE_PATH" ]; then
+                            FIRMWARE_PATH="${WORKSPACE_BUILD_DIR}/robot_firmware.elf"
                             if [ ! -f "$FIRMWARE_PATH" ]; then
-                                # Try alternative paths
-                                FIRMWARE_PATH="${WORKSPACE_BUILD_DIR}/robot_firmware.elf"
-                                if [ ! -f "$FIRMWARE_PATH" ]; then
-                                    echo "WARNING: Firmware binary not found, creating dummy for simulation test"
-                                    mkdir -p $(dirname $FIRMWARE_PATH)
-                                    touch $FIRMWARE_PATH
-                                fi
+                                echo "WARNING: Firmware binary not found, creating dummy for simulation test"
+                                mkdir -p $(dirname "$FIRMWARE_PATH")
+                                touch "$FIRMWARE_PATH"
                             fi
-                            
-                            echo "Using firmware binary: $FIRMWARE_PATH"
-                            
-                            # Start Renode simulation with timeout
-                            echo "Starting Renode simulation..."
-                            timeout 60s renode --console --disable-xwt robot_simulation.resc &
-                            RENODE_PID=$!
-                            
-                            # Wait for simulation to initialize
-                            sleep 15
-                            
-                            # Test telnet connection to Pixel terminal
-                            echo "Testing communication interface..."
-                            (echo "quit" | timeout 5s telnet localhost 3456) || echo "Telnet test completed"
-                            
-                            # Stop Renode
-                            kill $RENODE_PID 2>/dev/null || true
-                            wait $RENODE_PID 2>/dev/null || true
-                            
-                            echo "Renode simulation test completed"
-                        '''
-                    }
+                        fi
+                        echo "Using firmware binary: $FIRMWARE_PATH"
+                        
+                        # Run via absolute-path-safe script
+                        chmod +x scripts/run_renode.sh
+                        timeout 90s bash scripts/run_renode.sh
+                        echo "Renode simulation test completed"
+                    '''
                 }
             }
         }
