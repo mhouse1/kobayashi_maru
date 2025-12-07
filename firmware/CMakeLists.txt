@@ -51,13 +51,14 @@ set(CMAKE_C_FLAGS_RELEASE "-O2 -DNDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
 
 # Source files
-file(GLOB_RECURSE C_SOURCES "src/**/*.c")
-file(GLOB_RECURSE CXX_SOURCES "src/**/*.cpp")
+file(GLOB_RECURSE C_SOURCES "src/*.c" "src/**/*.c")
+file(GLOB_RECURSE CXX_SOURCES "src/*.cpp" "src/**/*.cpp")
 
 # Create executable
 add_executable(${PROJECT_NAME}.elf
     ${C_SOURCES}
     ${CXX_SOURCES}
+    src/startup_mcxn947.c
 )
 
 # Include directories
