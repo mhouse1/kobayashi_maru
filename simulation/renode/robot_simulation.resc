@@ -14,38 +14,13 @@ using sysbus
 mach create "robot"
 machine LoadPlatformDescription $repl
 
-# Add Python peripheral models using variables
-machine LoadPlatformDescriptionFromString """
-motor_fl: Python.PythonPeripheral @ sysbus 0x50001000
-    size: 0x100
-    initable: true
-    filename: "$motor_model"
-
-motor_fr: Python.PythonPeripheral @ sysbus 0x50001100
-    size: 0x100
-    initable: true
-    filename: "$motor_model"
-
-motor_rl: Python.PythonPeripheral @ sysbus 0x50001200
-    size: 0x100
-    initable: true
-    filename: "$motor_model"
-
-motor_rr: Python.PythonPeripheral @ sysbus 0x50001300
-    size: 0x100
-    initable: true
-    filename: "$motor_model"
-
-turret_sim: Python.PythonPeripheral @ sysbus 0x50002000
-    size: 0x100
-    initable: true
-    filename: "$turret_model"
-
-canfd_sim: Python.PythonPeripheral @ sysbus 0x50003000
-    size: 0x100
-    initable: true
-    filename: "$canfd_model"
-"""
+# Add Python peripheral models - build each string with proper variable expansion
+machine LoadPlatformDescriptionFromString "motor_fl: Python.PythonPeripheral @ sysbus 0x50001000 { size: 0x100; initable: true; path: \"$motor_model\" }"
+machine LoadPlatformDescriptionFromString "motor_fr: Python.PythonPeripheral @ sysbus 0x50001100 { size: 0x100; initable: true; path: \"$motor_model\" }"
+machine LoadPlatformDescriptionFromString "motor_rl: Python.PythonPeripheral @ sysbus 0x50001200 { size: 0x100; initable: true; path: \"$motor_model\" }"
+machine LoadPlatformDescriptionFromString "motor_rr: Python.PythonPeripheral @ sysbus 0x50001300 { size: 0x100; initable: true; path: \"$motor_model\" }"
+machine LoadPlatformDescriptionFromString "turret_sim: Python.PythonPeripheral @ sysbus 0x50002000 { size: 0x100; initable: true; path: \"$turret_model\" }"
+machine LoadPlatformDescriptionFromString "canfd_sim: Python.PythonPeripheral @ sysbus 0x50003000 { size: 0x100; initable: true; path: \"$canfd_model\" }"
 
 # Set up UART terminals for debugging (using official FRDM-MCXN947 peripherals)
 showAnalyzer flexcomm4lpuart4 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
