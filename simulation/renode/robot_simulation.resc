@@ -19,6 +19,10 @@ connector Connect flexcomm6 pixel_terminal
 
 # External simulation models are now defined in frdm_mcxn947.repl
 
+# Alias Flash memory at 0x0 for boot (MCXN947 supports Flash aliasing)
+# This allows vector table and code to execute from 0x0 as expected by firmware
+sysbus Alias flash 0x0 0x10000000 0x200000
+
 # Load firmware (simulation will run even if firmware doesn't exist yet)
 sysbus LoadELF @/workspace/firmware/build/robot_firmware.elf
 
