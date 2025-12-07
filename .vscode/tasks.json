@@ -1,0 +1,26 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Check Firmware Symbols",
+            "type": "shell",
+            "command": "docker",
+            "args": [
+                "compose",
+                "-f",
+                "docker/docker-compose.dev.yml",
+                "run",
+                "--rm",
+                "kobayashi-dev",
+                "bash",
+                "-c",
+                "cd firmware/build && arm-none-eabi-nm -n robot_firmware.elf | grep -E 'Reset_Handler|g_pfnVectors|_estack'"
+            ],
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        }
+    ]
+}

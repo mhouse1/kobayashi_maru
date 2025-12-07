@@ -53,24 +53,24 @@ void Reset_Handler(void) {
     while(1);
 }
 
-// Vector table - keep and used attributes prevent linker from discarding
-__attribute__((section(".isr_vector"), used))
-void (* const g_pfnVectors[])(void) = {
-    (void (*)(void))(&_estack),     // Initial stack pointer
-    Reset_Handler,                   // Reset handler
-    Default_Handler,                 // NMI
-    Default_Handler,                 // HardFault
-    Default_Handler,                 // MemManage
-    Default_Handler,                 // BusFault
-    Default_Handler,                 // UsageFault
-    Default_Handler,                 // SecureFault
+// Vector table - must be at address 0x0, aligned to 512 bytes for Cortex-M33
+__attribute__((section(".isr_vector"), used, aligned(512)))
+const void* const g_pfnVectors[] = {
+    (const void*)(&_estack),        // Initial stack pointer
+    (const void*)Reset_Handler,     // Reset handler
+    (const void*)Default_Handler,   // NMI
+    (const void*)Default_Handler,   // HardFault
+    (const void*)Default_Handler,   // MemManage
+    (const void*)Default_Handler,   // BusFault
+    (const void*)Default_Handler,   // UsageFault
+    (const void*)Default_Handler,   // SecureFault
     0,                               // Reserved
     0,                               // Reserved
     0,                               // Reserved
-    Default_Handler,                 // SVCall
-    Default_Handler,                 // DebugMon
+    (const void*)Default_Handler,   // SVCall
+    (const void*)Default_Handler,   // DebugMon
     0,                               // Reserved
-    Default_Handler,                 // PendSV
-    Default_Handler,                 // SysTick
+    (const void*)Default_Handler,   // PendSV
+    (const void*)Default_Handler,   // SysTick
     // External interrupts (add as needed)
 };
