@@ -7,10 +7,6 @@ $repl?=$ORIGIN/frdm_mcxn947.repl
 
 using sysbus
 mach create "robot"
-
-# Set Python paths before loading platform
-$bin_path = $ORIGIN
-
 machine LoadPlatformDescription $repl
 
 # Set up UART terminals for debugging (using official FRDM-MCXN947 peripherals)
