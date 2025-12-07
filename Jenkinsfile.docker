@@ -1,6 +1,14 @@
 pipeline {
     agent any
     
+    parameters {
+        string(
+            name: 'BRANCH_NAME',
+            defaultValue: 'initial_test',
+            description: 'Git branch to build'
+        )
+    }
+    
     environment {
         // Docker image for builds
         DEV_IMAGE = 'kobayashi-maru-dev'
@@ -30,7 +38,11 @@ pipeline {
         
         stage('Checkout') {
             steps {
-                checkout scm
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: "${params.BRANCH_NAME}"]],
+                    userRemoteConfigs: scm.userRemoteConfigs
+                ])
                 sh 'git log --oneline -5'
             }
         }
