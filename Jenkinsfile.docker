@@ -46,6 +46,7 @@ pipeline {
                                 make clean || true
                                 make -j$(nproc)
                             elif [ -f 'CMakeLists.txt' ]; then
+                                rm -rf build  # Clean build directory
                                 mkdir -p build && cd build
                                 cmake ..
                                 make -j$(nproc)
