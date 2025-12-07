@@ -10,9 +10,7 @@ LABEL version="1.0"
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=UTC
-ENV ANDROID_HOME=/opt/android-sdk
-ENV ANDROID_SDK_ROOT=/opt/android-sdk
-ENV PATH="/opt/arm-gnu-toolchain/bin:${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/platform-tools:${PATH}"
+ENV PATH="/opt/arm-gnu-toolchain/bin:${PATH}"
 
 # Update and install system packages
 RUN apt-get update && apt-get upgrade -y && \
@@ -78,19 +76,6 @@ RUN cd /tmp && \
     dpkg -i "renode_${RENODE_VERSION}_amd64.deb" || apt-get install -f -y && \
     rm "renode_${RENODE_VERSION}_amd64.deb"
 
-# Install Android SDK
-RUN mkdir -p ${ANDROID_HOME} && \
-    cd /tmp && \
-    wget "https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip" -O android-tools.zip && \
-    unzip android-tools.zip && \
-    mkdir -p ${ANDROID_HOME}/cmdline-tools/latest && \
-    mv cmdline-tools/* ${ANDROID_HOME}/cmdline-tools/latest/ && \
-    rm android-tools.zip
-
-# Accept Android licenses and install SDK components
-RUN yes | ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --licenses && \
-    ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
-
 # Install Node.js
 RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
     apt-get install -y nodejs && \
@@ -129,15 +114,11 @@ RUN cat > /opt/jenkins/setup-env.sh << 'EOF'
 # Environment setup for Kobayashi Maru builds
 
 export PATH="/opt/arm-gnu-toolchain/bin:${PATH}"
-export ANDROID_HOME="/opt/android-sdk"
-export ANDROID_SDK_ROOT="/opt/android-sdk" 
-export PATH="${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/platform-tools"
 
 echo "Environment configured for Kobayashi Maru development"
 echo "ARM GCC: $(which arm-none-eabi-gcc 2>/dev/null || echo 'Not found')"
 echo "Renode: $(which renode 2>/dev/null || echo 'Not found')"
 echo "Java: $(which java 2>/dev/null || echo 'Not found')"
-echo "Android SDK: $ANDROID_HOME"
 EOF
 
 RUN chmod +x /opt/jenkins/setup-env.sh && \
