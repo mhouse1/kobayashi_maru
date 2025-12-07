@@ -6,12 +6,13 @@ Leadership isn't just tested when we win—it's revealed in how we handle the un
 
 This project implements a heavy-duty 4-wheel drive (4WD) robot with:
 
-- **GPS navigation** (via Google Pixel 10 Pro)
-- **Accelerometer/IMU sensing** (via Google Pixel 10 Pro)
-- **Vision processing** (via Google Pixel 10 Pro camera)
+- **Modular AI processing unit** (Pixel 10 Pro, Raspberry Pi, or Jetson)
+- **GPS navigation** and sensor fusion
+- **Vision processing** with TensorFlow Lite
 - **Path planning** (A*/RRT algorithms)
 - **Pan/tilt turret** for camera/sensor pointing
-- **CAN-FD communication** between modules
+- **Ethernet communication** for platform-independent control
+- **CAN-FD communication** between motor modules
 - **Renode simulation** for development and testing
 - **Quantum QP/C++ Framework** for real-time middleware
 
@@ -38,7 +39,7 @@ The firmware uses a recommended hybrid approach common in embedded systems:
 
 ## System Architecture
 
-**Hybrid AI Architecture:** Pixel 10 Pro performs compute-intensive AI processing (vision, sensor fusion), while MCXN947 handles real-time motor control. USB provides high-bandwidth communication (1.5 MB/s vs 11 KB/s UART).
+**Modular AI Architecture:** Ethernet-based communication allows swapping AI processing units (Pixel 10 Pro, Raspberry Pi, Jetson Nano, etc.) without firmware changes. Standard TCP/IP protocol provides platform independence.
 
 ```
 ┌────────────────────────────────────────────────────────────────────┐
@@ -157,8 +158,9 @@ kobayashi_maru/
 
 - [Renode](https://renode.io/) - For simulation
 - ARM GCC Toolchain - For firmware compilation
-- Android Studio - For Android app development
+- AI Unit Application - Android/Python app for chosen platform
 - QP/C Framework - Real-time embedded framework
+- Ethernet network (100 Mbps recommended)
 
 ### Running the Simulation
 
@@ -167,7 +169,7 @@ kobayashi_maru/
 cd simulation/renode
 renode robot_simulation.resc
 
-# Connect to Pixel terminal (in another terminal)
+# Connect to AI unit terminal (in another terminal)
 telnet localhost 3456
 ```
 
