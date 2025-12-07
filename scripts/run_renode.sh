@@ -10,6 +10,9 @@ else
   WS_ROOT="$PWD"
 fi
 
+# Change to workspace root so Python peripheral paths resolve correctly
+cd "$WS_ROOT"
+
 PLATFORM="$WS_ROOT/simulation/renode/frdm_mcxn947.repl"
 SCRIPT="$WS_ROOT/simulation/renode/robot_simulation.resc"
 
