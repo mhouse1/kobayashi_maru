@@ -19,24 +19,8 @@ connector Connect flexcomm6 pixel_terminal
 
 # External simulation models are now defined in frdm_mcxn947.repl
 
-# Load firmware (simulation will run even if firmware doesn't exist yet)
+# Load firmware
 sysbus LoadELF @/workspace/firmware/build/robot_firmware.elf
-
-# Test macros for validation
-macro reset_with_hello_world
-"""
-    sysbus LoadELF @hello_world-artifacts/hello_world.elf
-    cpu0 VectorTableOffset `sysbus GetSymbolAddress "_vector_table"`
-    cpu0 EnableZephyrMode
-"""
-
-macro test_platform
-"""
-    reset_with_hello_world
-    start
-    pause
-    echo "Platform test completed - check UART output"
-"""
 
 # Set quantum value for time synchronization (1ms)
 emulation SetGlobalQuantum "0.001"
