@@ -2,39 +2,77 @@
 
 # Kobayashi Maru - Development Roadmap
 
-## Current Status: TRL 3 (Analytical and Experimental Proof of Concept)
+## Current Status: TRL 4 (Component Validation in Lab Environment)
 
-### ✅ Completed (TRL 3)
-- Firmware build system (CMake + ARM GNU Toolchain)
-- Docker-based development environment
-- CI/CD pipeline (Jenkins + Docker)
-- Firmware boots successfully in Renode simulation
-- Active Object architecture defined (QP framework design)
-- Vector table and startup code functional
-- Memory layout and linker script working
-- Basic BSP structure (stubs only)
+### ✅ TRL 3 COMPLETE - December 7, 2025
+**Validation:** Clean build Jenkins #76 - SUCCESS  
+**Commit:** `a6051e7` - CLEAN_BUILD parameter for reproducibility  
+**Branch:** `trl3_cleanup`
 
-### 🎯 Next: TRL 4 (Component Validation in Lab Environment)
+**TRL 3 Achievements:**
+- ✅ Firmware build system (CMake + ARM GNU Toolchain)
+- ✅ Docker-based development environment (reproducible)
+- ✅ CI/CD pipeline with 9 improvements (Jenkins + Docker)
+- ✅ Firmware boots successfully in Renode simulation
+- ✅ Active Object architecture defined (QP framework design)
+- ✅ Vector table and startup code functional
+- ✅ Memory layout and linker script working (464 bytes text, 10256 BSS)
+- ✅ Basic BSP structure (stubs for TRL 4 implementation)
+- ✅ Architecture evolved to Ethernet modular design
+- ✅ Documentation complete and consistent
+- ✅ Clean build validation passed (no cache, full reproducibility)
 
-**Priority 1: Replace Stubs with Real Implementations**
-- [ ] Integrate actual QP/C++ framework (replace qp_stubs.cpp)
-- [ ] Implement BSP UART driver for debug output
-- [ ] Implement BSP GPIO driver for LEDs and E-stop
-- [ ] Implement BSP ADC driver for battery monitoring
-- [ ] Implement BSP PWM driver for motor control
-- [ ] Implement BSP CAN-FD driver for module communication
+**Key Deliverables:**
+- 11 commits in `trl3_cleanup` branch
+- Jenkins pipeline optimized (caching, metrics, error handling)
+- 435 lines of duplicate code removed
+- Docker build time optimized (~500MB savings)
+- Comprehensive TRL 3 validation checklist created
 
-**Priority 2: Component Testing**
-- [ ] Verify Active Objects execute state machines correctly
-- [ ] Test event posting and inter-AO communication
-- [ ] Validate time events and periodic heartbeat
-- [ ] Test Renode simulation with real QP event loop
+### 🎯 TRL 4 - Component Validation in Lab Environment
 
-**Priority 3: Hardware Validation**
-- [ ] Flash firmware to physical FRDM-MCXN947 board
-- [ ] Test UART debug console on real hardware
-- [ ] Validate GPIO LED indicators
-- [ ] Test CAN-FD loopback communication
+**Goal:** Validate individual components and subsystems in laboratory environment
+
+**Priority 1: QP/C++ Framework Integration**
+- [ ] Download QP/C++ framework (v7.x) from Quantum Leaps
+- [ ] Integrate QP source into firmware/qp/ directory
+- [ ] Update CMakeLists.txt to build real QP framework
+- [ ] Remove qp_stubs.cpp and implement real QP::run()
+- [ ] Verify event loop executes and Active Objects transition states
+- [ ] Test QP time events (QTimeEvt) with 1ms SysTick
+
+**Priority 2: BSP Driver Implementation**
+- [ ] UART driver: Implement BSP_uartInit(), BSP_uartPutchar() for debug console
+- [ ] GPIO driver: Implement BSP_gpioInit(), BSP_ledOn/Off() for status LEDs
+- [ ] Timer driver: Implement SysTick for QP time base (1ms tick)
+- [ ] ADC driver: Implement BSP_adcInit(), BSP_adcRead() for battery voltage
+- [ ] PWM driver: Implement FlexPWM for motor control signals (placeholder)
+- [ ] CAN-FD driver: Implement basic BSP_canfdInit() (loopback test)
+
+**Priority 3: Firmware Refactoring (Ethernet Architecture)**
+- [ ] Rename android_comm.cpp → ethernet_comm.cpp
+- [ ] Rename AndroidCommAO → EthernetCommAO class
+- [ ] Update signals: SIG_ANDROID_* → SIG_ETHERNET_*
+- [ ] Update Priority enum: ANDROID_COMM → ETHERNET_COMM
+- [ ] Update all references in supervisor.cpp and other Active Objects
+- [ ] Update comments to reflect Ethernet TCP/IP communication
+
+**Priority 4: Component Testing in Simulation**
+- [ ] Verify Supervisor AO transitions through IDLE → READY → RUNNING states
+- [ ] Test event posting between Active Objects (Supervisor → MotorCtrl)
+- [ ] Validate 1s heartbeat in Supervisor using QTimeEvt
+- [ ] Test Renode UART output shows "Supervisor: IDLE" → "Supervisor: RUNNING"
+- [ ] Verify QP event loop runs (no longer infinite WFI loop)
+- [ ] Test emergency stop signal propagation
+
+**Priority 5: Hardware Validation (Physical FRDM-MCXN947)**
+- [ ] Acquire FRDM-MCXN947 development board
+- [ ] Flash firmware using OpenOCD or MCUXpresso
+- [ ] Connect UART console (115200 baud) and verify debug output
+- [ ] Validate LED blinks (heartbeat indicator)
+- [ ] Test GPIO emergency stop button (SW2)
+- [ ] Validate CAN-FD loopback (TX → RX on same controller)
+- [ ] Measure timing: verify 1ms SysTick accuracy with oscilloscope
 
 ### 🔮 Future: TRL 5+ (System Integration)
 - AI unit application for telemetry and control (Android/Python/ROS)
