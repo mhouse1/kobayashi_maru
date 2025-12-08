@@ -244,6 +244,14 @@ struct StatusMessage {  // 24 bytes total
 
 **Note:** High-level sensor fusion and AI processing handled on external AI unit.
 
+## 🛠️ Continuous Integration
+
+Automated builds and tests are managed via Jenkins. The pipeline ensures code quality, successful builds, and hardware-in-the-loop simulation before merging changes.
+
+![Jenkins Pipeline Stages](assets/diagrams/Jenkins_pipeline_stages.png)
+
+*Source: Jenkins CI/CD pipeline for Kobayashi Maru project*
+
 ## 📄 License
 
 This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
