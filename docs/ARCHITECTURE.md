@@ -92,7 +92,7 @@ The firmware uses a hybrid C/C++ approach, which is common in embedded systems:
 │  │  ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐     │   │
 │  │  │ Supervisor │ │ Ethernet   │ │  Sensor    │ │   Path     │ │  Motor     │     │   │
 │  │  │    AO      │ │  Comm AO   │ │ Fusion AO  │ │ Planner AO │ │  Ctrl AO   │     │   │
-│  │  └─────┬──────┘ └─────┬──────┘ └─────┬──────┘ └─────┬──────┘ └─────┬──────┘     │   │
+│  │  └─────┬──────┘ └─────┬─────┘ └─────┬──────┘ └─────┬──────┘ └─────┬──────┘     │   │
 │  │        │              │              │              │              │             │   │
 │  │  ┌─────┴──────────────┴──────────────┴──────────────┴──────────────┴─────┐      │   │
 │  │  │                    QP Event-Driven Kernel                              │      │   │
@@ -327,13 +327,15 @@ struct StatusMessage {
 | 50MP Camera | Vision processing |
 | Ethernet Adapter | TCP/IP to MCXN947 |
 
-**Raspberry Pi CM4** (Future)
+**Raspberry Pi CM5** (Current/Future)
 | Feature | Usage |
 |---------|-------|
-| ARM Cortex-A72 | General processing |
+| ARM Cortex-A78 | High-performance general processing |
 | Built-in Ethernet | Direct connection |
 | GPIO | Sensor expansion |
 | Linux | ROS support |
+| PCIe | High-speed peripherals |
+| Improved AI/ML support | Vision and robotics workloads |
 
 **NVIDIA Jetson** (Future)
 | Feature | Usage |
@@ -342,6 +344,31 @@ struct StatusMessage {
 | TensorRT | Optimized inference |
 | Gigabit Ethernet | High-speed link |
 | Multiple cameras | Advanced vision |
+
+## AI Processing Unit Selection: Raspberry Pi CM5 vs Pixel 10 Pro
+
+The robot architecture supports modular AI units, allowing selection based on project needs:
+
+- **Raspberry Pi Compute Module 5 (CM5):**
+  - Powerful general-purpose compute, memory, and connectivity
+  - Large open-source community and ecosystem
+  - Ideal for robotics, control, and custom AI workloads
+  - Flexible hardware interfaces (Ethernet, CAN, GPIO, etc.)
+  - May require additional effort for advanced camera/sensor integration
+
+- **Google Pixel 10 Pro:**
+  - Mature hardware with advanced sensors and camera
+  - Billions spent on R&D for vision and AI software
+  - Optimized for mobile AI, vision, and sensor fusion
+  - Excellent out-of-the-box performance for vision-based tasks
+  - Less flexible for custom hardware interfaces, but superior for vision/sensor applications
+
+**Trade-off:**
+- For cutting-edge vision and sensor features, the Pixel 10 Pro may outperform the Pi CM5 due to its specialized hardware and software stack.
+- For open hardware, flexibility, and community support, the Pi CM5 is a strong choice.
+
+**Recommendation:**
+- The architecture is designed to support both platforms, allowing users to select the best fit for their application. This enables flexibility for future upgrades and diverse use cases.
 
 ### Motor Modules (x4)
 
