@@ -1,0 +1,27 @@
+@startuml
+title Hybrid C/C++ Architecture
+
+package "C++ LAYER (QP/C++ Active Objects)" {
+  class "Robot::MotorCtrlAO" 
+  class "TurretCtrlAO"
+  class "PathPlannerAO"
+  class "BSP::CanFD"
+  class "BSP::Uart"
+  class "BSP::Pwm"
+}
+
+package "C LAYER (Low-Level Drivers)" {
+  class "bsp_drivers.c"
+  class "SysTick_Handler"
+  class "CANFD0_IRQHandler"
+}
+
+"Robot::MotorCtrlAO" ..> "bsp_drivers.c"
+"TurretCtrlAO" ..> "bsp_drivers.c"
+"PathPlannerAO" ..> "bsp_drivers.c"
+"BSP::CanFD" ..> "bsp_drivers.c"
+"BSP::Uart" ..> "bsp_drivers.c"
+"BSP::Pwm" ..> "bsp_drivers.c"
+"bsp_drivers.c" ..> "SysTick_Handler"
+"bsp_drivers.c" ..> "CANFD0_IRQHandler"
+@enduml

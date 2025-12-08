@@ -1,22 +1,23 @@
-# TRL 3-4 Implementation Plan
-**Technology Readiness Levels 3-4:** Component validation and system integration in laboratory environment
+# TRL 3 Implementation Plan
+**Technology Readiness Level 3:** Component validation on physical hardware
 
 **Start Date:** December 7, 2025  
 **Target Completion:** Q1 2026  
 **Previous:** TRL 2 completed (Build #76, commit `a6051e7`) - Concept validated via simulation  
-**Architecture Decision:** Switched to Zephyr RTOS for native Ethernet support
+**Architecture Decision:** Zephyr RTOS selected for native Ethernet support
 
 ---
 
-## TRL 4 Definition (NASA Standard)
+## TRL 3 Definition (NASA Standard)
 
-**Goal:** Validate individual technology components and/or basic subsystems in a laboratory environment with representative conditions.
+**Goal:** Validate individual technology components in a laboratory environment with experimental proof-of-concept.
 
 **Exit Criteria:**
-- Stand-alone component validation complete
-- Integration with realistic supporting elements
-- Readiness for system-level integration
+- Key components tested on physical hardware
+- Individual peripheral validation complete (CAN-FD, Ethernet, UART, PWM, ADC, GPIO)
 - Performance measured against requirements
+- Component-level proof-of-concept demonstrated
+- Readiness for TRL 4 system integration
 
 ---
 
@@ -160,7 +161,7 @@ Configure and test Zephyr drivers for all robot peripherals using DeviceTree.
   };
   ```
 - [ ] Enable console in `prj.conf`: `CONFIG_SERIAL=y`, `CONFIG_UART_CONSOLE=y`
-- [ ] Use `printk()` for logging: `printk("Kobayashi Maru v2.0 - TRL 4\n");`
+- [ ] Use `printk()` for logging: `printk("Kobayashi Maru v0.2.0-trl2\n");`
 
 **Testing:**
 - [ ] Connect UART pins to USB-UART adapter
@@ -466,14 +467,14 @@ Update Renode simulation to support Zephyr firmware with Ethernet.
 
 ---
 
-## Phase 7: Documentation & TRL 4 Sign-off (Week 9)
+## Phase 7: Documentation & TRL 3 Sign-off (Week 9)
 
 ### Documentation Updates
-- [ ] Update README.md with Zephyr RTOS and TRL 4 status
+- [ ] Update README.md with Zephyr RTOS and TRL 3 hardware validation status
 - [ ] Update ARCHITECTURE.md: threading model, Zephyr drivers, DeviceTree
 - [ ] Create Zephyr setup guide: SDK installation, west workflow
 - [ ] Document Ethernet protocol: TCP server, ControlMessage/StatusMessage format
-- [ ] Create TRL 4 validation report
+- [ ] Create TRL 3 validation report with hardware test results
 
 ### Test Reports
 - [ ] Ethernet connectivity test results (TCP, UDP, throughput)
@@ -482,12 +483,13 @@ Update Renode simulation to support Zephyr firmware with Ethernet.
 - [ ] Network packet captures (Wireshark .pcap files)
 - [ ] CAN-FD loopback results
 
-### TRL 4 Validation Checklist
+### TRL 3 Validation Checklist
 - [ ] Zephyr RTOS integrated and operational
 - [ ] Ethernet TCP/IP server functional (192.168.1.10:5001)
 - [ ] All Zephyr drivers configured via DeviceTree
 - [ ] Multi-threaded architecture implemented (6 threads)
 - [ ] Firmware runs on physical FRDM-MCXN947 hardware
+- [ ] Individual component validation complete (CAN-FD, GPIO, PWM, ADC)
 - [ ] Network communication validated with Python AI simulator
 - [ ] Timing requirements met (1s heartbeat ±10ms)
 - [ ] No memory leaks or stack overflows
@@ -495,24 +497,49 @@ Update Renode simulation to support Zephyr firmware with Ethernet.
 - [ ] Hardware validation complete with test reports
 
 ### Sign-off
-- [ ] Review TRL 4 exit criteria against NASA standards
+- [ ] Review TRL 3 exit criteria against NASA standards
 - [ ] Approval from project lead
-- [ ] Tag release: `v2.0-trl4-zephyr`
+- [ ] Tag release: `v0.3.0-trl3-complete`
 - [ ] Merge to main branch
 
-**Expected Outcome:** TRL 4 complete, ready for TRL 5 (system integration with AI unit)
+**Expected Outcome:** TRL 3 complete (components validated on hardware), ready for TRL 4 (full system integration)
+
+---
+
+## Next Steps After TRL 3
+
+**TRL 4:** Full system integration in laboratory environment
+- All subsystems working together
+- End-to-end communication with AI unit
+- System-level performance validation
+- Complete robot operational in lab
+
+**TRL 5:** System integration with real AI unit and sensors
+- Develop AI unit application (Python/ROS)
+- Integrate motor controllers, GPS, IMU
+- Implement sensor fusion and path planning
+- End-to-end teleoperation
+
+**Estimated Timeline:** TRL 4 in Q1 2026, TRL 5 in Q2 2026
 
 ---
 
 ## Success Metrics
 
-### Performance Targets
-- **Boot Time:** < 2s from reset to TCP server ready
-- **CPU Utilization:** < 30% in IDLE, < 60% in RUNNING
+### Performance Targets (To Be Validated on Hardware)
+- **Boot Time:** < 2s from reset to TCP server ready (estimate)
+- **CPU Utilization:** < 30% in IDLE, < 60% in RUNNING (target; requires profiling)
 - **Network Latency:** < 20ms TCP roundtrip (AI unit → MCXN947 → response)
+  - **Note:** Network jitter may require adjusting control rate from 50 Hz to 20-30 Hz
 - **Throughput:** > 100 KB/s Ethernet (well below 100 Mbps capacity)
-- **Timing Accuracy:** ±10ms for 1s heartbeat, ±5ms for 50ms status broadcast
-- **Memory Usage:** < 60% Flash (< 1.2MB), < 60% RAM (< 307KB)
+- **Timing Accuracy:** ±10ms for 1s heartbeat, ±5ms for 50ms status broadcast (target)
+- **Memory Usage:** < 60% Flash (< 1.2MB), < 60% RAM (< 307KB) (estimate; ~150KB expected for Zephyr)
+
+**Unvalidated Assumptions:**
+- QP/C++ overhead <10% CPU (typical for event-driven frameworks, but architecture-specific)
+- 50 Hz Ethernet control loop achievable (may need reduction due to network jitter)
+- 9-week timeline achievable (optimistic; 12-16 weeks more realistic for Zephyr learning curve)
+- All Zephyr drivers work as documented (mainline support assumed reliable)
 
 ### Code Quality
 - Zero compiler warnings in Release build
@@ -568,16 +595,11 @@ Update Renode simulation to support Zephyr firmware with Ethernet.
 | **Learning Curve** | Moderate | Steep |
 | **Production Use** | Very common in robotics | Less common |
 | **Community Support** | Large (Discord, forums) | Small |
-| **TRL 4 Timeline** | 9 weeks | 12 weeks |
+| **TRL 3 Timeline** | 9 weeks | 12 weeks |
 
 **Decision:** Zephyr RTOS is the right choice for Ethernet-based robot architecture.
 
 ---
-
-## Next Steps After TRL 4
-
-**TRL 5 Preview:** Subsystem integration and end-to-end validation
-- Develop AI unit application (Python/ROS on Raspberry Pi or Pixel)
 - Integrate real motor controllers via CAN-FD
 - Add GPS module and IMU sensor
 - Implement sensor fusion (Kalman filter)
@@ -591,13 +613,17 @@ Update Renode simulation to support Zephyr firmware with Ethernet.
 
 ## Resources
 
-### Hardware Required
-- FRDM-MCXN947 development board (~$100)
+### Hardware Required (TRL 3)
+- FRDM-MCXN947 development board ($24.52 DigiKey)
 - Ethernet cable (Cat5e or better)
 - USB-UART adapter (for console) (~$10)
 - Oscilloscope (for timing validation - optional)
 - CAN transceiver breakout (MCP2551) (~$5 - optional)
-- Raspberry Pi or used Pixel 10 Pro (AI unit, TRL 5)
+
+**Future (TRL 4-5):**
+- Raspberry Pi or used Pixel 10 Pro (AI unit)
+- Motor controllers with CAN-FD
+- GPS module and IMU sensor
 
 ### Software
 - Zephyr SDK 0.16.x (free, open source)
@@ -616,7 +642,8 @@ Update Renode simulation to support Zephyr firmware with Ethernet.
 
 ---
 
-**Document Version:** 2.0 (Zephyr RTOS)  
-**Last Updated:** December 7, 2025  
-**Architecture Decision:** Switched from QP/C++ to Zephyr for Ethernet support  
+**Document Version:** 0.2.0 (Zephyr RTOS - TRL 3 Plan)  
+**Last Updated:** December 8, 2025  
+**TRL Level:** 3 (Component Validation on Hardware)  
+**Architecture Decision:** Zephyr RTOS selected for native Ethernet support  
 **Owner:** Kobayashi Maru Project Team

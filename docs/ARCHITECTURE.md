@@ -224,9 +224,21 @@ struct StatusMessage {
 
 ### Hardware Interrupts (Highest Priority)
 **Emergency Stop GPIO Interrupt** - Preempts all software tasks, immediately disables motors
-- Response time: <1 μs (hardware interrupt)
+- Response time: 1-2 μs typical (interrupt latency breakdown @ 150 MHz):
+  - GPIO edge detection: ~10-20 cycles (67-133 ns)
+  - NVIC processing + context save: ~30-50 cycles (200-333 ns)
+  - ISR execution (motor disable): ~20-30 cycles (133-200 ns)
+  - Total: ~60-100 cycles (0.4-0.67 μs minimum, 1-2 μs typical with pipeline stalls)
+  - **Note:** Estimates based on ARM Cortex-M33 documentation; requires hardware measurement for validation
 - Directly cuts motor power via hardware disable line
 - Posts EMERGENCY_STOP event to Supervisor AO for state cleanup
+
+**Alternative: FPGA-Based Emergency Stop**
+- For applications requiring <100 ns response, an FPGA could monitor GPIO and cut motor power through combinatorial logic (no CPU involvement)
+- Estimated response: 20-100 ns (synchronizers + gate delays + I/O buffers)
+- Trade-off: Adds $10-50 component cost and design complexity
+- Not necessary for this application: 1-2 μs response is already 1000x faster than the 1 kHz motor control loop period
+- **Note:** FPGA timing estimate; actual performance varies with FPGA architecture and design
 
 ### QP Framework Active Objects
 

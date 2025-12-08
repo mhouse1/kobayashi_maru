@@ -1,95 +1,70 @@
-# Kobayashi Maru - Heavy Duty 4WD Robot
+<div align="center">
 
-Heavy-duty 4WD robot with modular AI architecture, demonstrating TRL progression, Renode simulation, and Zephyr RTOS integration. Built to explore modern embedded systems practices including CI/CD, simulation-first development, and hardware abstraction.
+# 🤖 Kobayashi Maru
+## Heavy Duty 4WD Robot Platform
 
-## Project Overview
+[![TRL Level](https://img.shields.io/badge/TRL-2%20Complete-blue?style=for-the-badge)](docs/TRL2_VALIDATION_CHECKLIST.md)
+[![License](https://img.shields.io/badge/License-GPL%20v3-green?style=for-the-badge)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-MCXN947-orange?style=for-the-badge)](https://www.nxp.com/products/processors-and-microcontrollers/arm-microcontrollers/general-purpose-mcus/mcx-arm-cortex-m/mcx-n-series-microcontrollers/mcx-n94x-and-n54x-mcus-with-dual-core-arm-cortex-m33-edgelock-secure-subsystem-and-neural-processing-unit:MCX-N94X-N54X)
+[![Framework](https://img.shields.io/badge/Framework-QP%2FC%2B%2B-purple?style=for-the-badge)](https://www.state-machine.com/qpcpp/)
 
-This project implements a heavy-duty 4-wheel drive (4WD) robot with:
+**🎯 Technology Readiness Level:** TRL 2 Complete  
+**✅ Status:** Concept validated through simulation  
+**🔧 Current State:** Architecture defined • Firmware operational in Renode • CI/CD established  
+**🚀 Next Milestone:** TRL 3 component validation on physical hardware
 
-- **Modular AI processing unit** (Pixel 10 Pro, Raspberry Pi, or Jetson)
-- **GPS navigation** and sensor fusion
-- **Vision processing** with TensorFlow Lite
-- **Path planning** (A*/RRT algorithms)
-- **Pan/tilt turret** for camera/sensor pointing
-- **Ethernet communication** for platform-independent control
-- **CAN-FD communication** between motor modules
-- **Renode simulation** for development and testing
-- **Quantum QP/C++ Framework** for real-time middleware
+[Documentation](docs/) • [Architecture](docs/ARCHITECTURE.md) • [TRL Status](docs/TRL2_VALIDATION_CHECKLIST.md)
 
-## Hybrid C/C++ Architecture
+</div>
+
+---
+
+## 📋 Project Overview
+
+Heavy-duty autonomous 4WD robot platform with modular AI architecture:
+
+- 🧠 **Modular AI processing unit** (Pixel 10 Pro, Raspberry Pi, or Jetson)
+- 🛰️ **GPS navigation** and sensor fusion
+- 👁️ **Vision processing** with TensorFlow Lite
+- 🗺️ **Path planning** (A*/RRT algorithms)
+- 🎯 **Pan/tilt turret** for camera/sensor pointing
+- 🌐 **Ethernet communication** for platform-independent control
+- 🚌 **CAN-FD communication** between motor modules
+- 🖥️ **Renode simulation** for development and testing
+- ⚡ **Quantum QP/C++ Framework** for real-time middleware
+
+## 🏗️ Hybrid C/C++ Architecture
 
 The firmware uses a recommended hybrid approach common in embedded systems:
 
 | Language | Usage |
-|----------|-------|
+|:---------|:------|
 | **C++** | MCU modules (QP framework), middleware integration, turret control, high-level motion control, vision + path planning on Pixel 10 Pro |
 | **C** | Low-level drivers, ISRs, performance-critical routines |
 
-```
-┌──────────────────────────────────────────────────────┐
-│           C++ LAYER (QP/C++ Active Objects)          │
-│  Robot::MotorCtrlAO, TurretCtrlAO, PathPlannerAO... │
-│  BSP::CanFD, BSP::Uart, BSP::Pwm (C++ wrappers)     │
-├──────────────────────────────────────────────────────┤
-│              C LAYER (Low-Level Drivers)             │
-│  bsp_drivers.c - Direct hardware access              │
-│  ISRs: SysTick_Handler, CANFD0_IRQHandler, etc.      │
-└──────────────────────────────────────────────────────┘
-```
+**Architecture Layers:**
 
-## System Architecture
 
-**Modular AI Architecture:** Ethernet-based communication allows swapping AI processing units (Pixel 10 Pro, Raspberry Pi, Jetson Nano, etc.) without firmware changes. Standard TCP/IP protocol provides platform independence.
+![Hybrid C/C++ Architecture](assets/diagrams/architecture_layers.png)
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│           AI PROCESSING UNIT (Modular - Hot-swappable)          │
-│  ┌────────────────┐  ┌────────────────┐  ┌────────────────┐    │
-│  │ Google Pixel   │  │ Raspberry Pi   │  │ Jetson Nano    │    │
-│  │ 10 Pro         │  │ Compute Module │  │ / Xavier NX    │    │
-│  │ (Current)      │  │ (Future)       │  │ (Future)       │    │
-│  └────────────────┘  └────────────────┘  └────────────────┘    │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │   GPS    │    IMU    │   Camera   │  TensorFlow Lite   │    │
-│  │  Fusion  │   Fusion  │  + Vision  │   / MediaPipe      │    │
-│  └─────┬────────────┬──────────┬────────────────┬──────────┘    │
-│        └────────────┴──────────┴────────────────┘                │
-│                          │ AI App                                │
-│                    ┌─────▼────────────┐                          │
-│                    │ Sensor Fusion    │                          │
-│                    │ Object Detection │                          │
-│                    │ Path Planning    │                          │
-│                    └──────────────────┘                          │
-└──────────────────────────┼───────────────────────────────────────┘
-                           │ Ethernet (100 Mbps - 12.5 MB/s)
-                           │ TCP/IP or UDP
-                           │ ControlMessage @ 50 Hz (~1.6 KB/s)
-                           ▼
-┌──────────────────────────────────────────────────────────────────┐
-│              FRDM-MCXN947 FREEDOM BOARD (Motor Brain)            │
-│                    (Quantum QP/C++ Framework)                    │
-│  ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐       │
-│  │Supervisor │ │ Ethernet  │ │   Path    │ │  Motor    │       │
-│  │    AO     │ │  Comm AO  │ │ Planner   │ │  Ctrl AO  │       │
-│  │  (State)  │ │ (TCP/UDP) │ │ (Local)   │ │ (CAN-FD)  │       │
-│  └───────────┘ └───────────┘ └───────────┘ └─────┬─────┘       │
-│  ┌───────────┐                                    │             │
-│  │  Turret   │                                    │             │
-│  │  Ctrl AO  │                                    │             │
-│  └─────┬─────┘                                    │             │
-└────────┼──────────────────────────────────────────┼─────────────┘
-         │ PWM                                      │ CAN-FD
-         ▼                                          ▼
-┌────────────────┐                          ┌────────────────┐
-│    TURRET      │                          │ MOTOR MODULES  │
-│  Pan    Tilt   │                          │ FL  FR  RL  RR │
-│     0x200      │                          │ 0x100-0x103    │
-└────────────────┘                          └────────────────┘
-```
+*Source: [assets/diagrams/architecture_layers.puml](assets/diagrams/architecture_layers.puml)*
+
+<div style="page-break-after: always;"></div>
+
+## 🔧 System Architecture
+
+> **💡 Modular Design:** Ethernet-based communication allows swapping AI processing units (Pixel 10 Pro, Raspberry Pi, Jetson Nano, etc.) without firmware changes. Standard TCP/IP protocol provides platform independence.
+
+
+**System Block Diagram:**
+
+![System Block Diagram](assets/diagrams/system_block_diagram.png)
+
+*Source: [assets/diagrams/system_block_diagram.puml](assets/diagrams/system_block_diagram.puml)*
 
 For detailed architecture documentation, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 kobayashi_maru/
@@ -113,39 +88,54 @@ Note: AI unit applications are developed separately and communicate
 via Ethernet TCP/IP (see docs/ARCHITECTURE.md for protocol details)
 ```
 
-## Hardware Requirements
+<div style="page-break-after: always;"></div>
+
+## 🔌 Hardware Requirements
 
 ### FRDM-MCXN947 Freedom Board
-- Dual Arm Cortex-M33 @ 150 MHz
-- 2 MB Flash, 512 KB RAM
-- **Ethernet 10/100** (or external PHY module)
+
+**Processor:** Dual Arm Cortex-M33 @ 150 MHz
+
+**Memory:** 2 MB Flash, 512 KB RAM
+
+**Key Features:**
+- Ethernet 10/100 (or external PHY module)
 - 2x CAN-FD controllers
 - Multiple FlexComm (UART, SPI, I2C)
 - FlexPWM for servo control
 
 ### AI Processing Unit (Modular - Choose One)
 
-**Option 1: Google Pixel 10 Pro** (Current)
-- **Tensor G4 chip** - On-device AI acceleration
-- **TensorFlow Lite / MediaPipe** - Object detection, tracking
-- **GPS + IMU** - 9-axis sensor fusion
-- **50 MP camera** - Vision processing
-- **USB-C to Ethernet adapter** - Network connectivity
+#### Option 1: Google Pixel 10 Pro *(Current)*
 
-**Option 2: Raspberry Pi Compute Module 4** (Future)
-- **Quad-core ARM Cortex-A72** @ 1.5 GHz
-- **Built-in Ethernet** (Gigabit on CM4)
-- **GPIO expansion** for additional sensors
-- **Full Linux** - ROS support, easier development
-- **Lower cost** - ~$35-75 vs $1000 phone
+| Feature | Specification |
+|:--------|:--------------|
+| **Processor** | Tensor G4 chip with on-device AI acceleration |
+| **AI Framework** | TensorFlow Lite / MediaPipe for object detection and tracking |
+| **Sensors** | GPS + IMU with 9-axis sensor fusion |
+| **Camera** | 50 MP with vision processing |
+| **Connectivity** | USB-C to Ethernet adapter |
 
-**Option 3: NVIDIA Jetson Nano / Xavier NX** (Future)
-- **GPU acceleration** - 128/384 CUDA cores
-- **TensorRT** - Optimized inference
-- **Gigabit Ethernet** built-in
-- **Best for** - Advanced vision AI, multiple cameras
+#### Option 2: Raspberry Pi Compute Module 4 *(Future)*
 
-**All options communicate via standard Ethernet TCP/IP** - No firmware changes needed to swap
+| Feature | Specification |
+|:--------|:--------------|
+| **Processor** | Quad-core ARM Cortex-A72 @ 1.5 GHz |
+| **Networking** | Built-in Gigabit Ethernet |
+| **Expansion** | GPIO for additional sensors |
+| **Software** | Full Linux with ROS support |
+| **Cost** | ~$35-75 (vs $1000 phone) |
+
+#### Option 3: NVIDIA Jetson Nano / Xavier NX *(Future)*
+
+| Feature | Specification |
+|:--------|:--------------|
+| **GPU** | 128/384 CUDA cores for acceleration |
+| **AI Framework** | TensorRT optimized inference |
+| **Networking** | Built-in Gigabit Ethernet |
+| **Best For** | Advanced vision AI, multiple cameras |
+
+> **Note:** All options communicate via standard Ethernet TCP/IP. No firmware changes needed to swap platforms.
 
 ### Motor Modules (x4)
 - Brushless DC motors with encoders
@@ -157,7 +147,7 @@ via Ethernet TCP/IP (see docs/ARCHITECTURE.md for protocol details)
 - Pan: ±180°, Tilt: -45° to +90°
 - CAN-FD Node ID: 0x200
 
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 
@@ -186,7 +176,9 @@ cd firmware
 make
 ```
 
-### Communication Protocol
+<div style="page-break-after: always;"></div>
+
+## 📡 Communication Protocol
 
 **Ethernet-Based Protocol:** TCP for reliable control commands, UDP for high-frequency sensor data. Platform-independent (works with any device supporting TCP/IP).
 
@@ -221,29 +213,55 @@ struct StatusMessage {  // 24 bytes total
 ```
 
 **Network Configuration:**
-- AI Unit: 192.168.1.100:5000 (TCP Server for commands)
-- MCXN947: 192.168.1.10:5001 (UDP for status broadcasts)
 
-## QP Framework Active Objects
+| Device | IP Address | Protocol | Purpose |
+|:-------|:-----------|:---------|:--------|
+| AI Unit | 192.168.1.100:5000 | TCP Server | Control commands |
+| MCXN947 | 192.168.1.10:5001 | UDP | Status broadcasts |
 
-**Hardware Interrupts (Highest Priority):**
-- Emergency Stop GPIO - <1 μs response, immediately disables motors
+<div style="page-break-after: always;"></div>
 
-**Active Objects (Software Priorities):**
+## ⚙️ QP Framework Active Objects
+
+### Hardware Interrupts (Highest Priority)
+
+**Emergency Stop GPIO:** 1-2 μs response (interrupt latency: ~60-100 cycles @ 150 MHz)
+- Immediately disables motors
+- Hardware-level safety mechanism
+
+### Active Objects (Software Priorities)
 
 | Active Object | Priority | Function |
-|---------------|----------|----------|
-| Supervisor | 7 | System state machine, safety coordination, heartbeat monitoring |
-| MotorCtrl | 6 | 4WD motor control via CAN-FD @ 1 kHz (time-critical) |
-| TurretCtrl | 5 | Pan/tilt servo control, target tracking |
-| EthernetComm | 4 | TCP/UDP communication with AI unit (platform-agnostic) |
-| SensorFusion | 3 | Local sensor processing, position estimation |
-| PathPlanner | 2 | Local obstacle avoidance, waypoint tracking |
+|:--------------|:--------:|:---------|
+| **Supervisor** | 7 | System state machine, safety coordination, heartbeat monitoring |
+| **MotorCtrl** | 6 | 4WD motor control via CAN-FD @ 1 kHz (time-critical) |
+| **TurretCtrl** | 5 | Pan/tilt servo control, target tracking |
+| **EthernetComm** | 4 | TCP/UDP communication with AI unit (platform-agnostic) |
+| **SensorFusion** | 3 | Local sensor processing, position estimation |
+| **PathPlanner** | 2 | Local obstacle avoidance, waypoint tracking |
 
 **Priority Rationale:** Motor control and turret positioning require real-time guarantees, while network I/O runs at lower priority to prevent jitter in control loops.
 
 **Note:** High-level sensor fusion and AI processing handled on external AI unit.
 
-## License
+## 🛠️ Continuous Integration
+
+Automated builds and tests are managed via Jenkins. The pipeline ensures code quality, successful builds, and hardware-in-the-loop simulation before merging changes.
+
+![Jenkins Pipeline Stages](assets/diagrams/Jenkins_pipeline_stages.png)
+
+*Source: Jenkins CI/CD pipeline for Kobayashi Maru project*
+
+## 📄 License
 
 This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
+
+---
+
+<div align="center">
+
+**Built with ❤️ for autonomous robotics**
+
+[⭐ Star this repo](https://github.com/mhouse1/kobayashi_maru) • [🐛 Report Bug](https://github.com/mhouse1/kobayashi_maru/issues) • [💡 Request Feature](https://github.com/mhouse1/kobayashi_maru/issues)
+
+</div>
