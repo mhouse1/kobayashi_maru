@@ -429,3 +429,16 @@ kobayashi_maru/
 Note: AI unit applications (Android/Python/C++) are developed separately
 and communicate via standard Ethernet TCP/IP protocol.
 ```
+
+## Traceability Matrix Reference
+
+This architecture document addresses requirements tracked in [TRACEABILITY_MATRIX.md](TRACEABILITY_MATRIX.md). Key REQ IDs referenced in this document:
+- REQ-001: TCP/IP protocol and communication
+- REQ-002: CAN-FD bus architecture and drivers
+- REQ-003: Emergency stop via GPIO
+- REQ-004: Modular AI unit interface
+- REQ-005: Turret control protocol and implementation
+- REQ-006: Renode simulation platform
+- REQ-007: Hardware validation checklist
+
+Each major section below maps to one or more REQ IDs as noted in headers or inline comments.
