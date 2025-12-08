@@ -106,6 +106,7 @@ via Ethernet TCP/IP (see docs/ARCHITECTURE.md for protocol details)
 
 ### AI Processing Unit (Modular - Choose One)
 
+
 #### Option 1: Google Pixel 10 Pro *(Current)*
 
 | Feature | Specification |
@@ -116,15 +117,17 @@ via Ethernet TCP/IP (see docs/ARCHITECTURE.md for protocol details)
 | **Camera** | 50 MP with vision processing |
 | **Connectivity** | USB-C to Ethernet adapter |
 
-#### Option 2: Raspberry Pi Compute Module 4 *(Future)*
+#### Option 2: Raspberry Pi Compute Module 5 *(Current/Future)*
 
 | Feature | Specification |
 |:--------|:--------------|
-| **Processor** | Quad-core ARM Cortex-A72 @ 1.5 GHz |
+| **Processor** | ARM Cortex-A78, high-performance general processing |
 | **Networking** | Built-in Gigabit Ethernet |
 | **Expansion** | GPIO for additional sensors |
 | **Software** | Full Linux with ROS support |
-| **Cost** | ~$35-75 (vs $1000 phone) |
+| **PCIe** | High-speed peripherals |
+| **AI/ML Support** | Improved for vision and robotics workloads |
+| **Cost** | ~$60-100 (vs $1000 phone) |
 
 #### Option 3: NVIDIA Jetson Nano / Xavier NX *(Future)*
 
@@ -136,6 +139,13 @@ via Ethernet TCP/IP (see docs/ARCHITECTURE.md for protocol details)
 | **Best For** | Advanced vision AI, multiple cameras |
 
 > **Note:** All options communicate via standard Ethernet TCP/IP. No firmware changes needed to swap platforms.
+
+**Trade-off:**
+- For cutting-edge vision and sensor features, the Pixel 10 Pro may outperform the Pi CM5 due to its specialized hardware and software stack.
+- For open hardware, flexibility, and community support, the Pi CM5 is a strong choice.
+
+**Recommendation:**
+- The architecture is designed to support both platforms, allowing users to select the best fit for their application. This enables flexibility for future upgrades and diverse use cases.
 
 ### Motor Modules (x4)
 - Brushless DC motors with encoders
