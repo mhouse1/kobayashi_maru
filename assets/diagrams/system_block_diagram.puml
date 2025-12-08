@@ -1,0 +1,68 @@
+@startuml
+title System Block Diagram
+
+skinparam package {
+  BackgroundColor<<AI>> #eaffea
+  BorderColor<<AI>> #2e7d32
+  BackgroundColor<<MCU>> #fff3e0
+  BorderColor<<MCU>> #ef6c00
+}
+skinparam rectangle {
+  BackgroundColor<<Sensor>> #fffde7
+  BorderColor<<Sensor>> #fbc02d
+  BackgroundColor<<App>> #e3f2fd
+  BorderColor<<App>> #1565c0
+  BackgroundColor<<AO>> #f3e5f5
+  BorderColor<<AO>> #6a1b9a
+  BackgroundColor<<Peripheral>> #eeeeee
+  BorderColor<<Peripheral>> #616161
+}
+
+
+
+package "AI Processing Unit (Modular - Hot-swappable)" <<AI>> {
+  package "AI Platform (choose one)" <<AI>> {
+    rectangle "Google Pixel 10 Pro" <<AI>> as pixel
+    rectangle "Raspberry Pi Compute Module" <<AI>> as rpi
+    rectangle "Jetson Nano / Xavier NX" <<AI>> as jetson
+  }
+  package "Sensors" <<Sensor>> {
+    rectangle "GPS Fusion" <<Sensor>> as gps
+    rectangle "IMU Fusion" <<Sensor>> as imu
+    rectangle "Camera + Vision" <<Sensor>> as cam
+    rectangle "TensorFlow Lite / MediaPipe" <<Sensor>> as tf
+  }
+  rectangle "AI App: Sensor Fusion" <<App>> as fusion
+  rectangle "AI App: Object Detection" <<App>> as detect
+  rectangle "AI App: Path Planning" <<App>> as plan
+}
+
+package "FRDM-MCXN947 Freedom Board (Motor Brain)" <<MCU>> {
+  rectangle "Supervisor AO" <<AO>> as supervisor
+  rectangle "Ethernet Comm AO" <<AO>> as ethcomm
+  rectangle "Path Planner AO" <<AO>> as pathplan
+  rectangle "Motor Ctrl AO" <<AO>> as motorctrl
+  rectangle "Turret Ctrl AO" <<AO>> as turretctrl
+  rectangle "Motor Modules" <<Peripheral>> as motors
+  rectangle "Turret (Pan/Tilt)" <<Peripheral>> as turret
+}
+
+"AI Platform (choose one)" -down-> Sensors
+gps -down-> fusion
+imu -down-> fusion
+cam -down-> detect
+tf -down-> detect
+fusion -down-> plan
+detect -down-> plan
+
+plan -down-> ethcomm : Ethernet (TCP/IP)\nControlMessage @ 50Hz
+
+ethcomm -down-> supervisor
+ethcomm -down-> pathplan
+ethcomm -down-> motorctrl
+ethcomm -down-> turretctrl
+
+motorctrl -down-> motors
+turretctrl -down-> turret
+
+@enduml
