@@ -91,7 +91,7 @@ From clean build artifacts:
 - [x] **Analytical Validation:** Renode simulation proves concept feasibility
 - [x] **Proof of Concept:** Firmware boots successfully in simulation
 - [x] **Documentation Complete:** Architecture, README, build instructions
-- [ ] **Reproducible Build:** Clean build from scratch succeeds ← **VALIDATE NOW**
+- [x] **Reproducible Build:** Clean build from scratch succeeds ← **VALIDATED** (see docs/TRL2_renode_simulation_build76.log)
 
 ### Technology Concept Formulation
 - [x] Basic principles observed and reported (TRL 1)
