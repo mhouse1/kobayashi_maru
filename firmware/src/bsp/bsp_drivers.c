@@ -4,6 +4,14 @@
  * 
  * Low-level hardware drivers, ISRs, and performance-critical routines.
  * Pure C for maximum performance and direct hardware access.
+ *
+ * REQ-002.1a: CAN-FD bus architecture preliminarily defined
+ * REQ-002.2: CAN-FD driver implemented
+ * REQ-002.3: CAN-FD loopback test on hardware (planned)
+ * REQ-003.1a: Emergency stop requirement preliminarily defined
+ * REQ-003.2: GPIO pin assigned and schematic updated
+ * REQ-003.3: Emergency stop code implemented (planned)
+ * REQ-003.4: Emergency stop tested on hardware (planned)
  */
 
 #include "bsp_drivers.h"

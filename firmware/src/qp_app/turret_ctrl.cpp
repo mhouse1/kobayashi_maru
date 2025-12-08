@@ -1,8 +1,12 @@
 /*
  * Turret Control Active Object (C++)
  * FRDM-MCXN947 4WD Robot
- * 
+ *
  * Controls pan/tilt turret via PWM servos using QP/C++ framework.
+ *
+ * REQ-005.1a: Turret control protocol preliminarily defined (initial spec)
+ * REQ-005.2: Turret control code implemented
+ * REQ-005.3: Turret tested on hardware (planned)
  */
 
 #include "robot.hpp"

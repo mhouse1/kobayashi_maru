@@ -1,5 +1,9 @@
 /* Minimal startup code for FRDM-MCXN947 (Cortex-M33)
  * TODO: Replace with vendor SDK startup file
+ *
+ * REQ-007.1a: Hardware validation checklist preliminarily defined
+ * REQ-007.1b: Hardware validation checklist revised after test feedback (planned)
+ * REQ-007.1c: Hardware validation checklist finalized and documented (planned)
  */
 
 #include <stdint.h>
