@@ -1,10 +1,5 @@
 # Heavy-Duty 4WD Robot System Architecture
 
-<!--
-Commit message for this change:
-"Update architecture documentation to support dual-RTOS approach: Zephyr (TRL2 baseline) and FreeRTOS (TRL3 exploration) with modular AI offload. Clarified rationale, traceability, and project direction."
--->
-
 ## Architecture Evolution: Zephyr (TRL2 Baseline) vs FreeRTOS (TRL3 Exploration)
 
 **TRL2 Baseline:**
