@@ -42,7 +42,6 @@
 |                | REQ-007.1a         | Hardware validation checklist preliminarily defined            | TRL3_PLAN.md            | docs/TRL3_PLAN.md              | Initial checklist review            | In Progress |
 |                | REQ-007.1b         | Hardware validation checklist revised after test feedback      | TRL3_PLAN.md            | docs/TRL3_PLAN.md              | Design review, hardware test        | Planned     |
 |                | REQ-007.1c         | Hardware validation checklist finalized and documented         | TRL3_PLAN.md            | docs/TRL3_PLAN.md              | Final checklist review              | Planned     |
-
 | REQ-008        | REQ-008.1          | Power supply validation (all rails, brownout/reset)           | ARCHITECTURE.md         | firmware/src/bsp/bsp_drivers.c | Power test report                | Planned     |
 | REQ-009        | REQ-009.1          | Clock source validation (crystal/oscillator, system clock)    | ARCHITECTURE.md         | firmware/src/bsp/bsp_drivers.c | Clock test report                | Planned     |
 | REQ-010        | REQ-010.1          | Bootloader/startup code validation (firmware update, vector table, memory remap) | ARCHITECTURE.md | firmware/src/startup_mcxn947.c | Bootloader test report | Planned     |
@@ -53,5 +52,7 @@
 | REQ-015        | REQ-015.1          | Thermal/environmental checks (temperature sensor validation)  | ARCHITECTURE.md         | firmware/src/bsp/bsp_drivers.c | Thermal test report               | Planned     |
 | REQ-016        | REQ-016.1          | Documentation and code/schematic review before hardware testing | ARCHITECTURE.md, README | docs/TRL3_PLAN.md              | Review checklist                  | Planned     |
 | REQ-017        | REQ-017.1          | Automated test scripts for hardware bring-up                  | ARCHITECTURE.md, README | scripts/, docs/TRL3_PLAN.md     | Test script results               | Planned     |
+| REQ-018        | REQ-018.1          | RTOS/platform selection and partitioning analysis documented | ARCHITECTURE.md, ADR-001-RTOS-Selection.md | N/A (design decision) | ADR review, architecture review | Complete    |
 
 *Add more requirements and sub-requirements as the project evolves. Update status and references as validation progresses.*
+

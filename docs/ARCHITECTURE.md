@@ -1,5 +1,44 @@
 # Heavy-Duty 4WD Robot System Architecture
 
+<!--
+Commit message for this change:
+"Update architecture documentation to support dual-RTOS approach: Zephyr (TRL2 baseline) and FreeRTOS (TRL3 exploration) with modular AI offload. Clarified rationale, traceability, and project direction."
+-->
+
+## Architecture Evolution: Zephyr (TRL2 Baseline) vs FreeRTOS (TRL3 Exploration)
+
+**TRL2 Baseline:**
+- The Zephyr-based architecture was used for TRL2, providing built-in networking, device tree, and modular driver support.
+- This approach was validated through simulation and is tagged as the TRL2 reference implementation.
+
+**TRL3 Exploration:**
+- During TRL3, the team is exploring a FreeRTOS-based architecture for the control MCU, with advanced networking and high-level features offloaded to the AI module (Pixel 10, Raspberry Pi CM5, etc.).
+- This exploration is documented in [ADR-001-RTOS-Selection.md](./ADR-001-RTOS-Selection.md) and tracked in the traceability matrix.
+- The Zephyr architecture remains available for comparison and potential future use.
+
+**Rationale:**
+- TRL2 does not require locking in a single implementation; it requires a validated concept. Zephyr fulfilled this for TRL2.
+- TRL3 is the appropriate phase to evaluate alternative implementations (such as FreeRTOS) on hardware.
+- All changes and rationale are documented for traceability and review.
+
+**Summary:**
+- Zephyr = TRL2 baseline (validated, tagged)
+- FreeRTOS = TRL3 exploration (under evaluation)
+
+This dual-architecture approach ensures flexibility and a clear audit trail for future decisions.
+
+## RTOS Selection Decision (Summary)
+
+The decision to use FreeRTOS on the control MCU, with all advanced networking and high-level features offloaded to a modular AI platform (e.g., Pixel 10, Raspberry Pi CM5), is documented in [ADR-001-RTOS-Selection.md](./ADR-001-RTOS-Selection.md).
+
+**Summary:**
+- The MCU runs FreeRTOS for real-time, deterministic control (motors, sensors, safety).
+- The AI module (running Linux) handles Ethernet, Wi-Fi, BLE, cloud, AI, and user interface tasks.
+- This separation improves portability, reliability, and maintainability.
+- Zephyr or other feature-rich RTOS options are only needed if future requirements demand more complex MCU features.
+
+See the ADR for full context, options considered, and rationale.
+
 ## Overview
 
 This document describes the system architecture for a heavy-duty 4-wheel drive (4WD) robot with GPS capability, vision processing, path planning, and a pan/tilt turret. The system uses a hybrid architecture combining a modular AI processing unit (Google Pixel 10 Pro, Raspberry Pi, or NVIDIA Jetson) for high-level processing and sensor fusion with an NXP FRDM-MCXN947 Freedom Board for real-time embedded control. The AI unit communicates with the MCXN947 via Ethernet TCP/IP, enabling hot-swappable platform changes without firmware modifications.
@@ -428,6 +467,9 @@ kobayashi_maru/
 
 Note: AI unit applications (Android/Python/C++) are developed separately
 and communicate via standard Ethernet TCP/IP protocol.
+
+> **Architecture Flexibility:**
+> The firmware and system architecture support both Zephyr (TRL2 baseline) and FreeRTOS (TRL3 exploration) for the control MCU. The choice of RTOS and middleware is documented and traceable, allowing the project to evaluate and select the best approach as requirements evolve.
 ```
 
 ## Traceability Matrix Reference
@@ -440,5 +482,6 @@ This architecture document addresses requirements tracked in [TRACEABILITY_MATRI
 - REQ-005: Turret control protocol and implementation
 - REQ-006: Renode simulation platform
 - REQ-007: Hardware validation checklist
+- REQ-018: RTOS/platform selection and partitioning analysis
 
 Each major section below maps to one or more REQ IDs as noted in headers or inline comments.
