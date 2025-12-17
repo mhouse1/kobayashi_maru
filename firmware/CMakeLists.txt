@@ -51,13 +51,34 @@ set(CMAKE_C_FLAGS_RELEASE "-O2 -DNDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
 
 # Source files
+
+
+# FreeRTOS kernel sources
+file(GLOB FREERTOS_KERNEL_SOURCES
+    "${CMAKE_CURRENT_SOURCE_DIR}/freertos/kernel/*.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/freertos/kernel/portable/GCC/ARM_CM33_NTZ/non_secure/*.c"
+)
+
+# QP/C core sources
+file(GLOB QPC_CORE_SOURCES
+    "${CMAKE_CURRENT_SOURCE_DIR}/qpc/src/qf/*.c"
+)
+
+# QP/C FreeRTOS port sources
+set(QPC_PORT_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/qpc/ports/freertos/qf_port.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/qpc/ports/freertos/syscalls.c
+)
+
+# Project C sources (remove C++ sources)
 file(GLOB_RECURSE C_SOURCES "src/*.c" "src/**/*.c")
-file(GLOB_RECURSE CXX_SOURCES "src/*.cpp" "src/**/*.cpp")
 
 # Create executable
 add_executable(${PROJECT_NAME}.elf
     ${C_SOURCES}
-    ${CXX_SOURCES}
+    ${FREERTOS_KERNEL_SOURCES}
+    ${QPC_CORE_SOURCES}
+    ${QPC_PORT_SOURCES}
     src/startup_mcxn947.c
 )
 
@@ -65,11 +86,15 @@ add_executable(${PROJECT_NAME}.elf
 target_include_directories(${PROJECT_NAME}.elf PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/freertos/kernel/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/freertos/kernel/portable/GCC/ARM_CM33_NTZ/non_secure
+    ${CMAKE_CURRENT_SOURCE_DIR}/freertos
+    ${CMAKE_CURRENT_SOURCE_DIR}/qpc/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/qpc/ports/freertos
 )
 
-# QP/C++ framework (assuming it's available in the Docker image or will be added)
-# You may need to add QP framework paths here
-# target_include_directories(${PROJECT_NAME}.elf PRIVATE /path/to/qpcpp)
+
+## QP/C++ framework removed for FreeRTOS/C migration
 
 # Post-build commands to generate binary formats
 add_custom_command(TARGET ${PROJECT_NAME}.elf POST_BUILD
