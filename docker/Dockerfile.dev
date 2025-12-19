@@ -88,20 +88,13 @@ FROM simulation as kobayashi-dev
 # Create workspace
 WORKDIR /workspace
 
+
     # Install west using pip3 (PEP 668 workaround for Ubuntu 24.04+)
-     RUN pip3 install --break-system-packages --user west && \
-          /root/.local/bin/west --version
-     ENV PATH="/root/.local/bin:${PATH}"
+    RUN pip3 install --break-system-packages --user west && \
+        /root/.local/bin/west --version
+    ENV PATH="/root/.local/bin:${PATH}"
 
-# Ensure ~/.local/bin is in PATH and west is installed for the final image
-RUN python3 -m pip install --upgrade pip && \
-    python3 -m pip install --break-system-packages west --prefix /usr/local && \
-    west --version || true
 
-# Ensure west is installed and available in the final image
-RUN python3 -m pip install --upgrade pip && \
-    python3 -m pip install west && \
-    west --version || true
 
 # Create entrypoint script
 RUN echo '#!/bin/bash\n\
