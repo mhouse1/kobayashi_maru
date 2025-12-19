@@ -88,8 +88,10 @@ FROM simulation as kobayashi-dev
 # Create workspace
 WORKDIR /workspace
 
-# Install west using apt (native for Ubuntu 24.04)
-RUN apt-get update && apt-get install -y python3-west && west --version
+    # Install west using pip3 (PEP 668 workaround for Ubuntu 24.04+)
+    RUN pip3 install --break-system-packages --user west && \
+        export PATH="$PATH:/root/.local/bin" && \
+        west --version
 
 # Ensure ~/.local/bin is in PATH and west is installed for the final image
 RUN python3 -m pip install --upgrade pip && \
