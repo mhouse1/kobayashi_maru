@@ -162,9 +162,8 @@ pipeline {
                             west build -b frdm_mcxn947/mcxn947/cpu0 .
                         "
                     """
-                    // Archive metrics
-                    archiveArtifacts artifacts: 'firmware_metrics.log', allowEmptyArchive: true
                 }
+                archiveArtifacts artifacts: 'firmware_metrics.log', allowEmptyArchive: true
             }
         }
         
