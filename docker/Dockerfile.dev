@@ -88,6 +88,11 @@ FROM simulation as kobayashi-dev
 # Create workspace
 WORKDIR /workspace
 
+# Ensure west is installed and available in the final image
+RUN python3 -m pip install --upgrade pip && \
+    python3 -m pip install west && \
+    west --version || true
+
 # Create entrypoint script
 RUN echo '#!/bin/bash\n\
 echo "Kobayashi Maru Development Environment"\n\
