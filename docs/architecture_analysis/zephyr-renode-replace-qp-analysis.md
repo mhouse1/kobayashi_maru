@@ -2,7 +2,7 @@
 
 ## 1️⃣ The Trade-offs You’re Facing
 
-| Aspect | QP | MIT Alternatives (TinyFSM, Automaton) |
+| Aspect | [QP](qp_vs_non_qp_portability.md) | MIT Alternatives (TinyFSM, Automaton) |
 |--------|----|---------------------------------------|
 | **Real-time, event-driven framework** | ✅ Built-in AO + HSM | ✅ HSM only, AO must be implemented manually |
 | **Concurrency** | ✅ Built-in | ❌ Must use RTOS / threads |

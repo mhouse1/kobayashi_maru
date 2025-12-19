@@ -1,12 +1,13 @@
-# QP/C 4.4.01 vs Latest (6.x / 7.x)
+# QP/C 4.4.01 vs Latest (8.1.1)
 
-QP/C **4.4.01 is very old** (circa ~2010). The **current QP/C line (6.x / 7.x)** represents a *new generation* of the framework. This comparison focuses on **architectural and practical differences** relevant to real embedded systems.
+QP/C **4.4.01 is very old** (released March 23, 2012). The **latest QP/C version (8.1.1 as of Oct 2025)** represents a *new generation* of the framework. This comparison focuses on **architectural and practical differences** relevant to real embedded systems.
 
 ---
 
 ## Big Picture Summary
 
-| Area | QP/C 4.4.01 | Latest QP/C (6.x / 7.x) |
+| Area | QP/C 4.4.01 | Latest QP/C (8.1.1) |
+
 |----|----|----|
 | Design philosophy | HSMs + events, manual | **Model-driven, contract-based** |
 | Active Objects | Heavy, static | **Leaner, scalable AOs** |
@@ -17,6 +18,9 @@ QP/C **4.4.01 is very old** (circa ~2010). The **current QP/C line (6.x / 7.x)**
 | Safety | Informal | **MISRA-C, defensive runtime checks** |
 | C language style | C89-era | **Modernized, C99-friendly** |
 | Debug & test | Minimal | **QS tracing & test probes** |
+
+> **Note:** Latest QP/C version referenced here is 8.1.1 (released October 2025). Check the [official release notes](https://github.com/QuantumLeaps/qpc/releases) or [revision history](https://www.state-machine.com/qpc/history.html) for updates.
+
 
 ---
 
@@ -29,7 +33,7 @@ QP/C **4.4.01 is very old** (circa ~2010). The **current QP/C line (6.x / 7.x)**
 - Easy to misuse APIs
 - Assumed expert-only usage
 
-### Latest QP/C
+### Latest QP/C (8.1.1)
 - Explicit enforcement of:
   - Run-to-completion semantics
   - Event ownership rules
@@ -48,7 +52,7 @@ QP/C **4.4.01 is very old** (circa ~2010). The **current QP/C line (6.x / 7.x)**
 - Manual stack and queue sizing
 - Limited support for priority inversion handling
 
-### Latest QP/C
+### Latest QP/C (8.1.1)
 - Leaner Active Object implementation
 - Clean separation between framework, BSP, and application
 - Improved RTOS priority mapping
@@ -65,7 +69,7 @@ QP/C **4.4.01 is very old** (circa ~2010). The **current QP/C line (6.x / 7.x)**
 - Weak runtime validation
 - Easy to leak, double-free, or mis-size events
 
-### Latest QP/C
+### Latest QP/C (8.1.1)
 - Stronger event ownership rules
 - Optional runtime checks
 - Cleaner and safer APIs
@@ -82,7 +86,7 @@ QP/C **4.4.01 is very old** (circa ~2010). The **current QP/C line (6.x / 7.x)**
 - Limited configurability
 - Less flexible tick handling
 
-### Latest QP/C
+### Latest QP/C (8.1.1)
 - Multiple time event rates
 - Decoupled tick handling
 - Support for low-power and tickless RTOS modes
@@ -99,7 +103,7 @@ QP/C **4.4.01 is very old** (circa ~2010). The **current QP/C line (6.x / 7.x)**
 - No Zephyr support
 - POSIX support largely DIY
 
-### Latest QP/C
+### Latest QP/C (8.1.1)
 - Official, maintained ports for:
   - FreeRTOS
   - Zephyr
@@ -117,7 +121,7 @@ QP/C **4.4.01 is very old** (circa ~2010). The **current QP/C line (6.x / 7.x)**
 - Entirely hand-coded
 - Diagrams used only for documentation
 
-### Latest QP/C
+### Latest QP/C (8.1.1)
 - Tight integration with **QM (Quantum Modeler)**
 - Visual state machine design
 - Auto-generated, correct-by-construction C code
@@ -133,7 +137,7 @@ QP/C **4.4.01 is very old** (circa ~2010). The **current QP/C line (6.x / 7.x)**
 - Minimal runtime visibility
 - Debugging relied on breakpoints and logs
 
-### Latest QP/C
+### Latest QP/C (8.1.1)
 - **QS (Quantum Spy)** tracing:
   - Event flow
   - State transitions
@@ -150,7 +154,7 @@ QP/C **4.4.01 is very old** (circa ~2010). The **current QP/C line (6.x / 7.x)**
 - No explicit safety positioning
 - MISRA compliance left to the user
 
-### Latest QP/C
+### Latest QP/C (8.1.1)
 - MISRA-C alignment
 - Defensive programming built-in
 - Widely used in industrial, medical, and safety-critical systems
@@ -177,7 +181,7 @@ For modern systems involving:
 - Simulation (Renode, POSIX)
 - CI-driven testing
 
-**Latest QP/C with FreeRTOS or POSIX is the correct architectural choice.**
+**Latest QP/C (8.1.1) with FreeRTOS or POSIX is the correct architectural choice.**
 
 It enables:
 - Early host-based simulation
@@ -186,11 +190,12 @@ It enables:
 
 ---
 
-## Migration Notes: QP/C 4.4.01 → Latest (6.x / 7.x)
+## Migration Notes: QP/C 4.4.01 → Latest (8.1.1)
 
-This section highlights **what breaks, what changes, and what must be redesigned** when migrating legacy QP/C 4.4.01 code to modern QP/C.
+This section highlights **what breaks, what changes, and what must be redesigned** when migrating legacy QP/C 4.4.01 code to QP/C 8.1.1.
 
 ---
+
 
 ### 1. API Incompatibilities (Will Break)
 
@@ -212,7 +217,8 @@ This section highlights **what breaks, what changes, and what must be redesigned
 - Manual AO construction
 - Application controlled stacks, queues, and priorities
 
-**Latest:**
+
+**8.1.1:**
 - AO lifecycle is more strictly defined
 - Clear separation of:
   - Framework init
@@ -233,7 +239,8 @@ This section highlights **what breaks, what changes, and what must be redesigned
 - Events could be passed and reused informally
 - Ownership rules mostly implicit
 
-**Latest:**
+
+**8.1.1:**
 - Events have **strict ownership semantics**
 - Misuse may trigger runtime assertions
 
@@ -251,7 +258,8 @@ This section highlights **what breaks, what changes, and what must be redesigned
 - Single tick rate
 - Direct tick handling common
 
-**Latest:**
+
+**8.1.1:**
 - Multiple tick rates supported
 - Tick source is abstracted
 
@@ -269,7 +277,8 @@ This section highlights **what breaks, what changes, and what must be redesigned
 - RTOS ports often modified locally
 - Weak separation between port and app code
 
-**Latest:**
+
+**8.1.1:**
 - RTOS ports are **first-class and maintained**
 - Strict porting layer boundaries
 
@@ -286,7 +295,8 @@ This section highlights **what breaks, what changes, and what must be redesigned
 **4.4.01:**
 - Minimal runtime checking
 
-**Latest:**
+
+**8.1.1:**
 - Extensive assertions enabled by default
 - MISRA-oriented constraints
 
@@ -303,7 +313,8 @@ This section highlights **what breaks, what changes, and what must be redesigned
 - Hand-written state handlers
 - Looser structure allowed
 
-**Latest:**
+
+**8.1.1:**
 - Stricter state hierarchy expectations
 - Strong alignment with QM-generated code
 
@@ -321,7 +332,8 @@ This section highlights **what breaks, what changes, and what must be redesigned
 - Flat directory layouts common
 - Manual Makefiles
 
-**Latest:**
+
+**8.1.1:**
 - Structured directory layout
 - Clear separation of:
   - qpc
@@ -359,4 +371,16 @@ This section highlights **what breaks, what changes, and what must be redesigned
 ---
 
 *End of document*
+
+---
+
+## Further Reading & References
+
+- [QP/C Official Website](https://www.state-machine.com/qpc)
+- [QP/C Documentation Portal](https://www.state-machine.com/doc/)
+- [QP/C Release Notes (GitHub)](https://github.com/QuantumLeaps/qpc/releases)
+- [QM Model-Based Design Tool](https://www.state-machine.com/qm)
+- [MISRA Compliance in QP](https://www.state-machine.com/doc/AN_QP_MISRA.pdf)
+
+For the most up-to-date information, always refer to the official Quantum Leaps website and GitHub repository.
 
