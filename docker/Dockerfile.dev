@@ -56,8 +56,8 @@ RUN python3 -m pip install --break-system-packages \
     scipy \
     matplotlib \
     pyserial \
-    pytest
-    jsonschema \
+    pytest \
+    jsonschema
 
 # Simulation Stage
 FROM arm-dev as simulation
