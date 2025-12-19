@@ -180,7 +180,7 @@ pipeline {
                                 west init
                                 west update
                             fi
-                            west build -b frdm_mcxn947 zephyr_app
+                            west build -b frdm_mcxn947/mcxn947/cpu0 zephyr_app
                         "
                     """
                 }
