@@ -88,6 +88,12 @@ FROM simulation as kobayashi-dev
 # Create workspace
 WORKDIR /workspace
 
+# Ensure ~/.local/bin is in PATH and west is installed for the final image
+ENV PATH="/root/.local/bin:${PATH}"
+RUN python3 -m pip install --upgrade pip && \
+    python3 -m pip install --break-system-packages west && \
+    west --version || true
+
 # Ensure west is installed and available in the final image
 RUN python3 -m pip install --upgrade pip && \
     python3 -m pip install west && \
