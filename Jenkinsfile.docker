@@ -102,6 +102,36 @@ pipeline {
             }
         }
         
+        stage('Integration Test') {
+            when {
+                expression { params.SKIP_TESTS == false }
+            }
+            steps {
+                script {
+                    sh '''
+                        echo "=== Running Integration Test ==="
+                        docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
+                            echo 'Testing complete toolchain...'
+                            
+                            # Test ARM GCC
+                            echo 'ARM GCC:'
+                            arm-none-eabi-gcc --version | head -1
+                            
+                            # Test Python environment
+                            echo 'Python environment:'
+                            python3 -c \\"import numpy; print('NumPy working:', numpy.__version__)\\"
+                            
+                            # Test Renode availability
+                            echo 'Renode:'
+                            command -v renode && echo 'Renode available' || echo 'Renode not found'
+                            
+                            echo '✓ Integration test completed'
+                        "
+                    '''
+                }
+            }
+        }
+        
         stage('Build Firmware') {
             steps {
                 script {
@@ -125,30 +155,12 @@ pipeline {
                                 echo 'Dummy firmware build' > build/firmware.elf
                             fi
                         "
-                    """
-                }
-            }
-        }
-        
-        stage('Firmware Metrics') {
-            steps {
-                script {
-                    sh '''
-                        echo "=== Firmware Size Metrics ==="
+
+                        echo "=== Building Zephyr App ==="
                         docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
-                            cd firmware/build
-                            if [ -f robot_firmware.elf ]; then
-                                echo 'Firmware size analysis:'
-                                arm-none-eabi-size robot_firmware.elf
-                                echo ''
-                                echo 'Section details:'
-                                arm-none-eabi-size -A robot_firmware.elf | head -20
-                            else
-                                echo 'No firmware.elf found'
-                            fi
-                        " | tee firmware_metrics.log
-                    '''
-                    
+                            cd firmware/zephyr_app
+                            west build -b frdm_mcxn947/mcxn947/cpu0 .
+                        "
                     // Archive metrics
                     archiveArtifacts artifacts: 'firmware_metrics.log', allowEmptyArchive: true
                 }
@@ -257,17 +269,34 @@ except ImportError as e:
                                     echo 'Lines of code:'
                                     find . -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' | xargs wc -l | tail -1
                                 "
-                            '''
-                        }
-                    }
-                }
-                
-                stage('Simulation Analysis') {
-                    steps {
-                        script {
                             sh '''
-                                echo \"=== Running Simulation Model Analysis ===\"
+                                echo "=== Running Firmware Static Analysis ==="
                                 docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
+                                    cd firmware
+                                    # Main firmware code structure
+                                    echo 'Main firmware source files:'
+                                    find . -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' | head -20
+                                    echo 'Main firmware lines of code:'
+                                    find . -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' | xargs wc -l | tail -1
+                                    # Zephyr app code structure
+                                    echo 'Zephyr app source files:'
+                                    find zephyr_app/src -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' | head -20
+                                    echo 'Zephyr app lines of code:'
+                                    find zephyr_app/src -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' | xargs wc -l | tail -1
+
+                                    # Run cppcheck if available
+                                    if command -v cppcheck > /dev/null; then
+                                        echo 'Running cppcheck on main firmware...'
+                                        cppcheck --enable=all --inline-suppr --quiet . 2> ../artifacts/cppcheck_firmware.txt || true
+                                        echo 'Running cppcheck on zephyr_app...'
+                                        cppcheck --enable=all --inline-suppr --quiet zephyr_app/src 2> ../artifacts/cppcheck_zephyr_app.txt || true
+                                        echo 'cppcheck reports saved to artifacts/'
+                                    else
+                                        echo 'cppcheck not found, skipping C/C++ static analysis.'
+                                    fi
+                                "
+                            '''
+                            archiveArtifacts artifacts: 'artifacts/cppcheck_firmware.txt,artifacts/cppcheck_zephyr_app.txt', allowEmptyArchive: true
                                     cd simulation/models
                                     
                                     echo 'Python model files:'
