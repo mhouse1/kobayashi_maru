@@ -20,7 +20,25 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     ca-certificates \
     gnupg \
+    python3-setuptools \
+    python3-wheel \
+    ninja-build \
+    gperf \
+    ccache \
+    device-tree-compiler \
+    make \
+    gcc-multilib \
+    g++-multilib \
+    libsdl2-dev \
+    udev \
     && rm -rf /var/lib/apt/lists/*
+
+# Install west and Zephyr Python requirements
+RUN python3 -m pip install --upgrade pip && \
+    python3 -m pip install west && \
+    west --version || true
+# Optionally, Zephyr requirements.txt can be installed after west init/update
+# RUN pip install -r zephyr/scripts/requirements.txt || true
 
 # ARM Development Stage
 FROM base as arm-dev
