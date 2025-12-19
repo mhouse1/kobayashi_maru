@@ -144,7 +144,7 @@ pipeline {
                                 make clean || true
                                 make -j\$(nproc) BUILD_TYPE=\${BUILD_TYPE}
                             elif [ -f 'CMakeLists.txt' ]; then
-                                ${cleanCmd}
+                                \${cleanCmd}
                                 mkdir -p build && cd build
                                 cmake -DCMAKE_BUILD_TYPE=\${BUILD_TYPE} ..
                                 make -j\$(nproc)
@@ -161,6 +161,7 @@ pipeline {
                             cd firmware/zephyr_app
                             west build -b frdm_mcxn947/mcxn947/cpu0 .
                         "
+                    """
                     // Archive metrics
                     archiveArtifacts artifacts: 'firmware_metrics.log', allowEmptyArchive: true
                 }
