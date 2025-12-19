@@ -21,7 +21,7 @@ connector Connect flexcomm6 pixel_terminal
 
 
 # Load Zephyr firmware
-sysbus LoadELF @/workspace/firmware/zephyr_app/build/zephyr/kobayashi.elf
+sysbus LoadELF @/workspace/firmware/build/zephyr/zephyr.elf
 
 # Set quantum value for time synchronization (1ms)
 emulation SetGlobalQuantum "0.001"
