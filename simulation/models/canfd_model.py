@@ -80,67 +80,75 @@ class CANFDModel:
         self.tx_queue = []
         self.rx_queue = []
         
+    def _get_offset(self, offset):
+        try:
+            return offset.Offset
+        except AttributeError:
+            return offset
+
     def read(self, offset):
-        if offset == self.REG_CONTROL:
+        actual_offset = self._get_offset(offset)
+        if actual_offset == self.REG_CONTROL:
             return self.control
-        elif offset == self.REG_STATUS:
+        elif actual_offset == self.REG_STATUS:
             return self.status
-        elif offset == self.REG_TX_ID:
+        elif actual_offset == self.REG_TX_ID:
             return self.tx_id
-        elif offset == self.REG_TX_DLC:
+        elif actual_offset == self.REG_TX_DLC:
             return self.tx_dlc
-        elif offset == self.REG_TX_DATA0:
+        elif actual_offset == self.REG_TX_DATA0:
             return int.from_bytes(self.tx_data[0:4], 'little')
-        elif offset == self.REG_TX_DATA1:
+        elif actual_offset == self.REG_TX_DATA1:
             return int.from_bytes(self.tx_data[4:8], 'little')
-        elif offset == self.REG_TX_DATA2:
+        elif actual_offset == self.REG_TX_DATA2:
             return int.from_bytes(self.tx_data[8:12], 'little')
-        elif offset == self.REG_TX_DATA3:
+        elif actual_offset == self.REG_TX_DATA3:
             return int.from_bytes(self.tx_data[12:16], 'little')
-        elif offset == self.REG_RX_ID:
+        elif actual_offset == self.REG_RX_ID:
             return self.rx_id
-        elif offset == self.REG_RX_DLC:
+        elif actual_offset == self.REG_RX_DLC:
             return self.rx_dlc
-        elif offset == self.REG_RX_DATA0:
+        elif actual_offset == self.REG_RX_DATA0:
             return int.from_bytes(self.rx_data[0:4], 'little')
-        elif offset == self.REG_RX_DATA1:
+        elif actual_offset == self.REG_RX_DATA1:
             return int.from_bytes(self.rx_data[4:8], 'little')
-        elif offset == self.REG_RX_DATA2:
+        elif actual_offset == self.REG_RX_DATA2:
             return int.from_bytes(self.rx_data[8:12], 'little')
-        elif offset == self.REG_RX_DATA3:
+        elif actual_offset == self.REG_RX_DATA3:
             return int.from_bytes(self.rx_data[12:16], 'little')
-        elif offset == self.REG_FILTER_ID:
+        elif actual_offset == self.REG_FILTER_ID:
             return self.filter_id
-        elif offset == self.REG_FILTER_MASK:
+        elif actual_offset == self.REG_FILTER_MASK:
             return self.filter_mask
-        elif offset == self.REG_BAUDRATE:
+        elif actual_offset == self.REG_BAUDRATE:
             return self.baudrate
-        elif offset == self.REG_ERROR_CNT:
+        elif actual_offset == self.REG_ERROR_CNT:
             return self.error_count
         return 0
-        
+
     def write(self, offset, value):
-        if offset == self.REG_CONTROL:
+        actual_offset = self._get_offset(offset)
+        if actual_offset == self.REG_CONTROL:
             self.control = value
             if value & self.CTRL_TX_REQ:
                 self._transmit()
-        elif offset == self.REG_TX_ID:
+        elif actual_offset == self.REG_TX_ID:
             self.tx_id = value
-        elif offset == self.REG_TX_DLC:
+        elif actual_offset == self.REG_TX_DLC:
             self.tx_dlc = value
-        elif offset == self.REG_TX_DATA0:
+        elif actual_offset == self.REG_TX_DATA0:
             self.tx_data[0:4] = value.to_bytes(4, 'little')
-        elif offset == self.REG_TX_DATA1:
+        elif actual_offset == self.REG_TX_DATA1:
             self.tx_data[4:8] = value.to_bytes(4, 'little')
-        elif offset == self.REG_TX_DATA2:
+        elif actual_offset == self.REG_TX_DATA2:
             self.tx_data[8:12] = value.to_bytes(4, 'little')
-        elif offset == self.REG_TX_DATA3:
+        elif actual_offset == self.REG_TX_DATA3:
             self.tx_data[12:16] = value.to_bytes(4, 'little')
-        elif offset == self.REG_FILTER_ID:
+        elif actual_offset == self.REG_FILTER_ID:
             self.filter_id = value
-        elif offset == self.REG_FILTER_MASK:
+        elif actual_offset == self.REG_FILTER_MASK:
             self.filter_mask = value
-        elif offset == self.REG_BAUDRATE:
+        elif actual_offset == self.REG_BAUDRATE:
             self.baudrate = value
             
     def _transmit(self):

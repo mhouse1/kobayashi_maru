@@ -38,31 +38,39 @@ class MotorModel:
         self.status = 0
         self.canfd_id = 0x100
         
+    def _get_offset(self, offset):
+        try:
+            return offset.Offset
+        except AttributeError:
+            return offset
+
     def read(self, offset):
-        if offset == self.REG_CONTROL:
+        actual_offset = self._get_offset(offset)
+        if actual_offset == self.REG_CONTROL:
             return self.control
-        elif offset == self.REG_SPEED_SET:
+        elif actual_offset == self.REG_SPEED_SET:
             return self.speed_setpoint
-        elif offset == self.REG_SPEED_ACT:
+        elif actual_offset == self.REG_SPEED_ACT:
             return self.actual_speed
-        elif offset == self.REG_POSITION:
+        elif actual_offset == self.REG_POSITION:
             return self.position
-        elif offset == self.REG_CURRENT:
+        elif actual_offset == self.REG_CURRENT:
             return self.current
-        elif offset == self.REG_STATUS:
+        elif actual_offset == self.REG_STATUS:
             return self.status
-        elif offset == self.REG_CANFD_ID:
+        elif actual_offset == self.REG_CANFD_ID:
             return self.canfd_id
         return 0
-        
+
     def write(self, offset, value):
-        if offset == self.REG_CONTROL:
+        actual_offset = self._get_offset(offset)
+        if actual_offset == self.REG_CONTROL:
             self.control = value
             self._update_motor_state()
-        elif offset == self.REG_SPEED_SET:
+        elif actual_offset == self.REG_SPEED_SET:
             self.speed_setpoint = value
             self._update_motor_state()
-        elif offset == self.REG_CANFD_ID:
+        elif actual_offset == self.REG_CANFD_ID:
             self.canfd_id = value
             
     def _update_motor_state(self):

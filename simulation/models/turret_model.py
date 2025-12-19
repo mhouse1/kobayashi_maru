@@ -48,46 +48,54 @@ class TurretModel:
         self.status = 0
         self.canfd_id = 0x200
         
+    def _get_offset(self, offset):
+        try:
+            return offset.Offset
+        except AttributeError:
+            return offset
+
     def read(self, offset):
-        if offset == self.REG_CONTROL:
+        actual_offset = self._get_offset(offset)
+        if actual_offset == self.REG_CONTROL:
             return self.control
-        elif offset == self.REG_PAN_SETPOINT:
+        elif actual_offset == self.REG_PAN_SETPOINT:
             return self.pan_setpoint & 0xFFFFFFFF
-        elif offset == self.REG_PAN_ACTUAL:
+        elif actual_offset == self.REG_PAN_ACTUAL:
             return self.pan_actual & 0xFFFFFFFF
-        elif offset == self.REG_TILT_SETPOINT:
+        elif actual_offset == self.REG_TILT_SETPOINT:
             return self.tilt_setpoint & 0xFFFFFFFF
-        elif offset == self.REG_TILT_ACTUAL:
+        elif actual_offset == self.REG_TILT_ACTUAL:
             return self.tilt_actual & 0xFFFFFFFF
-        elif offset == self.REG_PAN_SPEED:
+        elif actual_offset == self.REG_PAN_SPEED:
             return self.pan_speed
-        elif offset == self.REG_TILT_SPEED:
+        elif actual_offset == self.REG_TILT_SPEED:
             return self.tilt_speed
-        elif offset == self.REG_STATUS:
+        elif actual_offset == self.REG_STATUS:
             return self.status
-        elif offset == self.REG_CANFD_ID:
+        elif actual_offset == self.REG_CANFD_ID:
             return self.canfd_id
         return 0
-        
+
     def write(self, offset, value):
-        if offset == self.REG_CONTROL:
+        actual_offset = self._get_offset(offset)
+        if actual_offset == self.REG_CONTROL:
             self.control = value
             if value & self.CTRL_HOME:
                 self._home()
-        elif offset == self.REG_PAN_SETPOINT:
+        elif actual_offset == self.REG_PAN_SETPOINT:
             # Handle signed value
             if value > 0x7FFFFFFF:
                 value = value - 0x100000000
             self.pan_setpoint = max(self.PAN_MIN, min(self.PAN_MAX, value))
-        elif offset == self.REG_TILT_SETPOINT:
+        elif actual_offset == self.REG_TILT_SETPOINT:
             if value > 0x7FFFFFFF:
                 value = value - 0x100000000
             self.tilt_setpoint = max(self.TILT_MIN, min(self.TILT_MAX, value))
-        elif offset == self.REG_PAN_SPEED:
+        elif actual_offset == self.REG_PAN_SPEED:
             self.pan_speed = value
-        elif offset == self.REG_TILT_SPEED:
+        elif actual_offset == self.REG_TILT_SPEED:
             self.tilt_speed = value
-        elif offset == self.REG_CANFD_ID:
+        elif actual_offset == self.REG_CANFD_ID:
             self.canfd_id = value
             
     def _home(self):

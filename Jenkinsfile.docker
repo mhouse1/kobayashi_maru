@@ -187,7 +187,7 @@ pipeline {
                         "
                     """
                 }
-                archiveArtifacts artifacts: 'build/zephyr/zephyr.elf', allowEmptyArchive: true
+                archiveArtifacts artifacts: 'build/zephyr/zephyr.elf,build/zephyr/zephyr.bin,build/zephyr/zephyr.hex,build/firmware_metrics.log', allowEmptyArchive: true
             }
         }
         
@@ -312,6 +312,7 @@ except ImportError as e:
                                 find . -name '*.py' | head -10
                                 echo 'Python syntax check:'
                                 find . -name '*.py' -exec python3 -m py_compile {} \\; || echo 'Some syntax issues found'
+                                    export PYTHONPYCACHEPREFIX=/tmp/pycache
                             '''
                             archiveArtifacts artifacts: 'artifacts/cppcheck_firmware.txt,artifacts/cppcheck_zephyr_app.txt', allowEmptyArchive: true
                         }
@@ -355,8 +356,8 @@ except ImportError as e:
                     " || true
                 '''
                 
-                // Archive artifacts if any exist
-                archiveArtifacts artifacts: 'artifacts/**/*', fingerprint: true, allowEmptyArchive: true
+                // Archive Zephyr firmware files and metrics log
+                archiveArtifacts artifacts: 'artifacts/zephyr.elf,artifacts/zephyr.bin,artifacts/zephyr.hex,artifacts/firmware_metrics.log', fingerprint: true, allowEmptyArchive: true
             }
             
             echo 'Docker-based build completed successfully! 🐳🎉'
