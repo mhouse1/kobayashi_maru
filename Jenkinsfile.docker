@@ -160,19 +160,19 @@ pipeline {
 
                         echo "=== Building Zephyr App ==="
                         docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
-                            cd firmware/zephyr_app
+                            cd firmware
                             # Remove any previous west workspace in firmware/
-                            if [ -d ../.west ]; then
+                            if [ -d .west ]; then
                                 echo 'Removing previous west workspace in firmware/'
-                                rm -rf ../.west
+                                rm -rf .west
                             fi
                             # Ensure this is a west workspace
                             if [ ! -f .west/config ]; then
                                 echo 'Initializing west workspace...'
-                                west init -l .
+                                west init -l zephyr_app
                                 west update
                             fi
-                            west build -b frdm_mcxn947 .
+                            west build -b frdm_mcxn947 zephyr_app
                         "
                     """
                 }
