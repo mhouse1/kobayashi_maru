@@ -261,18 +261,6 @@ except ImportError as e:
                                 echo "=== Running Firmware Static Analysis ==="
                                 docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
                                     cd firmware
-                                    
-                                    # Simple code structure analysis
-                                    echo 'Source files:'
-                                    find . -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' | head -20
-                                    
-                                    echo 'Lines of code:'
-                                    find . -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' | xargs wc -l | tail -1
-                                "
-                            sh '''
-                                echo "=== Running Firmware Static Analysis ==="
-                                docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
-                                    cd firmware
                                     # Main firmware code structure
                                     echo 'Main firmware source files:'
                                     find . -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' | head -20
@@ -295,17 +283,13 @@ except ImportError as e:
                                         echo 'cppcheck not found, skipping C/C++ static analysis.'
                                     fi
                                 "
+                                cd simulation/models
+                                echo 'Python model files:'
+                                find . -name '*.py' | head -10
+                                echo 'Python syntax check:'
+                                find . -name '*.py' -exec python3 -m py_compile {} \; || echo 'Some syntax issues found'
                             '''
                             archiveArtifacts artifacts: 'artifacts/cppcheck_firmware.txt,artifacts/cppcheck_zephyr_app.txt', allowEmptyArchive: true
-                                    cd simulation/models
-                                    
-                                    echo 'Python model files:'
-                                    find . -name '*.py' | head -10
-                                    
-                                    echo 'Python syntax check:'
-                                    find . -name '*.py' -exec python3 -m py_compile {} \\; || echo 'Some syntax issues found'
-                                "
-                            '''
                         }
                     }
                 }
