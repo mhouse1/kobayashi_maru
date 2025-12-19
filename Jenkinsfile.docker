@@ -1,4 +1,3 @@
-stage('Toolchain Verification') {
 pipeline {
     agent any
     
@@ -103,14 +102,14 @@ pipeline {
             }
         }
 
-        stage('Integration Test') {
+        stage('Toolchain Verification') {
             when {
                 expression { params.SKIP_TESTS == false }
             }
             steps {
                 script {
                     sh '''
-                        echo "=== Running Integration Test ==="
+                        echo "=== Running Toolchain Verification ==="
                         docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
                             echo 'Testing complete toolchain...'
                             
@@ -126,7 +125,7 @@ pipeline {
                             echo 'Renode:'
                             command -v renode && echo 'Renode available' || echo 'Renode not found'
                             
-                            echo '✓ Integration test completed'
+                            echo '✓ Toolchain verification completed'
                         "
                     '''
                 }
