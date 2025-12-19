@@ -187,7 +187,7 @@ pipeline {
                         "
                     """
                 }
-                archiveArtifacts artifacts: 'firmware_metrics.log', allowEmptyArchive: true
+                archiveArtifacts artifacts: 'build/zephyr/zephyr.elf', allowEmptyArchive: true
             }
         }
         
@@ -234,10 +234,10 @@ except ImportError as e:
                             cd simulation/renode
                             echo 'Starting Renode simulation test...'
                             
-                            # Check if firmware exists, create dummy if not
-                            if [ ! -f '../../firmware/build/robot_firmware.elf' ]; then
-                                mkdir -p ../../firmware/build
-                                echo 'Dummy firmware for testing' > ../../firmware/build/robot_firmware.elf
+                            # Fail if Zephyr firmware does not exist
+                            if [ ! -f '../../firmware/build/zephyr/zephyr.elf' ]; then
+                                echo '❌ Zephyr firmware ELF not found: ../../firmware/build/zephyr/zephyr.elf'
+                                exit 1
                             fi
                             
                             # Run Renode with timeout - capture output and check for errors
