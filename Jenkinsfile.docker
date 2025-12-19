@@ -287,7 +287,7 @@ except ImportError as e:
                                 echo 'Python model files:'
                                 find . -name '*.py' | head -10
                                 echo 'Python syntax check:'
-                                find . -name '*.py' -exec python3 -m py_compile {} \; || echo 'Some syntax issues found'
+                                find . -name '*.py' -exec python3 -m py_compile {} \\; || echo 'Some syntax issues found'
                             '''
                             archiveArtifacts artifacts: 'artifacts/cppcheck_firmware.txt,artifacts/cppcheck_zephyr_app.txt', allowEmptyArchive: true
                         }
