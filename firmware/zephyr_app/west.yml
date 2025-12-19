@@ -1,27 +1,14 @@
 manifest:
   version: 0.12
-  projects:
-    - name: zephyr
-      url: https://github.com/zephyrproject-rtos/zephyr.git
-      revision: main
-      path: zephyr
-  self:
-    path: zephyr_app
-  remotes:
-    - name: zephyrproject-rtos
-      url-base: https://github.com/zephyrproject-rtos
-    - name: nxp
-      url-base: https://github.com/NXP
-  projects:
-    - name: zephyr
-      repo-path: zephyr
-      remote: zephyrproject-rtos
-      revision: main
-      import:
-        path-prefix: modules
-        name-allowlist:
-          - hal_nxp
-    - name: hal_nxp
+  manifest:
+    version: 0.12
+    projects:
+      - name: zephyr
+        url: https://github.com/zephyrproject-rtos/zephyr.git
+        revision: main
+        path: zephyr
+    self:
+      path: zephyr_app
       repo-path: hal_nxp
       remote: nxp
       revision: main
