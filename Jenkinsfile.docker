@@ -146,10 +146,13 @@ pipeline {
                                 make clean || true
                                 make -j\$(nproc) BUILD_TYPE=\${BUILD_TYPE}
                             elif [ -f 'CMakeLists.txt' ]; then
-                                \${cleanCmd}
+                                if [ -d build ]; then
+                                    echo 'Removing existing build directory before cmake build (CMakeLists.txt branch)'
+                                    rm -rf build
+                                fi
                                 mkdir -p build && cd build
-                                cmake -DCMAKE_BUILD_TYPE=\${BUILD_TYPE} ..
-                                make -j\$(nproc)
+                                cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} ..
+                                make -j$(nproc)
                             else
                                 echo 'No build system found (Makefile or CMakeLists.txt)'
                                 echo 'Creating dummy build for testing...'
