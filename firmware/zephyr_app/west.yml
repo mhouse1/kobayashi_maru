@@ -26,4 +26,3 @@ manifest:
       remote: nxp
       revision: main
       path: modules/hal/nxp
-  group-filter: []
