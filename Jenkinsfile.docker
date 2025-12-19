@@ -151,8 +151,8 @@ pipeline {
                                     rm -rf build
                                 fi
                                 mkdir -p build && cd build
-                                cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} ..
-                                make -j$(nproc)
+                                cmake -DCMAKE_BUILD_TYPE=\${BUILD_TYPE} ..
+                                make -j\$(nproc)
                             else
                                 echo 'No build system found (Makefile or CMakeLists.txt)'
                                 echo 'Creating dummy build for testing...'
