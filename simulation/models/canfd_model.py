@@ -1,9 +1,9 @@
-import os
-print(f"[canfd_model.py] Loaded from: {os.path.abspath(__file__)}")
 """
 CAN-FD Model for Renode Simulation
 Simulates CAN-FD bus communication for robot modules
 """
+import os
+print("[canfd_model.py] Loaded from: {}".format(os.path.abspath(__file__)))
 
 class CANFDMessage:
     """CAN-FD message structure"""
