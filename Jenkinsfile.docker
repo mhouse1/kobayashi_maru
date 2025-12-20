@@ -187,7 +187,7 @@ pipeline {
                         "
                     """
                 }
-                archiveArtifacts artifacts: 'build/zephyr/zephyr.elf,build/zephyr/zephyr.bin,build/zephyr/zephyr.hex,build/firmware_metrics.log', allowEmptyArchive: true
+                archiveArtifacts artifacts: 'firmware/build/zephyr/zephyr.elf,firmware/build/zephyr/zephyr.bin,firmware/build/zephyr/zephyr.hex,firmware/build/firmware_metrics.log', allowEmptyArchive: true
             }
         }
         
