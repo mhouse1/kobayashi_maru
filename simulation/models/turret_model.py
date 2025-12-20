@@ -76,18 +76,13 @@ class TurretModel:
             return self.canfd_id
         return 0
 
-    def write(self, offset, value=None):
+    def write(self, offset, value):
         # Debug: print type and attributes of offset
         try:
             print("[turret_model.py] write() called with offset type:", type(offset), "attributes:", dir(offset))
         except Exception:
             pass
-        # Support both (offset, value) and (request) signatures
-        if value is None and hasattr(offset, 'Offset') and hasattr(offset, 'Value'):
-            actual_offset = offset.Offset
-            value = offset.Value
-        else:
-            actual_offset = self._get_offset(offset)
+        actual_offset = self._get_offset(offset)
         if actual_offset == self.REG_CONTROL:
             self.control = value
             if value & self.CTRL_HOME:
