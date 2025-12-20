@@ -258,7 +258,7 @@ except ImportError as e:
 
                             echo '=== Renode syntax check ==='
                             renode --console --disable-xwt \
-                                -e \\"include robot_simulation.resc; quit\\" \
+                                -e \\"include @robot_simulation.resc; quit\\" \
                                 2>&1 | tee renode_syntax.log
 
                             if grep -qE 'Could not tokenize|syntax error|parse error|Bad parameters for command include' renode_syntax.log; then
