@@ -243,38 +243,44 @@ except ImportError as e:
                         docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
                             cd simulation/renode
                             echo 'Starting Renode simulation test...'
-                            
+
                             # Optionally clean .pyc files in simulation/models
-                            if [ \"${CLEAN_PYTHON_CACHE}\" = \"true\" ]; then
+                            if [ \\"${CLEAN_PYTHON_CACHE}\\" = \\"true\\" ]; then
                                 echo 'Cleaning .pyc files in simulation/models...'
                                 find ../models -name '*.pyc' -delete
                             fi
-                            
+
                             # Fail if Zephyr firmware does not exist
                             if [ ! -f '../../firmware/build/zephyr/zephyr.elf' ]; then
                                 echo '❌ Zephyr firmware ELF not found: ../../firmware/build/zephyr/zephyr.elf'
                                 exit 1
                             fi
-                            
-                            # Run Renode with timeout - execute script and quit so parse errors cause non-zero exit
-                            timeout 30s renode --console --disable-xwt -e "i robot_simulation.resc; quit" 2>&1 | tee renode_output.log
-                            RENODE_EXIT_CODE=\$?
 
-                            # Detect Renode script parse/tokenize errors explicitly
-                            if grep -qE 'Could not tokenize|syntax error|parse error' renode_output.log; then
+                            echo '=== Renode syntax check ==='
+                            renode --console --disable-xwt \
+                                -e \\"include robot_simulation.resc; quit\\" \
+                                2>&1 | tee renode_syntax.log
+
+                            if grep -qE 'Could not tokenize|syntax error|parse error|Bad parameters for command include' renode_syntax.log; then
                                 echo '❌ Renode script syntax error detected'
-                                grep -E 'Could not tokenize|syntax error|parse error' renode_output.log | head -20
-                                exit 1
-                            fi
-                            
-                            # Check for fatal errors or exceptions in Renode output
-                            if grep -qE 'Could not find|Could not resolve|Error E[0-9]+|There was an error|Exception was thrown|Fatal error|Unhandled exception' renode_output.log; then
-                                echo '❌ Renode simulation failed with fatal errors:'
-                                grep -E 'Could not find|Could not resolve|Error E[0-9]+|There was an error|Exception was thrown|Fatal error|Unhandled exception' renode_output.log | head -20
                                 exit 1
                             fi
 
-                            # Exit code 124 is timeout, which is expected for simulation
+                            echo '✓ Renode syntax OK'
+
+                            echo '=== Renode runtime simulation ==='
+                            timeout 30s renode --console --disable-xwt robot_simulation.resc \
+                                2>&1 | tee renode_output.log
+
+                            RENODE_EXIT_CODE=\\${PIPESTATUS[0]}
+
+                            # Check for fatal runtime errors
+                            if grep -qE 'Could not find|Could not resolve|Error E[0-9]+|There was an error|Exception was thrown|Fatal error|Unhandled exception' renode_output.log; then
+                                echo '❌ Renode simulation failed with fatal errors'
+                                exit 1
+                            fi
+
+                            # Exit code 124 is timeout, which is expected
                             if [ \\$RENODE_EXIT_CODE -eq 124 ]; then
                                 echo '✓ Renode simulation started successfully (timed out as expected)'
                             elif [ \\$RENODE_EXIT_CODE -eq 0 ]; then
@@ -295,6 +301,7 @@ except ImportError as e:
                 }
             }
         }
+
         
         stage('Static Analysis') {
             when {
