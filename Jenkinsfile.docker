@@ -312,7 +312,7 @@ except ImportError as e:
                                 find . -name '*.py' | head -10
                                 echo 'Python syntax check:'
                                     export PYTHONPYCACHEPREFIX=/tmp/pycache
-                                    find . -name '*.py' -exec python3 -m py_compile {} \; || echo 'Some syntax issues found'
+                                    find . -name '*.py' -exec python3 -m py_compile {} \\; || echo 'Some syntax issues found'
                             '''
                             archiveArtifacts artifacts: 'artifacts/cppcheck_firmware.txt,artifacts/cppcheck_zephyr_app.txt', allowEmptyArchive: true
                         }
