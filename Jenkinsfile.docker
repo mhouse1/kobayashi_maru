@@ -251,9 +251,16 @@ except ImportError as e:
                                 exit 1
                             fi
                             
-                            # Run Renode with timeout - capture output and check for errors
-                            timeout 30s renode --console --disable-xwt robot_simulation.resc 2>&1 | tee renode_output.log
-                            RENODE_EXIT_CODE=\\$?
+                            # Run Renode with timeout - execute script and quit so parse errors cause non-zero exit
+                            timeout 30s renode --console --disable-xwt -e "i robot_simulation.resc; quit" 2>&1 | tee renode_output.log
+                            RENODE_EXIT_CODE=\$?
+
+                            # Detect Renode script parse/tokenize errors explicitly
+                            if grep -qE 'Could not tokenize|syntax error|parse error' renode_output.log; then
+                                echo '❌ Renode script syntax error detected'
+                                grep -E 'Could not tokenize|syntax error|parse error' renode_output.log | head -20
+                                exit 1
+                            fi
                             
                             # Check for fatal errors or exceptions in Renode output
                             if grep -qE 'Could not find|Could not resolve|Error E[0-9]+|There was an error|Exception was thrown|Fatal error|Unhandled exception' renode_output.log; then

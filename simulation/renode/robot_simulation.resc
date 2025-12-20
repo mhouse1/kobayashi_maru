@@ -24,9 +24,13 @@ machine LoadPlatformDescription $repl
 
 # -------------------------
 # Optional logging to file (CI-friendly)
+# Use guarded try instead of `if $var {` to avoid tokenization issues
+# when variable expansion produces unexpected tokens.
 # -------------------------
-if $enableLogFile {
+try {
     emulation CreateLogFile $logFileName
+} catch {
+    # ignore if CreateLogFile is not supported in this environment
 }
 
 # -------------------------
@@ -41,10 +45,13 @@ try {
 
 # -------------------------
 # Optional Pixel 10 Pro terminal
+# Use guarded try to avoid conditional parsing issues during variable expansion.
 # -------------------------
-if $enablePixelTerminal {
+try {
     emulation CreateServerSocketTerminal 3456 "pixel_terminal" false
     connector Connect flexcomm6 pixel_terminal
+} catch {
+    # ignore if socket cannot be created or connector fails
 }
 
 # -------------------------
