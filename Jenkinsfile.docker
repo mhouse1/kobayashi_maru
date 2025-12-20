@@ -299,7 +299,7 @@ except ImportError as e:
                                     # Run cppcheck if available
                                     if command -v cppcheck > /dev/null; then
                                         echo 'Running cppcheck on main firmware (src/ and include/, parallelized, excluding zephyr and third_party)...'
-                                        cppcheck -j $(nproc) --enable=all --inline-suppr --quiet src/ include/ --exclude-dir=zephyr --exclude-dir=third_party 2> ../artifacts/cppcheck_firmware.txt || true
+                                        cppcheck -j $(nproc) --enable=all --inline-suppr --quiet src/ include/ --exclude=zephyr --exclude=third_party 2> ../artifacts/cppcheck_firmware.txt || true
                                         echo 'Running cppcheck on zephyr_app...'
                                         cppcheck -j $(nproc) --enable=all --inline-suppr --quiet zephyr_app/src 2> ../artifacts/cppcheck_zephyr_app.txt || true
                                         echo 'cppcheck reports saved to artifacts/'
