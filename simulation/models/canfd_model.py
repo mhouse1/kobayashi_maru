@@ -1,3 +1,4 @@
+print("=== LOADING canfd_model.py ===")
 """
 CAN-FD Model for Renode Simulation
 Simulates CAN-FD bus communication for robot modules
@@ -82,79 +83,92 @@ class CANFDModel:
         self.tx_queue = []
         self.rx_queue = []
         
-    def _get_offset(self, offset):
-        return offset
+    def __init__(self, base_address=0x50003000):
+        self.base_address = base_address
+        self.control = 0
+        self.status = 0
+        self.tx_id = 0
+        self.tx_dlc = 0
+        self.tx_data = bytearray(64)
+        self.rx_id = 0
+        self.rx_dlc = 0
+        self.rx_data = bytearray(64)
+        self.filter_id = 0
+        self.filter_mask = 0
+        self.baudrate = 5000000  # 5 Mbps CAN-FD
+        self.error_count = 0
+        self.tx_queue = []
+        self.rx_queue = []
 
-    def read(self, offset):
-        actual_offset = self._get_offset(offset)
-        if actual_offset == self.REG_CONTROL:
+    def read(self, request):
+        offset = request.address - self.base_address
+        if offset == self.REG_CONTROL:
             return self.control
-        elif actual_offset == self.REG_STATUS:
+        elif offset == self.REG_STATUS:
             return self.status
-        elif actual_offset == self.REG_TX_ID:
+        elif offset == self.REG_TX_ID:
             return self.tx_id
-        elif actual_offset == self.REG_TX_DLC:
+        elif offset == self.REG_TX_DLC:
             return self.tx_dlc
-        elif actual_offset == self.REG_TX_DATA0:
+        elif offset == self.REG_TX_DATA0:
             return int.from_bytes(self.tx_data[0:4], 'little')
-        elif actual_offset == self.REG_TX_DATA1:
+        elif offset == self.REG_TX_DATA1:
             return int.from_bytes(self.tx_data[4:8], 'little')
-        elif actual_offset == self.REG_TX_DATA2:
+        elif offset == self.REG_TX_DATA2:
             return int.from_bytes(self.tx_data[8:12], 'little')
-        elif actual_offset == self.REG_TX_DATA3:
+        elif offset == self.REG_TX_DATA3:
             return int.from_bytes(self.tx_data[12:16], 'little')
-        elif actual_offset == self.REG_RX_ID:
+        elif offset == self.REG_RX_ID:
             return self.rx_id
-        elif actual_offset == self.REG_RX_DLC:
+        elif offset == self.REG_RX_DLC:
             return self.rx_dlc
-        elif actual_offset == self.REG_RX_DATA0:
+        elif offset == self.REG_RX_DATA0:
             return int.from_bytes(self.rx_data[0:4], 'little')
-        elif actual_offset == self.REG_RX_DATA1:
+        elif offset == self.REG_RX_DATA1:
             return int.from_bytes(self.rx_data[4:8], 'little')
-        elif actual_offset == self.REG_RX_DATA2:
+        elif offset == self.REG_RX_DATA2:
             return int.from_bytes(self.rx_data[8:12], 'little')
-        elif actual_offset == self.REG_RX_DATA3:
+        elif offset == self.REG_RX_DATA3:
             return int.from_bytes(self.rx_data[12:16], 'little')
-        elif actual_offset == self.REG_FILTER_ID:
+        elif offset == self.REG_FILTER_ID:
             return self.filter_id
-        elif actual_offset == self.REG_FILTER_MASK:
+        elif offset == self.REG_FILTER_MASK:
             return self.filter_mask
-        elif actual_offset == self.REG_BAUDRATE:
+        elif offset == self.REG_BAUDRATE:
             return self.baudrate
-        elif actual_offset == self.REG_ERROR_CNT:
+        elif offset == self.REG_ERROR_CNT:
             return self.error_count
         return 0
 
-    def write(self, offset, value):
-        # Debug: print type and attributes of offset
+    def write(self, request):
+        offset = request.address - self.base_address
+        value = request.value
         try:
-            print("[canfd_model.py] write() called with offset type:", type(offset), "attributes:", dir(offset))
+            print("[canfd_model.py] write() called with offset:", offset, "value:", value)
         except Exception:
             pass
-        actual_offset = self._get_offset(offset)
-        if actual_offset == self.REG_CONTROL:
+        if offset == self.REG_CONTROL:
             self.control = value
             if value & self.CTRL_TX_REQ:
                 self._transmit()
-        elif actual_offset == self.REG_TX_ID:
+        elif offset == self.REG_TX_ID:
             self.tx_id = value
-        elif actual_offset == self.REG_TX_DLC:
+        elif offset == self.REG_TX_DLC:
             self.tx_dlc = value
-        elif actual_offset == self.REG_TX_DATA0:
+        elif offset == self.REG_TX_DATA0:
             self.tx_data[0:4] = value.to_bytes(4, 'little')
-        elif actual_offset == self.REG_TX_DATA1:
+        elif offset == self.REG_TX_DATA1:
             self.tx_data[4:8] = value.to_bytes(4, 'little')
-        elif actual_offset == self.REG_TX_DATA2:
+        elif offset == self.REG_TX_DATA2:
             self.tx_data[8:12] = value.to_bytes(4, 'little')
-        elif actual_offset == self.REG_TX_DATA3:
+        elif offset == self.REG_TX_DATA3:
             self.tx_data[12:16] = value.to_bytes(4, 'little')
-        elif actual_offset == self.REG_FILTER_ID:
+        elif offset == self.REG_FILTER_ID:
             self.filter_id = value
-        elif actual_offset == self.REG_FILTER_MASK:
+        elif offset == self.REG_FILTER_MASK:
             self.filter_mask = value
-        elif actual_offset == self.REG_BAUDRATE:
+        elif offset == self.REG_BAUDRATE:
             self.baudrate = value
-            
     def _transmit(self):
         """Simulate CAN-FD message transmission"""
         if not (self.control & self.CTRL_ENABLE):
@@ -191,8 +205,8 @@ class CANFDModel:
 # Renode peripheral interface
 canfd = CANFDModel()
 
-def read(offset):
-    return canfd.read(offset)
+def read(request):
+    return canfd.read(request)
 
-def write(offset, value):
-    canfd.write(offset, value)
+def write(request):
+    canfd.write(request)

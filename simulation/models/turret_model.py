@@ -1,3 +1,4 @@
+print("=== LOADING turret_model.py ===")
 """
 Turret Model for Renode Simulation
 Simulates pan/tilt turret with servo motors
@@ -39,7 +40,8 @@ class TurretModel:
     TILT_MIN = -4500   # -45 degrees
     TILT_MAX = 9000    # +90 degrees
     
-    def __init__(self):
+    def __init__(self, base_address=0x50002000):
+        self.base_address = base_address
         self.control = 0
         self.pan_setpoint = 0
         self.pan_actual = 0
@@ -49,59 +51,55 @@ class TurretModel:
         self.tilt_speed = 2000   # 20 deg/sec default
         self.status = 0
         self.canfd_id = 0x200
-        
-    def _get_offset(self, offset):
-        return offset
 
-    def read(self, offset):
-        actual_offset = self._get_offset(offset)
-        if actual_offset == self.REG_CONTROL:
+    def read(self, request):
+        offset = request.address - self.base_address
+        if offset == self.REG_CONTROL:
             return self.control
-        elif actual_offset == self.REG_PAN_SETPOINT:
+        elif offset == self.REG_PAN_SETPOINT:
             return self.pan_setpoint & 0xFFFFFFFF
-        elif actual_offset == self.REG_PAN_ACTUAL:
+        elif offset == self.REG_PAN_ACTUAL:
             return self.pan_actual & 0xFFFFFFFF
-        elif actual_offset == self.REG_TILT_SETPOINT:
+        elif offset == self.REG_TILT_SETPOINT:
             return self.tilt_setpoint & 0xFFFFFFFF
-        elif actual_offset == self.REG_TILT_ACTUAL:
+        elif offset == self.REG_TILT_ACTUAL:
             return self.tilt_actual & 0xFFFFFFFF
-        elif actual_offset == self.REG_PAN_SPEED:
+        elif offset == self.REG_PAN_SPEED:
             return self.pan_speed
-        elif actual_offset == self.REG_TILT_SPEED:
+        elif offset == self.REG_TILT_SPEED:
             return self.tilt_speed
-        elif actual_offset == self.REG_STATUS:
+        elif offset == self.REG_STATUS:
             return self.status
-        elif actual_offset == self.REG_CANFD_ID:
+        elif offset == self.REG_CANFD_ID:
             return self.canfd_id
         return 0
 
-    def write(self, offset, value):
-        # Debug: print type and attributes of offset
+    def write(self, request):
+        offset = request.address - self.base_address
+        value = request.value
         try:
-            print("[turret_model.py] write() called with offset type:", type(offset), "attributes:", dir(offset))
+            print("[turret_model.py] write() called with offset:", offset, "value:", value)
         except Exception:
             pass
-        actual_offset = self._get_offset(offset)
-        if actual_offset == self.REG_CONTROL:
+        if offset == self.REG_CONTROL:
             self.control = value
             if value & self.CTRL_HOME:
                 self._home()
-        elif actual_offset == self.REG_PAN_SETPOINT:
+        elif offset == self.REG_PAN_SETPOINT:
             # Handle signed value
             if value > 0x7FFFFFFF:
                 value = value - 0x100000000
             self.pan_setpoint = max(self.PAN_MIN, min(self.PAN_MAX, value))
-        elif actual_offset == self.REG_TILT_SETPOINT:
+        elif offset == self.REG_TILT_SETPOINT:
             if value > 0x7FFFFFFF:
                 value = value - 0x100000000
             self.tilt_setpoint = max(self.TILT_MIN, min(self.TILT_MAX, value))
-        elif actual_offset == self.REG_PAN_SPEED:
+        elif offset == self.REG_PAN_SPEED:
             self.pan_speed = value
-        elif actual_offset == self.REG_TILT_SPEED:
+        elif offset == self.REG_TILT_SPEED:
             self.tilt_speed = value
-        elif actual_offset == self.REG_CANFD_ID:
+        elif offset == self.REG_CANFD_ID:
             self.canfd_id = value
-            
     def _home(self):
         """Home the turret to center position"""
         self.pan_setpoint = 0
@@ -144,9 +142,9 @@ class TurretModel:
 # Renode peripheral interface
 turret = TurretModel()
 
-def read(offset):
+def read(request):
     turret.update()
-    return turret.read(offset)
+    return turret.read(request)
 
-def write(offset, value):
-    turret.write(offset, value)
+def write(request):
+    turret.write(request)

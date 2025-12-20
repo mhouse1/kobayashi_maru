@@ -2,32 +2,76 @@
 # 4WD Heavy Duty Robot with GPS, Vision, Path Planning, and Turret
 # FRDM-MCXN947 Freedom Board + Google Pixel 10 Pro Architecture
 
-# Include official platform description for FRDM-MCXN947
+logLevel 3
+
+# -------------------------
+# Parameterization (CI-safe)
+# -------------------------
 $repl?=$ORIGIN/frdm_mcxn947.repl
+$firmware?=@/workspace/firmware/build/zephyr/zephyr.elf
+$enablePixelTerminal?=true
+$enableLogFile?=true
+$logFileName?="renode_sim.log"
 
 using sysbus
+
+# -------------------------
+# Machine setup
+# -------------------------
 mach create "robot"
+mach set "robot"
 machine LoadPlatformDescription $repl
 
-# Set up UART terminals for debugging (using official FRDM-MCXN947 peripherals)
-showAnalyzer flexcomm4lpuart4 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
-showAnalyzer flexcomm6 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
+# -------------------------
+# Optional logging to file (CI-friendly)
+# -------------------------
+if $enableLogFile {
+    emulation CreateLogFile $logFileName
+}
 
-# Create terminal for Pixel 10 Pro Android communication
-emulation CreateServerSocketTerminal 3456 "pixel_terminal" false
-connector Connect flexcomm6 pixel_terminal
+# -------------------------
+# UART analyzers (guarded)
+# -------------------------
+try {
+    showAnalyzer flexcomm4lpuart4 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
+}
+try {
+    showAnalyzer flexcomm6 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
+}
 
-# External simulation models are now defined in frdm_mcxn947.repl
+# -------------------------
+# Optional Pixel 10 Pro terminal
+# -------------------------
+if $enablePixelTerminal {
+    emulation CreateServerSocketTerminal 3456 "pixel_terminal" false
+    connector Connect flexcomm6 pixel_terminal
+}
 
-
-# Load Zephyr firmware
-sysbus LoadELF @/workspace/firmware/build/zephyr/zephyr.elf
-
-# Set quantum value for time synchronization (1ms)
+# -------------------------
+# Time synchronization
+# -------------------------
 emulation SetGlobalQuantum "0.001"
 
+# -------------------------
+# Platform init window
+# -------------------------
+sysbus Reset
+emulation RunFor "0.05"
+
+# -------------------------
+# Firmware load (guarded)
+# -------------------------
+if exists($firmware) {
+    sysbus LoadELF $firmware
+} else {
+    echo "❌ ERROR: Firmware ELF not found at:"
+    echo $firmware
+    quit
+}
+
+# -------------------------
 # Start simulation
-logLevel 3
+# -------------------------
 start
 
 echo "============================================"

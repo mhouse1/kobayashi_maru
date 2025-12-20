@@ -67,14 +67,23 @@ SCG0CSR_CLK_SPOOF: Python.PythonPeripheral @ sysbus 0x4008F010
     size: 0x4
     initable: true
     script: '''
-if request.IsInit: tick = False
-if request.IsRead: request.Value = 0x3000000 if tick else 0x2000000; tick = not tick
+# robust Init/Read detection for multiple Renode versions
+init_flag = getattr(request, 'IsInit', None)
+if init_flag is None:
+    init_flag = getattr(request, 'is_init', False)
+read_flag = getattr(request, 'IsRead', None)
+if read_flag is None:
+    read_flag = getattr(request, 'is_read', False)
+if init_flag: tick = False
+if read_flag:
+    request.value = 0x3000000 if tick else 0x2000000
+    tick = not tick
 '''
 
 unknown5: Python.PythonPeripheral @ sysbus 0x50044010
     size: 0x4
     initable: true
-    script: "count = 0 if request.IsInit else (count + 1);request.Value = 0x2000000 if count < 2 else 0x5000000"
+    script: "init_flag = getattr(request, 'IsInit', None); init_flag = getattr(request, 'is_init', init_flag) if init_flag is None else init_flag; count = 0 if init_flag else (count + 1); request.value = 0x2000000 if count < 2 else 0x5000000"
 
 flash: Memory.MappedMemory @ {
         sysbus 0x10000000;
@@ -143,7 +152,7 @@ ctimer0: Timers.LPC_CTimer @ sysbus 0x5000c000
 
 syscon: Python.PythonPeripheral @ sysbus 0x50000000
     size: 0x1000
-    script: "request.Value = {0x264: 0x3, 0x284: 0x3, 0x2B0: 0x4, 0x320: 0xFF, 0x3A0: 0xFF, 0xA18: 0xFF}.get(request.Offset, (0x0 if (request.Counter % 2) else 0xFFFFFFFF))"
+    script: "base=0x50000000; offset = request.address - base; counter = getattr(request, 'Counter', 0); request.value = {0x264: 0x3, 0x284: 0x3, 0x2B0: 0x4, 0x320: 0xFF, 0x3A0: 0xFF, 0xA18: 0xFF}.get(offset, (0x0 if (counter % 2) else 0xFFFFFFFF))"
 
 // cortex-m overlay
 
