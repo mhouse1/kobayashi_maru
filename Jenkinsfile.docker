@@ -244,23 +244,23 @@ except ImportError as e:
                             timeout 30s renode --console --disable-xwt robot_simulation.resc 2>&1 | tee renode_output.log
                             RENODE_EXIT_CODE=\\$?
                             
-                            # Check for specific error patterns (broader regex to catch all error formats)
-                            if grep -qE 'Could not find|Could not resolve|Error E[0-9]+|There was an error|Exception was thrown' renode_output.log; then
-                                echo '❌ Renode simulation failed with configuration errors:'
-                                grep -E 'Could not find|Could not resolve|Error E[0-9]+|There was an error|Exception was thrown' renode_output.log | head -20
+                            # Check for fatal errors or exceptions in Renode output
+                            if grep -qE 'Could not find|Could not resolve|Error E[0-9]+|There was an error|Exception was thrown|Fatal error|Unhandled exception' renode_output.log; then
+                                echo '❌ Renode simulation failed with fatal errors:'
+                                grep -E 'Could not find|Could not resolve|Error E[0-9]+|There was an error|Exception was thrown|Fatal error|Unhandled exception' renode_output.log | head -20
                                 exit 1
                             fi
-                            
+
                             # Exit code 124 is timeout, which is expected for simulation
-                            if [ \\$RENODE_EXIT_CODE -eq 124 ]; then
+                            if [ \$RENODE_EXIT_CODE -eq 124 ]; then
                                 echo '✓ Renode simulation started successfully (timed out as expected)'
-                            elif [ \\$RENODE_EXIT_CODE -eq 0 ]; then
+                            elif [ \$RENODE_EXIT_CODE -eq 0 ]; then
                                 echo '✓ Renode simulation completed successfully'
                             else
-                                echo '❌ Renode simulation failed with exit code:' \\$RENODE_EXIT_CODE
+                                echo '❌ Renode simulation failed with exit code:' \$RENODE_EXIT_CODE
                                 exit 1
                             fi
-                            
+
                             echo 'Renode simulation test finished'
                         "
                         '''
