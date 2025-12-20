@@ -81,10 +81,7 @@ class CANFDModel:
         self.rx_queue = []
         
     def _get_offset(self, offset):
-        try:
-            return offset.Offset
-        except AttributeError:
-            return offset
+        return offset
 
     def read(self, offset):
         actual_offset = self._get_offset(offset)
