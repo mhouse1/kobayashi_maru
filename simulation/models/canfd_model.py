@@ -127,6 +127,11 @@ class CANFDModel:
         return 0
 
     def write(self, offset, value=None):
+        # Debug: print type and attributes of offset
+        try:
+            print("[canfd_model.py] write() called with offset type:", type(offset), "attributes:", dir(offset))
+        except Exception:
+            pass
         # Support both (offset, value) and (request) signatures
         if value is None and hasattr(offset, 'Offset') and hasattr(offset, 'Value'):
             actual_offset = offset.Offset
