@@ -22,6 +22,11 @@ pipeline {
             choices: ['Release', 'Debug'],
             description: 'Firmware build type'
         )
+        booleanParam(
+            name: 'CLEAN_PYTHON_CACHE',
+            defaultValue: false,
+            description: 'Clean .pyc files in simulation/models before Renode simulation'
+        )
     }
     
     environment {
@@ -234,6 +239,12 @@ except ImportError as e:
                             cd simulation/renode
                             echo 'Starting Renode simulation test...'
                             
+                            # Optionally clean .pyc files in simulation/models
+                            if [ \"${CLEAN_PYTHON_CACHE}\" = \"true\" ]; then
+                                echo 'Cleaning .pyc files in simulation/models...'
+                                find ../models -name '*.pyc' -delete
+                            fi
+                            
                             # Fail if Zephyr firmware does not exist
                             if [ ! -f '../../firmware/build/zephyr/zephyr.elf' ]; then
                                 echo '❌ Zephyr firmware ELF not found: ../../firmware/build/zephyr/zephyr.elf'
@@ -252,12 +263,12 @@ except ImportError as e:
                             fi
 
                             # Exit code 124 is timeout, which is expected for simulation
-                            if [ \$RENODE_EXIT_CODE -eq 124 ]; then
+                            if [ \\$RENODE_EXIT_CODE -eq 124 ]; then
                                 echo '✓ Renode simulation started successfully (timed out as expected)'
-                            elif [ \$RENODE_EXIT_CODE -eq 0 ]; then
+                            elif [ \\$RENODE_EXIT_CODE -eq 0 ]; then
                                 echo '✓ Renode simulation completed successfully'
                             else
-                                echo '❌ Renode simulation failed with exit code:' \$RENODE_EXIT_CODE
+                                echo '❌ Renode simulation failed with exit code:' \\$RENODE_EXIT_CODE
                                 exit 1
                             fi
 
