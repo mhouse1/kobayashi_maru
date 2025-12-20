@@ -62,8 +62,13 @@ class MotorModel:
             return self.canfd_id
         return 0
 
-    def write(self, offset, value):
-        actual_offset = self._get_offset(offset)
+    def write(self, offset, value=None):
+        # Support both (offset, value) and (request) signatures
+        if value is None and hasattr(offset, 'Offset') and hasattr(offset, 'Value'):
+            actual_offset = offset.Offset
+            value = offset.Value
+        else:
+            actual_offset = self._get_offset(offset)
         if actual_offset == self.REG_CONTROL:
             self.control = value
             self._update_motor_state()
