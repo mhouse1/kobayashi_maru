@@ -1,3 +1,5 @@
+import os
+print(f"[turret_model.py] Loaded from: {os.path.abspath(__file__)}")
 """
 Turret Model for Renode Simulation
 Simulates pan/tilt turret with servo motors

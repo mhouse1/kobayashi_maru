@@ -1,3 +1,5 @@
+import os
+print(f"[motor_model.py] Loaded from: {os.path.abspath(__file__)}")
 """
 Motor Model for Renode Simulation
 Simulates a brushless DC motor with encoder feedback for 4WD robot
