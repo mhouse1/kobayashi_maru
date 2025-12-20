@@ -147,22 +147,27 @@ pipeline {
                         echo "=== Building Firmware in Container ${params.CLEAN_BUILD ? '(CLEAN BUILD)' : ''} ==="
                         docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
                             cd firmware
-                            if [ -f 'Makefile' ]; then
-                                make clean || true
-                                make -j\$(nproc) BUILD_TYPE=\${BUILD_TYPE}
-                            elif [ -f 'CMakeLists.txt' ]; then
-                                if [ -d build ]; then
-                                    echo 'Removing existing build directory before cmake build (CMakeLists.txt branch)'
-                                    rm -rf build
-                                fi
-                                mkdir -p build && cd build
-                                cmake -DCMAKE_BUILD_TYPE=\${BUILD_TYPE} ..
-                                make -j\$(nproc)
+                            # If a Zephyr app exists, skip the generic Make/CMake flow and use west build below
+                            if [ -d zephyr_app ]; then
+                                echo 'zephyr_app detected — skipping generic Make/CMake build'
                             else
-                                echo 'No build system found (Makefile or CMakeLists.txt)'
-                                echo 'Creating dummy build for testing...'
-                                mkdir -p build
-                                echo 'Dummy firmware build' > build/firmware.elf
+                                if [ -f 'Makefile' ]; then
+                                    make clean || true
+                                    make -j\$(nproc) BUILD_TYPE=\${BUILD_TYPE}
+                                elif [ -f 'CMakeLists.txt' ]; then
+                                    if [ -d build ]; then
+                                        echo 'Removing existing build directory before cmake build (CMakeLists.txt branch)'
+                                        rm -rf build
+                                    fi
+                                    mkdir -p build && cd build
+                                    cmake -DCMAKE_BUILD_TYPE=\${BUILD_TYPE} ..
+                                    make -j\$(nproc)
+                                else
+                                    echo 'No build system found (Makefile or CMakeLists.txt)'
+                                    echo 'Creating dummy build for testing...'
+                                    mkdir -p build
+                                    echo 'Dummy firmware build' > build/firmware.elf
+                                fi
                             fi
                         "
 
