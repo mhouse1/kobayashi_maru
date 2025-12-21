@@ -42,6 +42,9 @@ emulation RunFor "0.05"
 # -------------------------
 sysbus LoadELF $firmware
 
+# tell renode where the vector table lives
+cpu0 SetVectorTable 0x10000000
+
 # -------------------------
 # Minimal runtime for TRL-3
 # Run short window to verify firmware boots and peripherals
