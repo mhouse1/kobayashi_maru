@@ -1,11 +1,5 @@
-# TRL3 Robot Simulation Script for Renode
-# 4WD Heavy Duty Robot with GPS, Vision, Path Planning, and Turret
-# FRDM-MCXN947 Freedom Board + Google Pixel 10 Pro Architecture
-# Verifies TRL-3 claims: CPU boot, memory map, UART output, scheduler activity
+# TRL-3 Robot Simulation Script
 
-# -------------------------
-# Parameterization
-# -------------------------
 $repl?=$ORIGIN/frdm_mcxn947.repl
 $firmware?=@/workspace/firmware/build/zephyr/zephyr.elf
 
@@ -19,16 +13,14 @@ mach set "robot"
 machine LoadPlatformDescription $repl
 
 # -------------------------
-# UART analyzers
+# UART analyzer for Zephyr console
 # -------------------------
-showAnalyzer flexcomm4lpuart4 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
-showAnalyzer flexcomm6 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
+# Update to match Zephyr's console UART (UART0 / flexcomm0)
+showAnalyzer flexcomm0 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
 
-# -------------------------
-# Pixel terminal (always-on)
-# -------------------------
-emulation CreateServerSocketTerminal 3456 "pixel_terminal" false
-connector Connect flexcomm6 pixel_terminal
+# Optional terminal for real-time view
+emulation CreateServerSocketTerminal 3456 "uart0_terminal" false
+connector Connect flexcomm0 uart0_terminal
 
 # -------------------------
 # Time synchronization
@@ -42,28 +34,17 @@ sysbus Reset
 emulation RunFor "0.05"
 
 # -------------------------
-# Firmware load
-# CI must guarantee firmware presence before running Renode
+# Load Zephyr firmware
 # -------------------------
 sysbus LoadELF $firmware
 
 # -------------------------
-# TRL-3 Runtime
-# Run for sufficient time to capture CPU boot, memory, UART, scheduler
+# Minimal runtime for TRL-3
+# Long enough to see hello/world messages and confirm scheduler runs
 # -------------------------
-emulation RunFor "5"
+emulation RunFor "6"  # 6 seconds should print multiple messages
 
 # -------------------------
-# Capture TRL-3 claims in logs
-# Expected output:
-# [Main] CPU boot: main() entered
-# [Main] Stack & memory regions initialized
-# [Main] Threads created, scheduler running
-# [HelloThread] tick=...: hello
-# [WorldThread] tick=...: world
-# -------------------------
-
-# -------------------------
-# End simulation cleanly
+# End simulation
 # -------------------------
 quit
