@@ -257,8 +257,8 @@ except ImportError as e:
                             fi
 
                             echo '=== Renode syntax check ==='
-                            renode --console --disable-xwt \
-                                -e \\"include @robot_simulation.resc; quit\\" \
+                                    renode --console --disable-xwt \
+                                        -e \\"include @TRL3_mcxn947_zephyr.resc; quit\\" \
                                 2>&1 | tee renode_syntax.log
 
                             if grep -qE 'Could not tokenize|syntax error|parse error|Bad parameters for command include' renode_syntax.log; then
@@ -269,7 +269,7 @@ except ImportError as e:
                             echo '✓ Renode syntax OK'
 
                             echo '=== Renode runtime simulation ==='
-                            timeout 30s renode --console --disable-xwt robot_simulation.resc \
+                                    timeout 30s renode --console --disable-xwt TRL3_mcxn947_zephyr.resc \
                                 2>&1 | tee renode_output.log
 
                             RENODE_EXIT_CODE=\\${PIPESTATUS[0]}

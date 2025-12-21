@@ -14,7 +14,7 @@ fi
 cd "$WS_ROOT"
 
 PLATFORM="$WS_ROOT/simulation/renode/frdm_mcxn947.repl"
-SCRIPT="$WS_ROOT/simulation/renode/robot_simulation.resc"
+SCRIPT="$WS_ROOT/simulation/renode/TRL3_mcxn947_zephyr.resc"
 
 if [[ ! -f "$PLATFORM" ]]; then
   echo "ERROR: Platform file not found: $PLATFORM" >&2

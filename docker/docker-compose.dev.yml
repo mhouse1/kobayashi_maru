@@ -27,7 +27,7 @@ services:
       - ../simulation:/workspace/simulation
       - ../firmware:/workspace/firmware
     working_dir: /workspace/simulation/renode
-    command: renode --console --disable-xwt robot_simulation.resc
+    command: renode --console --disable-xwt TRL3_mcxn947_zephyr.resc
     ports:
       - "3456:3456"  # Pixel terminal
     networks:
