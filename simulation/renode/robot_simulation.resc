@@ -2,15 +2,11 @@
 # 4WD Heavy Duty Robot with GPS, Vision, Path Planning, and Turret
 # FRDM-MCXN947 Freedom Board + Google Pixel 10 Pro Architecture
 
-logLevel 3
-logFile @renode_sim.log
-
 # -------------------------
 # Parameterization
 # -------------------------
 $repl?=$ORIGIN/frdm_mcxn947.repl
 $firmware?=@/workspace/firmware/build/zephyr/zephyr.elf
-$logFileName?="renode_sim.log"
 
 using sysbus
 
