@@ -47,12 +47,6 @@ emulation RunFor "0.05"
 sysbus LoadELF $firmware
 
 # -------------------------
-# Start simulation
-# -------------------------
-start
-
-
-# -------------------------
 # Minimal runtime for TRL-3
 # Run for a short window to verify firmware boots and peripherals are alive
 # -------------------------
