@@ -19,7 +19,6 @@ machine LoadPlatformDescription $repl
 
 # -------------------------
 # UART analyzers
-# (Will fail fast if peripherals do not exist — intended)
 # -------------------------
 showAnalyzer flexcomm4lpuart4 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
 showAnalyzer flexcomm6 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
@@ -43,9 +42,7 @@ emulation RunFor "0.05"
 
 # -------------------------
 # Firmware load
-# NOTE:
-# Renode does NOT support `if exists {}`.
-# CI must guarantee firmware presence before running Renode.
+# CI must guarantee firmware presence before running Renode
 # -------------------------
 sysbus LoadELF $firmware
 
@@ -54,11 +51,15 @@ sysbus LoadELF $firmware
 # -------------------------
 start
 
-echo "============================================"
-echo "Robot Simulation Started"
-echo "============================================"
-echo "Pixel 10 Pro terminal: port 3456"
-echo "Debug console: UART0"
-echo "CAN-FD Bus 0: Motor modules"
-echo "CAN-FD Bus 1: Sensor modules"
-echo "============================================"
+
+# -------------------------
+# Minimal runtime for TRL-3
+# Run for a short window to verify firmware boots and peripherals are alive
+# -------------------------
+emulation RunFor "3.1"
+
+# -------------------------
+# End simulation cleanly
+# -------------------------
+emulation Pause
+quit
