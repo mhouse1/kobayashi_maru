@@ -3,6 +3,7 @@
 # FRDM-MCXN947 Freedom Board + Google Pixel 10 Pro Architecture
 
 logLevel 3
+logFile @renode_sim.log
 
 # -------------------------
 # Parameterization
@@ -19,11 +20,6 @@ using sysbus
 mach create "robot"
 mach set "robot"
 machine LoadPlatformDescription $repl
-
-# -------------------------
-# Logging (must be unconditional in Renode)
-# -------------------------
-emulation CreateLogFile $logFileName
 
 # -------------------------
 # UART analyzers
