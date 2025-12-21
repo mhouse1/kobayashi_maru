@@ -40,10 +40,7 @@ emulation RunFor "0.05"
 # Firmware load
 # CI must guarantee firmware presence before running Renode
 # -------------------------
-sysbus LoadELF $firmware
-
-# tell renode where the vector table lives
-cpu0 SetVectorTable 0x10000000
+sysbus LoadELF $firmware 0x10000000
 
 # -------------------------
 # Minimal runtime for TRL-3
