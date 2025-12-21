@@ -9,7 +9,7 @@
 
 ---
 
-## TRL 3 Definition (NASA Standard)
+## TRL 3 Definition
 
 **Goal:** Validate individual technology components in a laboratory simulation environment with experimental proof-of-concept.
 

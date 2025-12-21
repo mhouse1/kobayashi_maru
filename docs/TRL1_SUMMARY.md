@@ -321,7 +321,7 @@
 - No Android SDK (removed from Docker for space savings)
 - Renode simulation only (no hardware-in-the-loop initially)
 - Jenkins CI/CD must pass before merging (quality gate)
-- Documentation required for TRL advancement (NASA standard)
+- Documentation required for TRL advancement
 
 **Cost Constraints:**
 - Development board budget: <$200

@@ -8,7 +8,7 @@
 
 ---
 
-## TRL 4 Definition (NASA Standard)
+## TRL 4 Definition
 
 **Goal:** Validate subsystems integrated on actual hardware with functional runtime behavior in a controlled laboratory environment.
 
