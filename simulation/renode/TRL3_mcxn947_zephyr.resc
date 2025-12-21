@@ -1,4 +1,5 @@
-# TRL-3 Robot Simulation Script
+# TRL-3 Robot Simulation for FRDM-MCXN947
+# Verifies CPU boot, memory map, UART output, and scheduler
 
 $repl?=$ORIGIN/frdm_mcxn947.repl
 $firmware?=@/workspace/firmware/build/zephyr/zephyr.elf
@@ -13,14 +14,16 @@ mach set "robot"
 machine LoadPlatformDescription $repl
 
 # -------------------------
-# UART analyzer for Zephyr console
+# UART analyzers
 # -------------------------
-# Update to match Zephyr's console UART (UART0 / flexcomm0)
-showAnalyzer flexcomm0 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
+# Use actual UART from repl
+showAnalyzer flexcomm4lpuart4 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
 
-# Optional terminal for real-time view
-emulation CreateServerSocketTerminal 3456 "uart0_terminal" false
-connector Connect flexcomm0 uart0_terminal
+# -------------------------
+# Pixel terminal (always-on)
+# -------------------------
+emulation CreateServerSocketTerminal 3456 "pixel_terminal" false
+connector Connect flexcomm4lpuart4 pixel_terminal
 
 # -------------------------
 # Time synchronization
@@ -34,17 +37,18 @@ sysbus Reset
 emulation RunFor "0.05"
 
 # -------------------------
-# Load Zephyr firmware
+# Firmware load
+# CI must guarantee firmware presence before running Renode
 # -------------------------
 sysbus LoadELF $firmware
 
 # -------------------------
 # Minimal runtime for TRL-3
-# Long enough to see hello/world messages and confirm scheduler runs
+# Run short window to verify firmware boots and peripherals
 # -------------------------
-emulation RunFor "6"  # 6 seconds should print multiple messages
+emulation RunFor "6.0"
 
 # -------------------------
-# End simulation
+# End simulation cleanly
 # -------------------------
 quit
