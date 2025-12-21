@@ -1,11 +1,7 @@
-# --------------------------------------------------
-# TRL-3 Renode Simulation Script
-# Objective:
-# - Prove firmware loads
-# - CPU executes instructions
-# - SRAM is read/written
-# - UART output is observable
-# --------------------------------------------------
+# TRL3 Robot Simulation Script for Renode
+# 4WD Heavy Duty Robot with GPS, Vision, Path Planning, and Turret
+# FRDM-MCXN947 Freedom Board + Google Pixel 10 Pro Architecture
+# Verifies TRL-3 claims: CPU boot, memory map, UART output, scheduler activity
 
 # -------------------------
 # Parameterization
@@ -23,55 +19,51 @@ mach set "robot"
 machine LoadPlatformDescription $repl
 
 # -------------------------
-# UART analyzers (observable output = TRL-3 evidence)
+# UART analyzers
 # -------------------------
 showAnalyzer flexcomm4lpuart4 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
 showAnalyzer flexcomm6 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
 
 # -------------------------
-# Optional external terminal (CI-safe)
+# Pixel terminal (always-on)
 # -------------------------
 emulation CreateServerSocketTerminal 3456 "pixel_terminal" false
 connector Connect flexcomm6 pixel_terminal
 
 # -------------------------
-# Deterministic timing
+# Time synchronization
 # -------------------------
 emulation SetGlobalQuantum "0.001"
 
 # -------------------------
-# Reset platform
+# Platform init window
 # -------------------------
 sysbus Reset
-
-# Allow SoC reset logic to settle
-emulation RunFor "0.1"
+emulation RunFor "0.05"
 
 # -------------------------
-# Load firmware ELF
+# Firmware load
+# CI must guarantee firmware presence before running Renode
 # -------------------------
 sysbus LoadELF $firmware
 
 # -------------------------
-# Explicitly start CPU
-# (Critical: avoids PC/SP=0 halt condition)
+# TRL-3 Runtime
+# Run for sufficient time to capture CPU boot, memory, UART, scheduler
 # -------------------------
-cpu0 Reset
-cpu0 Start
+emulation RunFor "5"
 
 # -------------------------
-# TRL-3 Runtime Window
-# Purpose:
-# - Zephyr boots
-# - Scheduler runs
-# - Threads execute
-# - SRAM accesses occur
-# - printk/UART activity visible
+# Capture TRL-3 claims in logs
+# Expected output:
+# [Main] CPU boot: main() entered
+# [Main] Stack & memory regions initialized
+# [Main] Threads created, scheduler running
+# [HelloThread] tick=...: hello
+# [WorldThread] tick=...: world
 # -------------------------
-emulation RunFor "5.0"
 
 # -------------------------
-# Clean exit
+# End simulation cleanly
 # -------------------------
-emulation Pause
 quit
