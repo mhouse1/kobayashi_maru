@@ -5,12 +5,10 @@
 logLevel 3
 
 # -------------------------
-# Parameterization (CI-safe)
+# Parameterization
 # -------------------------
 $repl?=$ORIGIN/frdm_mcxn947.repl
 $firmware?=@/workspace/firmware/build/zephyr/zephyr.elf
-$enablePixelTerminal?=true
-$enableLogFile?=true
 $logFileName?="renode_sim.log"
 
 using sysbus
@@ -23,36 +21,22 @@ mach set "robot"
 machine LoadPlatformDescription $repl
 
 # -------------------------
-# Optional logging to file (CI-friendly)
-# Use guarded try instead of `if $var {` to avoid tokenization issues
-# when variable expansion produces unexpected tokens.
+# Logging (must be unconditional in Renode)
 # -------------------------
-try {
-    emulation CreateLogFile $logFileName
-} catch {
-    # ignore if CreateLogFile is not supported in this environment
-}
+emulation CreateLogFile $logFileName
 
 # -------------------------
-# UART analyzers (guarded)
+# UART analyzers
+# (Will fail fast if peripherals do not exist — intended)
 # -------------------------
-try {
-    showAnalyzer flexcomm4lpuart4 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
-}
-try {
-    showAnalyzer flexcomm6 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
-}
+showAnalyzer flexcomm4lpuart4 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
+showAnalyzer flexcomm6 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
 
 # -------------------------
-# Optional Pixel 10 Pro terminal
-# Use guarded try to avoid conditional parsing issues during variable expansion.
+# Pixel terminal (always-on)
 # -------------------------
-try {
-    emulation CreateServerSocketTerminal 3456 "pixel_terminal" false
-    connector Connect flexcomm6 pixel_terminal
-} catch {
-    # ignore if socket cannot be created or connector fails
-}
+emulation CreateServerSocketTerminal 3456 "pixel_terminal" false
+connector Connect flexcomm6 pixel_terminal
 
 # -------------------------
 # Time synchronization
@@ -66,15 +50,12 @@ sysbus Reset
 emulation RunFor "0.05"
 
 # -------------------------
-# Firmware load (guarded)
+# Firmware load
+# NOTE:
+# Renode does NOT support `if exists {}`.
+# CI must guarantee firmware presence before running Renode.
 # -------------------------
-if exists($firmware) {
-    sysbus LoadELF $firmware
-} else {
-    echo "❌ ERROR: Firmware ELF not found at:"
-    echo $firmware
-    quit
-}
+sysbus LoadELF $firmware
 
 # -------------------------
 # Start simulation
