@@ -38,9 +38,9 @@ emulation RunFor "0.05"
 
 # -------------------------
 # Firmware load
-# CI must guarantee firmware presence before running Renode
 # -------------------------
-sysbus LoadELF $firmware 0x10000000
+# Load ELF at addresses defined in the ELF
+sysbus LoadELF $firmware
 
 # -------------------------
 # Minimal runtime for TRL-3
