@@ -31,12 +31,6 @@ connector Connect flexcomm4lpuart4 pixel_terminal
 emulation SetGlobalQuantum "0.001"
 
 # -------------------------
-# Platform init window
-# -------------------------
-sysbus Reset
-emulation RunFor "0.05"
-
-# -------------------------
 # Firmware load
 # -------------------------
 # Load ELF at addresses defined in the ELF
