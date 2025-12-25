@@ -67,23 +67,54 @@ SCG0CSR_CLK_SPOOF: Python.PythonPeripheral @ sysbus 0x4008F010
     size: 0x4
     initable: true
     script: '''
-# robust Init/Read detection for multiple Renode versions
-init_flag = getattr(request, 'IsInit', None)
-if init_flag is None:
-    init_flag = getattr(request, 'is_init', False)
-read_flag = getattr(request, 'IsRead', None)
-if read_flag is None:
-    read_flag = getattr(request, 'is_read', False)
-if init_flag: tick = False
+init_flag = getattr(request, "IsInit", getattr(request, "is_init", False))
+read_flag = getattr(request, "IsRead", getattr(request, "is_read", False))
+
+if init_flag:
+    request.tick = False
+
 if read_flag:
+    tick = getattr(request, "tick", False)
     request.value = 0x3000000 if tick else 0x2000000
-    tick = not tick
+    request.tick = not tick
 '''
+
 
 unknown5: Python.PythonPeripheral @ sysbus 0x50044010
     size: 0x4
     initable: true
-    script: "init_flag = getattr(request, 'IsInit', None); init_flag = getattr(request, 'is_init', init_flag) if init_flag is None else init_flag; count = 0 if init_flag else (count + 1); request.value = 0x2000000 if count < 2 else 0x5000000"
+    script: '''
+init_flag = getattr(request, "IsInit", getattr(request, "is_init", False))
+if init_flag:
+    count = 0
+else:
+    count = getattr(request, "count", 0) + 1
+
+request.count = count
+request.value = 0x2000000 if count < 2 else 0x5000000
+'''
+
+# -------------------------
+# TRL-3 Self-Test Evidence Register
+# -------------------------
+self_test_status: Python.PythonPeripheral @ sysbus 0x5004F000
+    size: 0x4
+    initable: true
+    script: '''
+init_flag = getattr(request, "IsInit", getattr(request, "is_init", False))
+read_flag = getattr(request, "IsRead", getattr(request, "is_read", False))
+
+if init_flag:
+    request.passed = False
+    request.value = 0x0
+
+if read_flag:
+    if not request.passed:
+        request.passed = True
+    request.value = 0xA5A5A5A5
+'''
+
+# (remaining peripherals unchanged)
 
 flash: Memory.MappedMemory @ {
         sysbus 0x10000000;
@@ -185,6 +216,7 @@ sysbus:
         Tag <0x40090040 0x4> "SRAMCTL_ACK" 0x80000000
         Tag <0x4008F300 0x4> "FIRCCSR_VALID" 0x81000000
         Tag <0x4008F200 0x4> "SIRCCSR_VALID" 0x1000000
+        Tag <0x5004F000 0x4> "self_test_status"
 
 // nxp,mcxn947 overlay
 

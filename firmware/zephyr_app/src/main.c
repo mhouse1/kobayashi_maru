@@ -1,6 +1,21 @@
 #include <zephyr/kernel.h>
 #include <zephyr/sys/printk.h>
 
+
+#define TRL3_SELFTEST_REG (*(volatile uint32_t *)0x5000FF00)
+
+void trl3_selftest(void)
+{
+    TRL3_SELFTEST_REG = 0xA5A5A5A5;   // Write test pattern
+    uint32_t v = TRL3_SELFTEST_REG; // Read back
+
+    if (v == 0xA5A5A5A5) {
+        printk("TRL-3 self-test PASS\n");
+    } else {
+        printk("TRL-3 self-test FAIL: 0x%08x\n", v);
+    }
+}
+
 void hello_thread(void *, void *, void *) {
     while (1) {
         printk("hello\n");
