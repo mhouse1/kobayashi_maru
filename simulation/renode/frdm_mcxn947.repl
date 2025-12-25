@@ -89,14 +89,17 @@ unknown5: Python.PythonPeripheral @ sysbus 0x50044010
     size: 0x4
     initable: true
     script: '''
-if not hasattr(self, 'count'):
-    self.count = 0
+# Use a module-global counter to persist between calls (avoids attribute errors)
+try:
+    _unknown5_count
+except NameError:
+    _unknown5_count = 0
 is_init = getattr(request, 'IsInit', False) or getattr(request, 'is_init', False)
 if is_init:
-    self.count = 0
+    _unknown5_count = 0
 else:
-    self.count += 1
-request.value = 0x02000000 if self.count < 2 else 0x05000000
+    _unknown5_count += 1
+request.value = 0x02000000 if _unknown5_count < 2 else 0x05000000
 '''
 
 // ---------------------------------------------------------------------
