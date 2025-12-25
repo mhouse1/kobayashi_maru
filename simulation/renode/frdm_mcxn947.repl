@@ -152,7 +152,26 @@ ctimer0: Timers.LPC_CTimer @ sysbus 0x5000c000
 
 syscon: Python.PythonPeripheral @ sysbus 0x50000000
     size: 0x1000
-    script: "base=0x50000000; offset = request.address - base; counter = getattr(request, 'Counter', 0); request.value = {0x264: 0x3, 0x284: 0x3, 0x2B0: 0x4, 0x320: 0xFF, 0x3A0: 0xFF, 0xA18: 0xFF}.get(offset, (0x0 if (counter % 2) else 0xFFFFFFFF))"
+    initable: true
+    script: '''
+# Renode >= 1.16 compatible SYSCON stub
+# Uses request.offset instead of removed request.address
+
+counter = getattr(request, "Counter", 0)
+offset = request.offset
+
+# Known SYSCON registers Zephyr touches during early boot
+request.value = {
+    0x264: 0x3,        # AHBCLKCTRL0
+    0x284: 0x3,        # AHBCLKCTRL1
+    0x2B0: 0x4,        # PRESETCTRL
+    0x320: 0xFF,       # FLEXCOMM clocks
+    0x3A0: 0xFF,       # GPIO clocks
+    0xA18: 0xFF,       # Peripheral enable
+}.get(offset, (0x0 if (counter % 2) else 0xFFFFFFFF))
+
+# Persist counter across accesses
+request.Counter = counter + 1
 
 // cortex-m overlay
 
