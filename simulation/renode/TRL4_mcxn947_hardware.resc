@@ -1,0 +1,59 @@
+// TRL-4 Renode scenario: hardware integration and extended tests
+// Based on TRL3 scenario. Use this file for longer runs, extra analyzers,
+// and attaching additional terminals or peripheral proxies for hardware tests.
+
+$repl?=$ORIGIN/frdm_mcxn947.repl
+$firmware?=@/workspace/firmware/build/zephyr/zephyr.elf
+
+using sysbus
+
+# -------------------------
+# Machine setup
+# -------------------------
+mach create "robot"
+mach set "robot"
+machine LoadPlatformDescription $repl
+
+# -------------------------
+# UART analyzers
+# -------------------------
+# Keep the main UART analyzer used in TRL-3; add more if needed for hardware
+showAnalyzer flexcomm4lpuart4 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
+
+# Optional: attach additional analyzers or proxy terminals for hardware UARTs
+# showAnalyzer flexcomm2lpuart2 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
+
+# -------------------------
+# Terminals / connectors
+# -------------------------
+# Pixel terminal (always-on)
+emulation CreateServerSocketTerminal 3456 "pixel_terminal" false
+connector Connect flexcomm4lpuart4 pixel_terminal
+
+# Optional hardware console terminal (uncomment and map to actual UART)
+# emulation CreateServerSocketTerminal 3457 "hardware_console" false
+# connector Connect flexcomm2lpuart2 hardware_console
+
+# -------------------------
+# Time synchronization
+# -------------------------
+emulation SetGlobalQuantum "0.001"
+
+# -------------------------
+# Firmware load
+# -------------------------
+# Load ELF at addresses defined in the ELF
+sysbus LoadELF $firmware
+
+# -------------------------
+# Extended runtime for TRL-4
+# Use a long run window for integration and soak tests; adjust as needed.
+# You may replace RunFor with an interactive `run` for manual stop, or a larger
+# timeout (seconds) for CI-managed long tests.
+# -------------------------
+emulation RunFor "600.0"
+
+# -------------------------
+# End simulation
+# -------------------------
+quit
