@@ -32,6 +32,11 @@ pipeline {
             defaultValue: false,
             description: 'Run an extra Renode debug run (temporary, guarded)'
         )
+        booleanParam(
+            name: 'REFRESH_JENKINS_CONFIG',
+            defaultValue: false,
+            description: 'Update build config and exit (refresh-only)' 
+        )
     }
     
     environment {
@@ -46,6 +51,19 @@ pipeline {
     }
     
     stages {
+
+        stage('Update build config') {
+            steps {
+                script {
+                    if ("${params.REFRESH_JENKINS_CONFIG}" == "true") {
+                        echo " #################### updated build config"
+                        currentBuild.result = "ABORTED"
+                        error("updated jenkins config, aborting build")
+                    }
+                }
+            }
+        }
+
         stage('Setup Docker Environment') {
             steps {
                 script {
