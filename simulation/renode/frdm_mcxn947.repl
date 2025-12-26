@@ -297,13 +297,7 @@ if getattr(request, 'IsRead', False) or getattr(request, 'is_read', False):
     request.value = 0x0
 '''
 
-stub_0x50045144: Python.PythonPeripheral @ sysbus 0x50045144
-    size: 0x4
-    initable: true
-    script: '''
-if getattr(request, 'IsRead', False) or getattr(request, 'is_read', False):
-    request.value = 0x0
-'''
+
 
 stub_0x50045010: Python.PythonPeripheral @ sysbus 0x50045010
     size: 0x4
