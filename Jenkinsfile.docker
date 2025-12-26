@@ -385,10 +385,11 @@ except ImportError as e:
                             echo '✓ Renode TRL-4 syntax OK'
 
                             # Run TRL-4 scenario. Override run duration by passing -e "var runfor=30.0" if needed.
-                            # Use a reasonable timeout at the Jenkins level to avoid runaway jobs.
+                            # Use bash pipefail so pipeline exit code is propagated; capture via $?.
+                            set -o pipefail
                             timeout 20m renode --console --disable-xwt TRL4_mcxn947_hardware.resc 2>&1 | tee renode_trl4_output.log
 
-                            RENODE_EXIT_CODE=\${PIPESTATUS[0]}
+                            RENODE_EXIT_CODE=\$?
 
                             if [ \$RENODE_EXIT_CODE -eq 124 ]; then
                                 echo '✓ Renode TRL-4 run timed out (expected for long runs)'
