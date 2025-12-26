@@ -17,7 +17,7 @@ This matrix tracks compatibility between major hardware, software, and interface
 ## Software
 | Component Type      | Option/Version         | Supported | Notes                                  |
 |--------------------|-----------------------|-----------|----------------------------------------|
-| OS/Firmware        | Zephyr RTOS 0.16.x    | Supported | Mainline, validated in simulation      |
+| OS/Firmware        | Zephyr Project (tracked via `west.yml`) | Supported | Mainline, validated in simulation; CI uses Zephyr SDK 0.16.4 |
 | OS/Firmware        | QP/C++ Framework      | Supported | Used for active objects                |
 | Base OS            | Ubuntu 24.04          | Supported | Docker build environment               |
 | Python             | 3.12.3                | Supported | Used for simulation, scripting         |

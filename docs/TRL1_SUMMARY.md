@@ -11,7 +11,7 @@
 
 ### 1.1 RTOS Selection: Zephyr
 
-**Decision:** Zephyr RTOS (v0.16.x)
+**Decision:** Zephyr RTOS (tracked via `west.yml`, revision: main). CI uses Zephyr SDK 0.16.4; for reproducible releases consider pinning to a stable Zephyr release (e.g. 4.3.0).
 
 **Rationale:**
 - **Native Ethernet Support:** Built-in lwIP TCP/IP stack eliminates weeks of integration work
@@ -304,8 +304,8 @@
 - 10/100 Mbps Ethernet only (no Gigabit)
 - Limited GPIO pins (FlexComm shared with other functions)
 
-**Software Constraints:**
-- Zephyr 0.16.x (or compatible version for MCXN947 support)
+- **Software Constraints:**
+- Zephyr Project (tracked via `west.yml`, revision: main). CI uses Zephyr SDK 0.16.4; pin a stable Zephyr release (e.g. 4.3.0) for reproducible builds.
 - lwIP TCP/IP stack (no alternatives without major rework)
 - GCC ARM toolchain (no proprietary compilers)
 - Binary protocol (ControlMessage/StatusMessage) - no text/JSON for performance
