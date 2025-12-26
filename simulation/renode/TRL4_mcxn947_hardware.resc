@@ -4,6 +4,10 @@
 $repl?=$ORIGIN/frdm_mcxn947.repl
 $firmware?=@/workspace/firmware/build/zephyr/zephyr.elf
 
+# Run duration (seconds). Can be overridden by passing a Renode variable:
+#   renode -e "var runfor=30.0" TRL4_mcxn947_hardware.resc
+$runfor?=600.0
+
 using sysbus
 
 # -------------------------
@@ -54,7 +58,7 @@ sysbus LoadELF $firmware
 # Use a long run window for integration/soak tests; adjust as needed
 # Can replace RunFor with interactive `run` for manual stop if needed
 # -------------------------
-emulation RunFor "600.0"
+emulation RunFor "$runfor?"
 
 # -------------------------
 # End simulation / hardware session cleanly

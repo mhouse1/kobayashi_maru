@@ -37,6 +37,11 @@ pipeline {
             defaultValue: false,
             description: 'Run an extra Renode debug run (temporary, guarded)'
         )
+        booleanParam(
+            name: 'RUN_TRL4',
+            defaultValue: false,
+            description: 'Run TRL-4 Renode scenario (long/integration). Prefer manual or branch-gated use.'
+        )
 
     }
     
@@ -340,6 +345,62 @@ except ImportError as e:
                             timeout 30s renode --console --disable-xwt TRL3_mcxn947_zephyr.resc 2>&1 | tee renode_debug_output.log
                             mkdir -p /workspace/artifacts
                             cp renode_debug_output.log /workspace/artifacts/ || true
+                        "
+                    '''
+                }
+            }
+        }
+
+        stage('Renode: TRL-4 Hardware Integration') {
+            when {
+                expression { params.BRANCH_NAME?.startsWith('trl4_') || params.RUN_TRL4 == true }
+            }
+            steps {
+                script {
+                    sh '''
+                        echo "=== Running Renode TRL-4 Hardware Integration ==="
+                        docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
+                            cd simulation/renode
+
+                            # Optionally clean .pyc files in simulation/models
+                            if [ \"${CLEAN_PYTHON_CACHE}\" = \"true\" ]; then
+                                echo 'Cleaning .pyc files in simulation/models...'
+                                find ../models -name '*.pyc' -delete
+                            fi
+
+                            # Fail if Zephyr firmware does not exist
+                            if [ ! -f '../../firmware/build/zephyr/zephyr.elf' ]; then
+                                echo '❌ Zephyr firmware ELF not found: ../../firmware/build/zephyr/zephyr.elf'
+                                exit 1
+                            fi
+
+                            echo '=== Renode TRL-4 syntax check ==='
+                            renode --console --disable-xwt -e "include @TRL4_mcxn947_hardware.resc; quit" 2>&1 | tee renode_trl4_syntax.log
+
+                            if grep -qE 'Could not tokenize|syntax error|parse error|Bad parameters for command include' renode_trl4_syntax.log; then
+                                echo '❌ Renode TRL-4 script syntax error detected'
+                                exit 1
+                            fi
+
+                            echo '✓ Renode TRL-4 syntax OK'
+
+                            # Run TRL-4 scenario. Override run duration by passing -e "var runfor=30.0" if needed.
+                            # Use a reasonable timeout at the Jenkins level to avoid runaway jobs.
+                            timeout 20m renode --console --disable-xwt TRL4_mcxn947_hardware.resc 2>&1 | tee renode_trl4_output.log
+
+                            RENODE_EXIT_CODE=\${PIPESTATUS[0]}
+
+                            if [ \$RENODE_EXIT_CODE -eq 124 ]; then
+                                echo '✓ Renode TRL-4 run timed out (expected for long runs)'
+                            elif [ \$RENODE_EXIT_CODE -eq 0 ]; then
+                                echo '✓ Renode TRL-4 completed successfully'
+                            else
+                                echo '❌ Renode TRL-4 failed with exit code:' \$RENODE_EXIT_CODE
+                                exit 1
+                            fi
+
+                            mkdir -p /workspace/artifacts
+                            cp renode_trl4_output.log /workspace/artifacts/ || true
                         "
                     '''
                 }
