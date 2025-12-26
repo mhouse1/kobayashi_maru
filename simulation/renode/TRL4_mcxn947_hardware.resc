@@ -1,0 +1,66 @@
+// TRL-4 Renode scenario: hardware integration and extended tests
+// Combines TRL-3 baseline, extended runtime, detailed comments, and hardware peripheral connectors
+
+$repl?=$ORIGIN/frdm_mcxn947.repl
+$firmware?=@/workspace/firmware/build/zephyr/zephyr.elf
+
+# Run duration (seconds). Can be overridden by passing a Renode variable:
+#   renode -e "var runfor=30.0" TRL4_mcxn947_hardware.resc
+$runfor?=600.0
+
+using sysbus
+
+# -------------------------
+# Machine setup
+# -------------------------
+mach create "robot"
+mach set "robot"
+machine LoadPlatformDescription $repl
+
+# -------------------------
+# UART analyzers
+# -------------------------
+showAnalyzer flexcomm4lpuart4 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
+# Optional: additional UART analyzers for hardware consoles
+# showAnalyzer flexcomm2lpuart2 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
+
+# -------------------------
+# Terminals / connectors
+# -------------------------
+emulation CreateServerSocketTerminal 3456 "pixel_terminal" false
+connector Connect flexcomm4lpuart4 pixel_terminal
+# Optional hardware console terminal
+# emulation CreateServerSocketTerminal 3457 "hardware_console" false
+# connector Connect flexcomm2lpuart2 hardware_console
+
+# -------------------------
+# Hardware peripheral placeholders
+# Connect GPIO, CAN-FD, ADC, PWM, Ethernet adapters as needed
+# Replace <hardware_adapter> with actual adapter names
+connector Connect gpio0 <hardware_gpio_adapter>
+connector Connect can0 <hardware_can_adapter>
+connector Connect adc0 <hardware_adc_adapter>
+connector Connect pwm0 <hardware_pwm_adapter>
+connector Connect eth0 <hardware_ethernet_adapter>
+
+# -------------------------
+# Time synchronization (simulation only)
+# -------------------------
+emulation SetGlobalQuantum "0.001"
+
+# -------------------------
+# Firmware load
+# -------------------------
+sysbus LoadELF $firmware
+
+# -------------------------
+# Extended runtime for TRL-4
+# Use a long run window for integration/soak tests; adjust as needed
+# Can replace RunFor with interactive `run` for manual stop if needed
+# -------------------------
+emulation RunFor "$runfor?"
+
+# -------------------------
+# End simulation / hardware session cleanly
+# -------------------------
+quit
