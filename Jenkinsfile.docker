@@ -375,7 +375,7 @@ except ImportError as e:
                             fi
 
                             echo '=== Renode TRL-4 syntax check ==='
-                            renode --console --disable-xwt -e "include @TRL4_mcxn947_hardware.resc; quit" 2>&1 | tee renode_trl4_syntax.log
+                            renode --console --disable-xwt -e 'include @TRL4_mcxn947_hardware.resc; quit' 2>&1 | tee renode_trl4_syntax.log
 
                             if grep -qE 'Could not tokenize|syntax error|parse error|Bad parameters for command include' renode_trl4_syntax.log; then
                                 echo '❌ Renode TRL-4 script syntax error detected'
