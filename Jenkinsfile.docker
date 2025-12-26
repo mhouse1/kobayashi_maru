@@ -9,7 +9,7 @@ pipeline {
         )
         string(
             name: 'BRANCH_NAME',
-            defaultValue: 'trl3_zephyr',
+            defaultValue: 'trl4_begin_hardware_integration',
             description: 'Git branch to build'
         )
         booleanParam(
