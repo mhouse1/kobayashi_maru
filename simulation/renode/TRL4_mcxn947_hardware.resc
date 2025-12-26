@@ -58,7 +58,8 @@ sysbus LoadELF $firmware
 # Use a long run window for integration/soak tests; adjust as needed
 # Can replace RunFor with interactive `run` for manual stop if needed
 # -------------------------
-emulation RunFor "$runfor?"
+# Use the Renode variable `runfor` (default set above). Reference it as `$runfor`.
+emulation RunFor $runfor
 
 # -------------------------
 # End simulation / hardware session cleanly
