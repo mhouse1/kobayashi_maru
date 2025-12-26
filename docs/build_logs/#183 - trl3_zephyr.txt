@@ -1,0 +1,985 @@
+Started by user michael
+Obtained Jenkinsfile.docker from git https://github.com/mhouse1/kobayashi_maru.git
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/lib/jenkins/workspace/Kobayashi-Maru-Docker
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+The recommended git tool is: git
+using credential 48a3580a-bffe-4dd4-bff9-4d4b256fadae
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/Kobayashi-Maru-Docker/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/mhouse1/kobayashi_maru.git # timeout=10
+Fetching upstream changes from https://github.com/mhouse1/kobayashi_maru.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.43.0'
+using GIT_ASKPASS to set credentials 
+ > git fetch --tags --force --progress -- https://github.com/mhouse1/kobayashi_maru.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/trl3_zephyr^{commit} # timeout=10
+Checking out Revision b15e5bc5b2c4845da3dd22a2ee9b9be99f3d3d4f (refs/remotes/origin/trl3_zephyr)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f b15e5bc5b2c4845da3dd22a2ee9b9be99f3d3d4f # timeout=10
+Commit message: "remove stub stub_0x50045144"
+ > git rev-list --no-walk 5334ec929d1116f2370d9819f9e8fcc730e3260d # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] timeout
+Timeout set to expire in 1 hr 0 min
+[Pipeline] {
+[Pipeline] timestamps
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Update build config)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Setup Docker Environment)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
+[2025-12-26T05:25:50.427Z] + docker images -q docker-kobayashi-dev
+[Pipeline] echo
+[2025-12-26T05:25:50.476Z] === Using cached Docker image ===
+[Pipeline] sh
+[2025-12-26T05:25:50.756Z] + echo === Testing Environment ===
+[2025-12-26T05:25:50.756Z] === Testing Environment ===
+[2025-12-26T05:25:50.756Z] + docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev arm-none-eabi-gcc --version
+[2025-12-26T05:25:51.307Z] Kobayashi Maru Development Environment
+[2025-12-26T05:25:51.307Z] ARM GCC: arm-none-eabi-gcc (Arm GNU Toolchain 13.2.rel1 (Build arm-13.7)) 13.2.1 20231009
+[2025-12-26T05:25:51.307Z] Renode: Available
+[2025-12-26T05:25:51.307Z] Python: Python 3.12.3
+[2025-12-26T05:25:51.307Z] Workspace: /workspace
+[2025-12-26T05:25:51.307Z] 
+[2025-12-26T05:25:51.307Z] arm-none-eabi-gcc (Arm GNU Toolchain 13.2.rel1 (Build arm-13.7)) 13.2.1 20231009
+[2025-12-26T05:25:51.307Z] Copyright (C) 2023 Free Software Foundation, Inc.
+[2025-12-26T05:25:51.307Z] This is free software; see the source for copying conditions.  There is NO
+[2025-12-26T05:25:51.307Z] warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+[2025-12-26T05:25:51.307Z] 
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Checkout)
+[Pipeline] checkout
+[2025-12-26T05:25:51.890Z] The recommended git tool is: git
+[2025-12-26T05:25:51.891Z] using credential 48a3580a-bffe-4dd4-bff9-4d4b256fadae
+[2025-12-26T05:25:51.900Z]  > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/Kobayashi-Maru-Docker/.git # timeout=10
+[2025-12-26T05:25:51.905Z] Fetching changes from the remote Git repository
+[2025-12-26T05:25:51.906Z]  > git config remote.origin.url https://github.com/mhouse1/kobayashi_maru.git # timeout=10
+[2025-12-26T05:25:51.910Z] Fetching upstream changes from https://github.com/mhouse1/kobayashi_maru.git
+[2025-12-26T05:25:51.911Z]  > git --version # timeout=10
+[2025-12-26T05:25:51.914Z]  > git --version # 'git version 2.43.0'
+[2025-12-26T05:25:51.914Z] using GIT_ASKPASS to set credentials 
+[2025-12-26T05:25:51.919Z]  > git fetch --tags --force --progress -- https://github.com/mhouse1/kobayashi_maru.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+[2025-12-26T05:25:52.138Z]  > git rev-parse origin/trl3_zephyr^{commit} # timeout=10
+[2025-12-26T05:25:52.145Z] Checking out Revision b15e5bc5b2c4845da3dd22a2ee9b9be99f3d3d4f (origin/trl3_zephyr)
+[2025-12-26T05:25:52.145Z]  > git config core.sparsecheckout # timeout=10
+[2025-12-26T05:25:52.151Z]  > git checkout -f b15e5bc5b2c4845da3dd22a2ee9b9be99f3d3d4f # timeout=10
+[2025-12-26T05:25:52.161Z] Commit message: "remove stub stub_0x50045144"
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
+[2025-12-26T05:25:52.530Z] + git log --oneline -5
+[2025-12-26T05:25:52.530Z] b15e5bc remove stub stub_0x50045144
+[2025-12-26T05:25:52.530Z] 5334ec9 move refresh jenkinsfile config to first parameter
+[2025-12-26T05:25:52.530Z] 02f8dcc add a REFRESH_JENKINS_CONFIG stage
+[2025-12-26T05:25:52.530Z] c0ea5d9 add stubs and debug run
+[2025-12-26T05:25:52.530Z] 47c2899 add and reorganize build logs
+[Pipeline] sh
+[2025-12-26T05:25:52.837Z] + git log -1 --pretty=%B
+[Pipeline] sh
+[2025-12-26T05:25:53.145Z] + git rev-parse --short HEAD
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Health Check)
+[Pipeline] sh
+[2025-12-26T05:25:53.787Z] + echo === Docker Environment Health Check ===
+[2025-12-26T05:25:53.787Z] === Docker Environment Health Check ===
+[2025-12-26T05:25:53.787Z] + docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c 
+[2025-12-26T05:25:53.787Z]                         echo 'Checking Docker environment...'
+[2025-12-26T05:25:53.787Z]                         arm-none-eabi-gcc --version >/dev/null || exit 1
+[2025-12-26T05:25:53.787Z]                         python3 --version >/dev/null || exit 1
+[2025-12-26T05:25:53.787Z]                         renode --version >/dev/null || exit 1
+[2025-12-26T05:25:53.787Z]                         echo '✓ All tools available'
+[2025-12-26T05:25:53.787Z]                     
+[2025-12-26T05:25:54.338Z] Kobayashi Maru Development Environment
+[2025-12-26T05:25:54.338Z] ARM GCC: arm-none-eabi-gcc (Arm GNU Toolchain 13.2.rel1 (Build arm-13.7)) 13.2.1 20231009
+[2025-12-26T05:25:54.338Z] Renode: Available
+[2025-12-26T05:25:54.338Z] Python: Python 3.12.3
+[2025-12-26T05:25:54.338Z] Workspace: /workspace
+[2025-12-26T05:25:54.338Z] 
+[2025-12-26T05:25:54.338Z] Checking Docker environment...
+[2025-12-26T05:25:54.338Z] ✓ All tools available
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Toolchain Verification)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
+[2025-12-26T05:25:55.461Z] + echo === Running Toolchain Verification ===
+[2025-12-26T05:25:55.461Z] === Running Toolchain Verification ===
+[2025-12-26T05:25:55.461Z] + docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c 
+[2025-12-26T05:25:55.461Z]                             echo 'Testing complete toolchain...'
+[2025-12-26T05:25:55.461Z]                             
+[2025-12-26T05:25:55.461Z]                             # Test ARM GCC
+[2025-12-26T05:25:55.461Z]                             echo 'ARM GCC:'
+[2025-12-26T05:25:55.461Z]                             arm-none-eabi-gcc --version | head -1
+[2025-12-26T05:25:55.461Z]                             
+[2025-12-26T05:25:55.461Z]                             # Test Python environment
+[2025-12-26T05:25:55.461Z]                             echo 'Python environment:'
+[2025-12-26T05:25:55.461Z]                             python3 -c "import numpy; print('NumPy working:', numpy.__version__)"
+[2025-12-26T05:25:55.461Z]                             
+[2025-12-26T05:25:55.461Z]                             # Test Renode availability
+[2025-12-26T05:25:55.461Z]                             echo 'Renode:'
+[2025-12-26T05:25:55.461Z]                             command -v renode && echo 'Renode available' || echo 'Renode not found'
+[2025-12-26T05:25:55.461Z]                             
+[2025-12-26T05:25:55.461Z]                             echo '✓ Toolchain verification completed'
+[2025-12-26T05:25:55.461Z]                         
+[2025-12-26T05:25:56.012Z] Kobayashi Maru Development Environment
+[2025-12-26T05:25:56.012Z] ARM GCC: arm-none-eabi-gcc (Arm GNU Toolchain 13.2.rel1 (Build arm-13.7)) 13.2.1 20231009
+[2025-12-26T05:25:56.012Z] Renode: Available
+[2025-12-26T05:25:56.012Z] Python: Python 3.12.3
+[2025-12-26T05:25:56.012Z] Workspace: /workspace
+[2025-12-26T05:25:56.012Z] 
+[2025-12-26T05:25:56.012Z] Testing complete toolchain...
+[2025-12-26T05:25:56.012Z] ARM GCC:
+[2025-12-26T05:25:56.012Z] arm-none-eabi-gcc (Arm GNU Toolchain 13.2.rel1 (Build arm-13.7)) 13.2.1 20231009
+[2025-12-26T05:25:56.012Z] Python environment:
+[2025-12-26T05:25:56.012Z] NumPy working: 2.4.0
+[2025-12-26T05:25:56.012Z] Renode:
+[2025-12-26T05:25:56.012Z] /usr/bin/renode
+[2025-12-26T05:25:56.012Z] Renode available
+[2025-12-26T05:25:56.012Z] ✓ Toolchain verification completed
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Build Firmware)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
+[2025-12-26T05:25:57.210Z] + echo === Building Firmware in Container  ===
+[2025-12-26T05:25:57.210Z] === Building Firmware in Container  ===
+[2025-12-26T05:25:57.210Z] + nproc
+[2025-12-26T05:25:57.210Z] + nproc
+[2025-12-26T05:25:57.210Z] + docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c 
+[2025-12-26T05:25:57.210Z]                             cd firmware
+[2025-12-26T05:25:57.210Z]                             # If a Zephyr app exists, skip the generic Make/CMake flow and use west build below
+[2025-12-26T05:25:57.210Z]                             if [ -d zephyr_app ]; then
+[2025-12-26T05:25:57.210Z]                                 echo 'zephyr_app detected — skipping generic Make/CMake build'
+[2025-12-26T05:25:57.210Z]                             else
+[2025-12-26T05:25:57.210Z]                                 if [ -f 'Makefile' ]; then
+[2025-12-26T05:25:57.210Z]                                     make clean || true
+[2025-12-26T05:25:57.210Z]                                     make -j4 BUILD_TYPE=Release
+[2025-12-26T05:25:57.210Z]                                 elif [ -f 'CMakeLists.txt' ]; then
+[2025-12-26T05:25:57.210Z]                                     if [ -d build ]; then
+[2025-12-26T05:25:57.210Z]                                         echo 'Removing existing build directory before cmake build (CMakeLists.txt branch)'
+[2025-12-26T05:25:57.210Z]                                         rm -rf build
+[2025-12-26T05:25:57.210Z]                                     fi
+[2025-12-26T05:25:57.210Z]                                     mkdir -p build && cd build
+[2025-12-26T05:25:57.210Z]                                     cmake -DCMAKE_BUILD_TYPE=Release ..
+[2025-12-26T05:25:57.210Z]                                     make -j4
+[2025-12-26T05:25:57.210Z]                                 else
+[2025-12-26T05:25:57.210Z]                                     echo 'No build system found (Makefile or CMakeLists.txt)'
+[2025-12-26T05:25:57.210Z]                                     echo 'Creating dummy build for testing...'
+[2025-12-26T05:25:57.210Z]                                     mkdir -p build
+[2025-12-26T05:25:57.210Z]                                     echo 'Dummy firmware build' > build/firmware.elf
+[2025-12-26T05:25:57.210Z]                                 fi
+[2025-12-26T05:25:57.210Z]                             fi
+[2025-12-26T05:25:57.210Z]                         
+[2025-12-26T05:25:57.761Z] Kobayashi Maru Development Environment
+[2025-12-26T05:25:57.761Z] ARM GCC: arm-none-eabi-gcc (Arm GNU Toolchain 13.2.rel1 (Build arm-13.7)) 13.2.1 20231009
+[2025-12-26T05:25:57.761Z] Renode: Available
+[2025-12-26T05:25:57.761Z] Python: Python 3.12.3
+[2025-12-26T05:25:57.761Z] Workspace: /workspace
+[2025-12-26T05:25:57.761Z] 
+[2025-12-26T05:25:57.761Z] zephyr_app detected — skipping generic Make/CMake build
+[2025-12-26T05:25:58.020Z] + echo === Building Zephyr App ===
+[2025-12-26T05:25:58.020Z] === Building Zephyr App ===
+[2025-12-26T05:25:58.020Z] + docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c 
+[2025-12-26T05:25:58.020Z]                             cd firmware
+[2025-12-26T05:25:58.020Z]                             # Remove any previous west workspace, zephyr directory, and build directory in firmware/
+[2025-12-26T05:25:58.020Z]                             if [ -d .west ]; then
+[2025-12-26T05:25:58.020Z]                                 echo 'Removing previous west workspace in firmware/'
+[2025-12-26T05:25:58.020Z]                                 rm -rf .west
+[2025-12-26T05:25:58.020Z]                             fi
+[2025-12-26T05:25:58.020Z]                             if [ -d zephyr ]; then
+[2025-12-26T05:25:58.020Z]                                 echo 'Removing existing zephyr directory in firmware/'
+[2025-12-26T05:25:58.020Z]                                 rm -rf zephyr
+[2025-12-26T05:25:58.020Z]                             fi
+[2025-12-26T05:25:58.020Z]                             if [ -d build ]; then
+[2025-12-26T05:25:58.020Z]                                 echo 'Removing existing build directory in firmware/'
+[2025-12-26T05:25:58.020Z]                                 rm -rf build
+[2025-12-26T05:25:58.020Z]                             fi
+[2025-12-26T05:25:58.020Z]                             # Ensure this is a west workspace
+[2025-12-26T05:25:58.020Z]                             if [ ! -f .west/config ]; then
+[2025-12-26T05:25:58.020Z]                                 echo 'Initializing west workspace...'
+[2025-12-26T05:25:58.020Z]                                 west init
+[2025-12-26T05:25:58.020Z]                                 west update
+[2025-12-26T05:25:58.020Z]                             fi
+[2025-12-26T05:25:58.020Z]                             west build -b frdm_mcxn947/mcxn947/cpu0 zephyr_app
+[2025-12-26T05:25:58.020Z]                         
+[2025-12-26T05:25:58.572Z] Kobayashi Maru Development Environment
+[2025-12-26T05:25:58.572Z] ARM GCC: arm-none-eabi-gcc (Arm GNU Toolchain 13.2.rel1 (Build arm-13.7)) 13.2.1 20231009
+[2025-12-26T05:25:58.572Z] Renode: Available
+[2025-12-26T05:25:58.572Z] Python: Python 3.12.3
+[2025-12-26T05:25:58.572Z] Workspace: /workspace
+[2025-12-26T05:25:58.572Z] 
+[2025-12-26T05:25:58.572Z] Removing previous west workspace in firmware/
+[2025-12-26T05:25:58.572Z] Removing existing zephyr directory in firmware/
+[2025-12-26T05:26:00.433Z] Removing existing build directory in firmware/
+[2025-12-26T05:26:00.433Z] Initializing west workspace...
+[2025-12-26T05:26:00.433Z] === Initializing in /workspace/firmware
+[2025-12-26T05:26:00.433Z] --- Cloning manifest repository from https://github.com/zephyrproject-rtos/zephyr
+[2025-12-26T05:26:00.433Z] Cloning into '/workspace/firmware/.west/manifest-tmp'...
+[2025-12-26T05:27:21.679Z] Updating files:  24% (13729/55002)[2025-12-26T05:27:21.679Z] Updating files:  25% (13751/55002)[2025-12-26T05:27:21.679Z] Updating files:  26% (14301/55002)[2025-12-26T05:27:21.679Z] Updating files:  27% (14851/55002)[2025-12-26T05:27:21.679Z] Updating files:  28% (15401/55002)[2025-12-26T05:27:21.679Z] Updating files:  29% (15951/55002)[2025-12-26T05:27:21.679Z] Updating files:  30% (16501/55002)[2025-12-26T05:27:21.679Z] Updating files:  31% (17051/55002)[2025-12-26T05:27:21.679Z] Updating files:  32% (17601/55002)[2025-12-26T05:27:21.679Z] Updating files:  33% (18151/55002)[2025-12-26T05:27:21.679Z] Updating files:  34% (18701/55002)[2025-12-26T05:27:21.679Z] Updating files:  35% (19251/55002)[2025-12-26T05:27:21.679Z] Updating files:  36% (19801/55002)[2025-12-26T05:27:21.679Z] Updating files:  37% (20351/55002)[2025-12-26T05:27:21.679Z] Updating files:  38% (20901/55002)[2025-12-26T05:27:21.679Z] Updating files:  39% (21451/55002)[2025-12-26T05:27:21.679Z] Updating files:  40% (22001/55002)[2025-12-26T05:27:21.679Z] Updating files:  41% (22551/55002)[2025-12-26T05:27:21.679Z] Updating files:  42% (23101/55002)[2025-12-26T05:27:21.679Z] Updating files:  43% (23651/55002)[2025-12-26T05:27:21.679Z] Updating files:  44% (24201/55002)[2025-12-26T05:27:21.679Z] Updating files:  45% (24751/55002)[2025-12-26T05:27:21.679Z] Updating files:  46% (25301/55002)[2025-12-26T05:27:21.679Z] Updating files:  47% (25851/55002)[2025-12-26T05:27:21.679Z] Updating files:  48% (26401/55002)[2025-12-26T05:27:21.679Z] Updating files:  49% (26951/55002)[2025-12-26T05:27:21.679Z] Updating files:  49% (27411/55002)[2025-12-26T05:27:21.679Z] Updating files:  50% (27501/55002)[2025-12-26T05:27:21.679Z] Updating files:  51% (28052/55002)[2025-12-26T05:27:21.679Z] Updating files:  52% (28602/55002)[2025-12-26T05:27:21.679Z] Updating files:  53% (29152/55002)[2025-12-26T05:27:21.679Z] Updating files:  54% (29702/55002)[2025-12-26T05:27:21.679Z] Updating files:  55% (30252/55002)[2025-12-26T05:27:21.679Z] Updating files:  56% (30802/55002)[2025-12-26T05:27:21.679Z] Updating files:  57% (31352/55002)[2025-12-26T05:27:21.679Z] Updating files:  58% (31902/55002)[2025-12-26T05:27:21.679Z] Updating files:  59% (32452/55002)[2025-12-26T05:27:21.679Z] Updating files:  60% (33002/55002)[2025-12-26T05:27:21.679Z] Updating files:  61% (33552/55002)[2025-12-26T05:27:21.679Z] Updating files:  62% (34102/55002)[2025-12-26T05:27:21.679Z] Updating files:  63% (34652/55002)[2025-12-26T05:27:21.679Z] Updating files:  64% (35202/55002)[2025-12-26T05:27:21.679Z] Updating files:  65% (35752/55002)[2025-12-26T05:27:21.679Z] Updating files:  66% (36302/55002)[2025-12-26T05:27:21.679Z] Updating files:  67% (36852/55002)[2025-12-26T05:27:21.679Z] Updating files:  68% (37402/55002)[2025-12-26T05:27:21.679Z] Updating files:  69% (37952/55002)[2025-12-26T05:27:21.679Z] Updating files:  70% (38502/55002)[2025-12-26T05:27:21.679Z] Updating files:  71% (39052/55002)[2025-12-26T05:27:21.679Z] Updating files:  72% (39602/55002)[2025-12-26T05:27:21.679Z] Updating files:  73% (40152/55002)[2025-12-26T05:27:21.679Z] Updating files:  74% (40702/55002)[2025-12-26T05:27:21.679Z] Updating files:  75% (41252/55002)[2025-12-26T05:27:21.679Z] Updating files:  76% (41802/55002)[2025-12-26T05:27:21.679Z] Updating files:  76% (42322/55002)[2025-12-26T05:27:21.679Z] Updating files:  77% (42352/55002)[2025-12-26T05:27:21.679Z] Updating files:  78% (42902/55002)[2025-12-26T05:27:21.679Z] Updating files:  79% (43452/55002)[2025-12-26T05:27:21.679Z] Updating files:  80% (44002/55002)[2025-12-26T05:27:21.679Z] Updating files:  81% (44552/55002)[2025-12-26T05:27:21.679Z] Updating files:  82% (45102/55002)[2025-12-26T05:27:21.679Z] Updating files:  83% (45652/55002)[2025-12-26T05:27:21.679Z] Updating files:  84% (46202/55002)[2025-12-26T05:27:21.679Z] Updating files:  85% (46752/55002)[2025-12-26T05:27:21.679Z] Updating files:  86% (47302/55002)[2025-12-26T05:27:21.679Z] Updating files:  87% (47852/55002)[2025-12-26T05:27:21.679Z] Updating files:  88% (48402/55002)[2025-12-26T05:27:21.679Z] Updating files:  89% (48952/55002)[2025-12-26T05:27:21.679Z] Updating files:  90% (49502/55002)[2025-12-26T05:27:21.679Z] Updating files:  91% (50052/55002)[2025-12-26T05:27:21.679Z] Updating files:  92% (50602/55002)[2025-12-26T05:27:21.679Z] Updating files:  93% (51152/55002)[2025-12-26T05:27:21.679Z] Updating files:  94% (51702/55002)[2025-12-26T05:27:21.679Z] Updating files:  95% (52252/55002)[2025-12-26T05:27:21.679Z] Updating files:  96% (52802/55002)[2025-12-26T05:27:21.679Z] Updating files:  97% (53352/55002)[2025-12-26T05:27:21.679Z] Updating files:  98% (53902/55002)[2025-12-26T05:27:21.679Z] Updating files:  99% (54452/55002)[2025-12-26T05:27:21.679Z] Updating files: 100% (55002/55002)[2025-12-26T05:27:21.679Z] Updating files: 100% (55002/55002), done.
+[2025-12-26T05:27:21.679Z] --- setting manifest.path to zephyr
+[2025-12-26T05:27:21.679Z] === Initialized. Now run "west update" inside /workspace/firmware.
+[2025-12-26T05:27:21.679Z] === updating acpica (modules/lib/acpica):
+[2025-12-26T05:27:21.679Z] HEAD is now at 8d24867bc Merge pull request #5 from dcpleung/kernel/mm_z_phys_map_unmap_rename
+[2025-12-26T05:27:21.679Z] === updating cmsis (modules/hal/cmsis):
+[2025-12-26T05:27:21.679Z] HEAD is now at 512cc7e cmsis: pac_armv81.h missing
+[2025-12-26T05:27:21.679Z] === updating cmsis-dsp (modules/lib/cmsis-dsp):
+[2025-12-26T05:27:21.679Z] HEAD is now at 97512610 arm_biquad_cascade_df1_32x64_q31: asrl(val, -shift) -> lsll(val, shift) (#265)
+[2025-12-26T05:27:21.679Z] === updating cmsis-nn (modules/lib/cmsis-nn):
+[2025-12-26T05:27:21.679Z] HEAD is now at e9328d6 manifest: zephyr module file
+[2025-12-26T05:27:21.679Z] === updating cmsis_6 (modules/hal/cmsis_6):
+[2025-12-26T05:27:21.679Z] HEAD is now at 30a859f4 m-profile/gcc: Support picolibc startup mechanism (#246)
+[2025-12-26T05:27:21.679Z] === updating edtt (tools/edtt):
+[2025-12-26T05:27:21.679Z] HEAD is now at c282625 Fix broken link in Readme.md
+[2025-12-26T05:27:21.679Z] === updating fatfs (modules/fs/fatfs):
+[2025-12-26T05:27:21.679Z] HEAD is now at f4ead3b zephyr: Bring back accidentally removed disk access window alignment
+[2025-12-26T05:27:21.679Z] === updating hal_adi (modules/hal/adi):
+[2025-12-26T05:27:21.679Z] HEAD is now at 4a189d5d fix(PeriphDrivers): Don't memset past the end of usn. (#1460)
+[2025-12-26T05:27:21.679Z] === updating hal_afbr (modules/hal/afbr):
+[2025-12-26T05:27:21.679Z] HEAD is now at 1abf694 blobs: Add pre-compiled library variants for FPU builds
+[2025-12-26T05:27:21.679Z] === updating hal_ambiq (modules/hal/ambiq):
+[2025-12-26T05:27:21.679Z] HEAD is now at 5efc022 Import Apollo510 HAL from AmbiqSuite SDK 5.1.0
+[2025-12-26T05:27:21.679Z] === updating hal_atmel (modules/hal/atmel):
+[2025-12-26T05:27:21.679Z] HEAD is now at 065e57c asf: sam: include: sam4l: component: Update tc macros
+[2025-12-26T05:27:21.679Z] === updating hal_bouffalolab (modules/hal/bouffalolab):
+[2025-12-26T05:27:21.679Z] HEAD is now at ebecd18 bflb: fix missing parenthesis in common_defines.h
+[2025-12-26T05:27:21.679Z] === updating hal_espressif (modules/hal/espressif):
+[2025-12-26T05:27:21.679Z] HEAD is now at 19807014b6 rtc: update sources to allow proper calibration
+[2025-12-26T05:27:21.679Z] === updating hal_ethos_u (modules/hal/ethos_u):
+[2025-12-26T05:27:21.679Z] HEAD is now at fd5d5b7 Update SECURITY.md information
+[2025-12-26T05:27:21.679Z] === updating hal_gigadevice (modules/hal/gigadevice):
+[2025-12-26T05:27:21.679Z] HEAD is now at ee0e313 hal: Fix for Zephyr's recent upgrade to CMSIS 6
+[2025-12-26T05:27:21.679Z] === updating hal_infineon (modules/hal/infineon):
+[2025-12-26T05:27:21.679Z] HEAD is now at 470f874 whd: Remove cyhal includes in Zephyr build
+[2025-12-26T05:27:21.679Z] === updating hal_intel (modules/hal/intel):
+[2025-12-26T05:27:21.679Z] HEAD is now at 82a33b2 iut: Enable D0i3 and DMA in app overlay dts file
+[2025-12-26T05:27:21.679Z] === updating hal_microchip (modules/hal/microchip):
+[2025-12-26T05:27:21.679Z] HEAD is now at 5dd7bc0 hal: microchip: pic32c: add PIC32CZ CA pin definitions
+[2025-12-26T05:27:21.679Z] === updating hal_nordic (modules/hal/nordic):
+[2025-12-26T05:27:21.679Z] HEAD is now at 248eadc nrfx: samples: fix console for SPIM+SPIS and TWIM+TWIS
+[2025-12-26T05:27:21.679Z] === updating hal_nuvoton (modules/hal/nuvoton):
+[2025-12-26T05:27:21.679Z] HEAD is now at 602db60 hal: nuvoton: m3331: fixed spi uninitialized warning
+[2025-12-26T05:27:21.679Z] === updating hal_nxp (modules/hal/nxp):
+[2025-12-26T05:27:21.679Z] HEAD is now at e4ab95e74 dts: nxp: s32: add pinmux headers for s32k56x
+[2025-12-26T05:27:21.679Z] === updating hal_openisa (modules/hal/openisa):
+[2025-12-26T05:27:21.679Z] HEAD is now at eabd530 fix-double-promotion in fsl_xcvr_trim
+[2025-12-26T05:27:21.679Z] === updating hal_quicklogic (modules/hal/quicklogic):
+[2025-12-26T05:27:21.679Z] HEAD is now at bad8944 HAL: eoss3_dev: add missing `__cplusplus` handling
+[2025-12-26T05:27:21.679Z] === updating hal_realtek (modules/hal/realtek):
+[2025-12-26T05:27:21.679Z] HEAD is now at 4f8703e hal: realtek: add support for amebad
+[2025-12-26T05:27:21.679Z] === updating hal_renesas (modules/hal/renesas):
+[2025-12-26T05:27:21.679Z] HEAD is now at 0164f2f hal: renesas: ra: fix control transfer handling for r_usb_device
+[2025-12-26T05:27:21.679Z] === updating hal_rpi_pico (modules/hal/rpi_pico):
+[2025-12-26T05:27:21.679Z] HEAD is now at 09e9575 Merge pull request #13 from soburi/sha256
+[2025-12-26T05:27:21.679Z] === updating hal_sifli (modules/hal/sifli):
+[2025-12-26T05:27:21.679Z] HEAD is now at faf0646 Update SiFli SDK to support Bluetooth module.
+[2025-12-26T05:27:21.679Z] === updating hal_silabs (modules/hal/silabs):
+[2025-12-26T05:27:21.679Z] HEAD is now at 6bde23d Disable automatic MFP configuration for AP mode with WPA2
+[2025-12-26T05:27:21.679Z] === updating hal_st (modules/hal/st):
+[2025-12-26T05:27:21.679Z] HEAD is now at 6d96345 Release STdC version v2.11.2
+[2025-12-26T05:27:21.679Z] === updating hal_stm32 (modules/hal/stm32):
+[2025-12-26T05:27:21.679Z] HEAD is now at 9325b437 lib: stm32wba: ble libraries selection thanks to KConfig BT_STM32WBA_LIB_CONFIG
+[2025-12-26T05:27:21.679Z] === updating hal_tdk (modules/hal/tdk):
+[2025-12-26T05:27:21.679Z] HEAD is now at 60708f2 Update Xian driver version to 3.3.0-test2 (#17)
+[2025-12-26T05:27:21.679Z] === updating hal_telink (modules/hal/telink):
+[2025-12-26T05:27:21.679Z] HEAD is now at 4226c7f drivers: Disable BLE support
+[2025-12-26T05:27:21.679Z] === updating hal_ti (modules/hal/ti):
+[2025-12-26T05:27:21.679Z] HEAD is now at cc04902 net: slnetsock: do not require posix to define SlNetSock_Timeval_t
+[2025-12-26T05:27:21.679Z] === updating hal_wch (modules/hal/wch):
+[2025-12-26T05:27:21.679Z] HEAD is now at 6dd3137 hal: wch: update the HAL to pull in CH32V00x support
+[2025-12-26T05:27:21.679Z] === updating hal_wurthelektronik (modules/hal/wurthelektronik):
+[2025-12-26T05:27:21.679Z] HEAD is now at 7c1297e Remove warnings
+[2025-12-26T05:27:21.679Z] === updating hal_xtensa (modules/hal/xtensa):
+[2025-12-26T05:27:21.679Z] HEAD is now at 3cc9e3a zephyr: add SoC layer for intel_ace40
+[2025-12-26T05:27:21.679Z] === updating hostap (modules/lib/hostap):
+[2025-12-26T05:27:21.679Z] HEAD is now at 5af8b1796 [noup] mbedtls: remove redundant TLS 1.3 check in TLS 1.2 handling
+[2025-12-26T05:27:21.679Z] === updating liblc3 (modules/lib/liblc3):
+[2025-12-26T05:27:21.679Z] HEAD is now at 48bbd3e Rename lc3 python package to lc3py, and bump version to 1.1.2
+[2025-12-26T05:27:21.679Z] === updating libmctp (modules/lib/libmctp):
+[2025-12-26T05:27:21.679Z] HEAD is now at b97860e build MCTP zephyr library only when CONFIG_MCTP is enabled
+[2025-12-26T05:27:21.679Z] === updating libmetal (modules/hal/libmetal):
+[2025-12-26T05:27:21.679Z] HEAD is now at 91d3863 lib: update libmetal to release v2025.04.0
+[2025-12-26T05:27:21.679Z] === updating libsbc (modules/lib/libsbc):
+[2025-12-26T05:27:21.679Z] HEAD is now at 8e1beda first version
+[2025-12-26T05:27:21.679Z] === updating littlefs (modules/fs/littlefs):
+[2025-12-26T05:27:21.679Z] HEAD is now at 8f5ca34 Merge pull request #19 from mkaranki/update-to-v2.10.2
+[2025-12-26T05:27:21.679Z] === updating lora-basics-modem (modules/lib/lora-basics-modem):
+[2025-12-26T05:27:21.679Z] HEAD is now at a8ddc54 Release v4.9.0
+[2025-12-26T05:27:21.679Z] === updating loramac-node (modules/lib/loramac-node):
+[2025-12-26T05:27:21.679Z] HEAD is now at fb00b383 zephyr: configure FragDecoder using Kconfig
+[2025-12-26T05:27:21.679Z] === updating lvgl (modules/lib/gui/lvgl):
+[2025-12-26T05:27:21.679Z] HEAD is now at c016f72d4 chore: release v9.4.0 (#9075)
+[2025-12-26T05:27:21.679Z] === updating mbedtls (modules/crypto/mbedtls):
+[2025-12-26T05:27:21.679Z] HEAD is now at c5b06d89c [zep noup] document the additional patches
+[2025-12-26T05:27:21.679Z] === updating mcuboot (bootloader/mcuboot):
+[2025-12-26T05:27:21.679Z] HEAD is now at 234c66e6 bootutil: Avoid re-definition of MCUBOOT_SWAP_USING_SCRATCH
+[2025-12-26T05:27:21.679Z] === updating mipi-sys-t (modules/debug/mipi-sys-t):
+[2025-12-26T05:27:21.679Z] HEAD is now at 5a9d605 MIPI support for IAR Compilers
+[2025-12-26T05:27:21.679Z] === updating nanopb (modules/lib/nanopb):
+[2025-12-26T05:27:21.679Z] HEAD is now at 5499fd4 C++ descriptor size needs to be guarded
+[2025-12-26T05:27:21.679Z] === updating net-tools (tools/net-tools):
+[2025-12-26T05:27:21.679Z] HEAD is now at 64d7acc net-setup: Remove the -eu option from bash
+[2025-12-26T05:27:21.679Z] === updating nrf_hw_models (modules/bsim_hw_models/nrf_hw_models):
+[2025-12-26T05:27:21.679Z] HEAD is now at 0f0c437 nrfx: Replace nrfx_gppi_domain_id_get() (requires new nrfx)
+[2025-12-26T05:27:21.679Z] === updating nrf_wifi (modules/lib/nrf_wifi):
+[2025-12-26T05:27:21.679Z] HEAD is now at 9f09f07 nrf71: Fix SAP set station failure
+[2025-12-26T05:27:21.679Z] === updating open-amp (modules/lib/open-amp):
+[2025-12-26T05:27:21.679Z] HEAD is now at c30a6d8 lib: update open-amp lib to SHA 3737f8b18ad2
+[2025-12-26T05:27:21.679Z] === updating openthread (modules/lib/openthread):
+[2025-12-26T05:27:21.679Z] HEAD is now at 2bc7712f5 [fuzz] add fuzzer for `otPlatTrelHandleReceived` (#11779)
+[2025-12-26T05:27:21.679Z] === updating percepio (modules/debug/percepio):
+[2025-12-26T05:27:21.679Z] HEAD is now at 132ed87 zephyr: fix condvar_wait enter/exit arguments
+[2025-12-26T05:27:21.679Z] === updating picolibc (modules/lib/picolibc):
+[2025-12-26T05:27:21.679Z] HEAD is now at ca8b6ebba Remove '%s' from startfile spec when using complete path
+[2025-12-26T05:27:21.679Z] === updating psa-arch-tests (modules/tee/tf-m/psa-arch-tests):
+[2025-12-26T05:27:21.679Z] HEAD is now at 941cd84 [zep fromtree] ST: Add STM32U5 platform to psa-arch-tests.
+[2025-12-26T05:27:21.679Z] === updating segger (modules/debug/segger):
+[2025-12-26T05:27:21.679Z] HEAD is now at 7c843ea config: SEGGER_RTT_Conf: Allow to use DT section
+[2025-12-26T05:27:21.679Z] === updating tf-m-tests (modules/tee/tf-m/tf-m-tests):
+[2025-12-26T05:27:21.679Z] HEAD is now at cde5b6e [zep noup] replace upstream readme
+[2025-12-26T05:27:21.679Z] === updating trusted-firmware-a (modules/tee/tf-a/trusted-firmware-a):
+[2025-12-26T05:27:21.679Z] HEAD is now at 0a29cac8f Makefile: Make fiptool build out-of-tree
+[2025-12-26T05:27:21.679Z] === updating trusted-firmware-m (modules/tee/tf-m/trusted-firmware-m):
+[2025-12-26T05:27:21.679Z] HEAD is now at e9ea674ed [zep fromtree dirty] platform: Add support of frdmmcxn947
+[2025-12-26T05:27:21.679Z] === updating uoscore-uedhoc (modules/lib/uoscore-uedhoc):
+[2025-12-26T05:27:21.679Z] HEAD is now at 54abc10 Merge pull request #5 from rlubos/upmerge-02-2025
+[2025-12-26T05:27:21.679Z] === updating zcbor (modules/lib/zcbor):
+[2025-12-26T05:27:21.679Z] HEAD is now at 9b07780 Update version to 0.9.1
+[2025-12-26T05:27:21.679Z] -- west build: generating a build system
+[2025-12-26T05:27:21.679Z] Loading Zephyr default modules (Zephyr base).
+[2025-12-26T05:27:21.679Z] -- Application: /workspace/firmware/zephyr_app
+[2025-12-26T05:27:21.679Z] -- CMake version: 3.28.3
+[2025-12-26T05:27:21.679Z] -- Found Python3: /usr/bin/python3 (found suitable version "3.12.3", minimum required is "3.10") found components: Interpreter 
+[2025-12-26T05:27:21.679Z] -- Cache files will be written to: /root/.cache/zephyr
+[2025-12-26T05:27:21.679Z] -- Zephyr version: 4.3.99 (/workspace/firmware/zephyr)
+[2025-12-26T05:27:21.679Z] -- Found west (found suitable version "1.5.0", minimum required is "0.14.0")
+[2025-12-26T05:27:21.679Z] -- Board: frdm_mcxn947, qualifiers: mcxn947/cpu0
+[2025-12-26T05:27:23.541Z] -- Found host-tools: zephyr 0.16.4 (/opt/zephyr-sdk-0.16.4)
+[2025-12-26T05:27:23.541Z] -- Found toolchain: zephyr 0.16.4 (/opt/zephyr-sdk-0.16.4)
+[2025-12-26T05:27:23.541Z] -- Found Dtc: /opt/zephyr-sdk-0.16.4/sysroots/x86_64-pokysdk-linux/usr/bin/dtc (found suitable version "1.6.0", minimum required is "1.4.6") 
+[2025-12-26T05:27:23.541Z] -- Found BOARD.dts: /workspace/firmware/zephyr/boards/nxp/frdm_mcxn947/frdm_mcxn947_mcxn947_cpu0.dts
+[2025-12-26T05:27:24.092Z] unit address and first address in 'reg' (0x40113000) don't match for /soc/peripheral@50000000/opamp@113000
+[2025-12-26T05:27:24.342Z] -- Generated zephyr.dts: /workspace/firmware/build/zephyr/zephyr.dts
+[2025-12-26T05:27:24.342Z] -- Generated pickled edt: /workspace/firmware/build/zephyr/edt.pickle
+[2025-12-26T05:27:24.592Z] -- Generated devicetree_generated.h: /workspace/firmware/build/zephyr/include/generated/zephyr/devicetree_generated.h
+[2025-12-26T05:27:28.714Z] Parsing /workspace/firmware/zephyr/Kconfig
+[2025-12-26T05:27:28.714Z] Loaded configuration '/workspace/firmware/zephyr/boards/nxp/frdm_mcxn947/frdm_mcxn947_mcxn947_cpu0_defconfig'
+[2025-12-26T05:27:28.714Z] Merged configuration '/workspace/firmware/zephyr_app/prj.conf'
+[2025-12-26T05:27:28.714Z] Configuration saved to '/workspace/firmware/build/zephyr/.config'
+[2025-12-26T05:27:28.714Z] Kconfig header saved to '/workspace/firmware/build/zephyr/include/generated/zephyr/autoconf.h'
+[2025-12-26T05:27:28.714Z] -- Found GnuLd: /opt/zephyr-sdk-0.16.4/arm-zephyr-eabi/arm-zephyr-eabi/bin/ld.bfd (found version "2.38") 
+[2025-12-26T05:27:29.265Z] -- The C compiler identification is GNU 12.2.0
+[2025-12-26T05:27:29.516Z] -- The CXX compiler identification is GNU 12.2.0
+[2025-12-26T05:27:29.516Z] -- The ASM compiler identification is GNU
+[2025-12-26T05:27:29.516Z] -- Found assembler: /opt/zephyr-sdk-0.16.4/arm-zephyr-eabi/bin/arm-zephyr-eabi-gcc
+[2025-12-26T05:27:37.540Z] -- Looking for device MCXN947 in /workspace/firmware/modules/hal/nxp/mcux/mcux-sdk-ng/devices/
+[2025-12-26T05:27:37.540Z] -- Found device folder: /workspace/firmware/modules/hal/nxp/mcux/mcux-sdk-ng/devices/MCX/MCXN/MCXN947
+[2025-12-26T05:27:38.883Z] -- Using ccache: /usr/bin/ccache
+[2025-12-26T05:27:38.883Z] -- Found gen_kobject_list: /workspace/firmware/zephyr/scripts/build/gen_kobject_list.py
+[2025-12-26T05:27:39.134Z] -- Configuring done (20.1s)
+[2025-12-26T05:27:39.684Z] -- Generating done (0.2s)
+[2025-12-26T05:27:39.684Z] -- Build files have been written to: /workspace/firmware/build
+[2025-12-26T05:27:40.595Z] -- west build: building application
+[2025-12-26T05:27:40.595Z] [1/152] Preparing syscall dependency handling
+[2025-12-26T05:27:40.595Z] 
+[2025-12-26T05:27:40.595Z] [2/152] Generating include/generated/zephyr/version.h
+[2025-12-26T05:27:40.595Z] -- Zephyr version: 4.3.99 (/workspace/firmware/zephyr), build: v4.3.0-2928-g23354f3cad32
+[2025-12-26T05:27:40.595Z] [3/152] Generating misc/generated/syscalls_subdirs.trigger
+[2025-12-26T05:27:41.506Z] [4/152] Generating misc/generated/syscalls.json, misc/generated/struct_tags.json
+[2025-12-26T05:27:41.506Z] [5/152] Generating include/generated/device-api-sections.ld, include/generated/device-api-sections.cmake
+[2025-12-26T05:27:41.506Z] [6/152] Generating include/generated/zephyr/syscall_dispatch.c, include/generated/zephyr/syscall_exports_llext.c, syscall_weakdefs_llext.c, include/generated/zephyr/syscall_list.h
+[2025-12-26T05:27:41.506Z] [7/152] Generating include/generated/zephyr/driver-validation.h
+[2025-12-26T05:27:41.506Z] [8/152] Generating include/generated/zephyr/kobj-types-enum.h, include/generated/zephyr/otype-to-str.h, include/generated/zephyr/otype-to-size.h
+[2025-12-26T05:27:42.057Z] [9/152] Building C object zephyr/CMakeFiles/offsets.dir/arch/arm/core/offsets/offsets.c.obj
+[2025-12-26T05:27:42.057Z] [10/152] Generating include/generated/zephyr/offsets.h
+[2025-12-26T05:27:42.968Z] [11/152] Building C object zephyr/CMakeFiles/zephyr.dir/lib/libc/validate_libc.c.obj
+[2025-12-26T05:27:43.218Z] [12/152] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/printk.c.obj
+[2025-12-26T05:27:43.218Z] [13/152] Building C object CMakeFiles/app.dir/src/main.c.obj
+[2025-12-26T05:27:43.218Z] /workspace/firmware/zephyr_app/src/main.c:39:6: warning: return type of 'main' is not 'int' [-Wmain]
+[2025-12-26T05:27:43.218Z]    39 | void main(void) {
+[2025-12-26T05:27:43.218Z]       |      ^~~~
+[2025-12-26T05:27:43.218Z] [14/152] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/clock.c.obj
+[2025-12-26T05:27:43.469Z] [15/152] Linking C static library app/libapp.a
+[2025-12-26T05:27:43.469Z] [16/152] Building C object zephyr/CMakeFiles/zephyr.dir/lib/heap/heap.c.obj
+[2025-12-26T05:27:43.469Z] [17/152] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/dec.c.obj
+[2025-12-26T05:27:43.719Z] [18/152] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/cbprintf_packaged.c.obj
+[2025-12-26T05:27:43.969Z] [19/152] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/hex.c.obj
+[2025-12-26T05:27:43.969Z] [20/152] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/thread_entry.c.obj
+[2025-12-26T05:27:43.969Z] [21/152] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/sem.c.obj
+[2025-12-26T05:27:44.220Z] [22/152] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/assert.c.obj
+[2025-12-26T05:27:44.220Z] [23/152] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/timeutil.c.obj
+[2025-12-26T05:27:44.470Z] [24/152] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/bitmask.c.obj
+[2025-12-26T05:27:44.721Z] [25/152] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/ring_buffer.c.obj
+[2025-12-26T05:27:44.971Z] [26/152] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/last_section_id.c.obj
+[2025-12-26T05:27:44.971Z] [27/152] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/cbprintf_complete.c.obj
+[2025-12-26T05:27:44.971Z] [28/152] Building C object zephyr/CMakeFiles/zephyr.dir/misc/generated/configs.c.obj
+[2025-12-26T05:27:45.221Z] [29/152] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/getopt/getopt.c.obj
+[2025-12-26T05:27:45.221Z] [30/152] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/rb.c.obj
+[2025-12-26T05:27:45.472Z] [31/152] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/getopt/getopt_common.c.obj
+[2025-12-26T05:27:45.472Z] [32/152] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/bitarray.c.obj
+[2025-12-26T05:27:45.472Z] [33/152] Generating linker_zephyr_pre0.cmd
+[2025-12-26T05:27:45.472Z] [34/152] Building C object zephyr/CMakeFiles/zephyr_pre0.dir/misc/empty_file.c.obj
+[2025-12-26T05:27:45.722Z] [35/152] Building C object zephyr/arch/common/CMakeFiles/arch__common.dir/init.c.obj
+[2025-12-26T05:27:45.973Z] [36/152] Building C object zephyr/CMakeFiles/zephyr.dir/soc/nxp/mcx/mcxn/soc.c.obj
+[2025-12-26T05:27:45.973Z] [37/152] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/mem_mgmt/mem_attr.c.obj
+[2025-12-26T05:27:46.223Z] [38/152] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/tracing/tracing_none.c.obj
+[2025-12-26T05:27:46.223Z] [39/152] Linking C static library zephyr/libzephyr.a
+[2025-12-26T05:27:46.223Z] [40/152] Building C object zephyr/arch/common/CMakeFiles/arch__common.dir/sw_isr_common.c.obj
+[2025-12-26T05:27:46.223Z] [41/152] Building ASM object zephyr/arch/arch/arm/core/CMakeFiles/arch__arm__core.dir/nmi_on_reset.S.obj
+[2025-12-26T05:27:46.473Z] [42/152] Building C object zephyr/arch/common/CMakeFiles/arch__common.dir/xip.c.obj
+[2025-12-26T05:27:46.473Z] [43/152] Building C object zephyr/arch/common/CMakeFiles/isr_tables.dir/isr_tables.c.obj
+[2025-12-26T05:27:46.473Z] [44/152] Linking C static library zephyr/arch/common/libisr_tables.a
+[2025-12-26T05:27:46.724Z] [45/152] Linking C static library zephyr/arch/common/libarch__common.a
+[2025-12-26T05:27:46.724Z] [46/152] Building ASM object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/fault_s.S.obj
+[2025-12-26T05:27:46.724Z] [47/152] Building C object zephyr/arch/arch/arm/core/CMakeFiles/arch__arm__core.dir/fatal.c.obj
+[2025-12-26T05:27:46.974Z] [48/152] Building C object zephyr/arch/arch/arm/core/CMakeFiles/arch__arm__core.dir/nmi.c.obj
+[2025-12-26T05:27:46.974Z] [49/152] Building ASM object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/reset.S.obj
+[2025-12-26T05:27:47.225Z] [50/152] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/exc_exit.c.obj
+[2025-12-26T05:27:47.225Z] [51/152] Building C object zephyr/arch/arch/arm/core/CMakeFiles/arch__arm__core.dir/tls.c.obj
+[2025-12-26T05:27:47.225Z] [52/152] Linking C static library zephyr/arch/arch/arm/core/libarch__arm__core.a
+[2025-12-26T05:27:47.475Z] [53/152] Building ASM object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/vector_table.S.obj
+[2025-12-26T05:27:47.475Z] [54/152] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/fault.c.obj
+[2025-12-26T05:27:47.475Z] [55/152] Building ASM object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/swap_helper.S.obj
+[2025-12-26T05:27:47.726Z] [56/152] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/fpu.c.obj
+[2025-12-26T05:27:47.976Z] [57/152] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/scb.c.obj
+[2025-12-26T05:27:48.226Z] [58/152] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/thread_abort.c.obj
+[2025-12-26T05:27:48.477Z] [59/152] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/prep_c.c.obj
+[2025-12-26T05:27:48.477Z] [60/152] Building ASM object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/__aeabi_read_tp.S.obj
+[2025-12-26T05:27:48.477Z] [61/152] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/thread.c.obj
+[2025-12-26T05:27:48.477Z] [62/152] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/irq_init.c.obj
+[2025-12-26T05:27:48.727Z] [63/152] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/irq_manage.c.obj
+[2025-12-26T05:27:48.727Z] [64/152] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/cpu_idle.c.obj
+[2025-12-26T05:27:48.978Z] [65/152] Building C object zephyr/arch/arch/arm/core/cortex_m/CMakeFiles/arch__arm__core__cortex_m.dir/isr_wrapper.c.obj
+[2025-12-26T05:27:49.228Z] [66/152] Linking C static library zephyr/arch/arch/arm/core/cortex_m/libarch__arm__core__cortex_m.a
+[2025-12-26T05:27:49.479Z] [67/152] Building C object zephyr/arch/arch/arm/core/mpu/CMakeFiles/arch__arm__core__mpu.dir/arm_core_mpu.c.obj
+[2025-12-26T05:27:49.729Z] [68/152] Building C object zephyr/lib/libc/picolibc/CMakeFiles/lib__libc__picolibc.dir/assert.c.obj
+[2025-12-26T05:27:49.729Z] [69/152] Building C object zephyr/arch/arch/arm/core/mpu/CMakeFiles/arch__arm__core__mpu.dir/arm_mpu_regions.c.obj
+[2025-12-26T05:27:49.729Z] [70/152] Building C object zephyr/arch/arch/arm/core/cortex_m/cmse/CMakeFiles/arch__arm__core__cortex_m__cmse.dir/arm_core_cmse.c.obj
+[2025-12-26T05:27:49.729Z] [71/152] Building C object zephyr/arch/arch/arm/core/mpu/CMakeFiles/arch__arm__core__mpu.dir/arm_mpu.c.obj
+[2025-12-26T05:27:49.729Z] [72/152] Linking C static library zephyr/arch/arch/arm/core/cortex_m/cmse/libarch__arm__core__cortex_m__cmse.a
+[2025-12-26T05:27:49.979Z] [73/152] Linking C static library zephyr/arch/arch/arm/core/mpu/libarch__arm__core__mpu.a
+[2025-12-26T05:27:49.979Z] [74/152] Building C object zephyr/lib/libc/picolibc/CMakeFiles/lib__libc__picolibc.dir/cbprintf.c.obj
+[2025-12-26T05:27:50.230Z] [75/152] Building C object zephyr/lib/libc/picolibc/CMakeFiles/lib__libc__picolibc.dir/chk_fail.c.obj
+[2025-12-26T05:27:50.480Z] [76/152] Building C object zephyr/lib/libc/picolibc/CMakeFiles/lib__libc__picolibc.dir/exit.c.obj
+[2025-12-26T05:27:50.480Z] [77/152] Building C object zephyr/lib/libc/common/CMakeFiles/lib__libc__common.dir/source/time/time.c.obj
+[2025-12-26T05:27:50.731Z] [78/152] Building C object zephyr/lib/libc/picolibc/CMakeFiles/lib__libc__picolibc.dir/errno_wrap.c.obj
+[2025-12-26T05:27:50.731Z] [79/152] Building C object zephyr/lib/libc/picolibc/CMakeFiles/lib__libc__picolibc.dir/stdio.c.obj
+[2025-12-26T05:27:50.981Z] [80/152] Building C object zephyr/lib/libc/picolibc/CMakeFiles/lib__libc__picolibc.dir/locks.c.obj
+[2025-12-26T05:27:50.981Z] [81/152] Linking C static library zephyr/lib/libc/picolibc/liblib__libc__picolibc.a
+[2025-12-26T05:27:50.981Z] [82/152] Building C object zephyr/lib/libc/common/CMakeFiles/lib__libc__common.dir/source/stdlib/abort.c.obj
+[2025-12-26T05:27:51.231Z] [83/152] Building C object zephyr/lib/posix/c_lib_ext/CMakeFiles/lib__posix__c_lib_ext.dir/fnmatch.c.obj
+[2025-12-26T05:27:51.482Z] [84/152] Building C object zephyr/lib/libc/common/CMakeFiles/lib__libc__common.dir/source/stdlib/malloc.c.obj
+[2025-12-26T05:27:51.482Z] [85/152] Linking C static library zephyr/lib/libc/common/liblib__libc__common.a
+[2025-12-26T05:27:51.732Z] [86/152] Building C object zephyr/lib/posix/c_lib_ext/CMakeFiles/lib__posix__c_lib_ext.dir/getentropy.c.obj
+[2025-12-26T05:27:51.732Z] [87/152] Building C object zephyr/lib/posix/c_lib_ext/CMakeFiles/lib__posix__c_lib_ext.dir/getopt_shim.c.obj
+[2025-12-26T05:27:51.732Z] [88/152] Linking C static library zephyr/lib/posix/c_lib_ext/liblib__posix__c_lib_ext.a
+[2025-12-26T05:27:51.983Z] [89/152] Building C object zephyr/boards/nxp/frdm_mcxn947/CMakeFiles/boards__nxp__frdm_mcxn947.dir/board.c.obj
+[2025-12-26T05:27:51.983Z] [90/152] Building C object zephyr/drivers/clock_control/CMakeFiles/drivers__clock_control.dir/clock_control_mcux_syscon.c.obj
+[2025-12-26T05:27:51.983Z] [91/152] Linking C static library zephyr/boards/nxp/frdm_mcxn947/libboards__nxp__frdm_mcxn947.a
+[2025-12-26T05:27:52.233Z] [92/152] Linking C static library zephyr/drivers/clock_control/libdrivers__clock_control.a
+[2025-12-26T05:27:52.233Z] [93/152] Building C object zephyr/drivers/console/CMakeFiles/drivers__console.dir/uart_console.c.obj
+[2025-12-26T05:27:52.233Z] [94/152] Linking C static library zephyr/drivers/console/libdrivers__console.a
+[2025-12-26T05:27:52.784Z] [95/152] Building C object zephyr/drivers/pinctrl/CMakeFiles/drivers__pinctrl.dir/common.c.obj
+[2025-12-26T05:27:52.784Z] [96/152] Building C object zephyr/drivers/mfd/CMakeFiles/drivers__mfd.dir/mfd_nxp_lp_flexcomm.c.obj
+[2025-12-26T05:27:52.784Z] [97/152] Linking C static library zephyr/drivers/mfd/libdrivers__mfd.a
+[2025-12-26T05:27:52.784Z] [98/152] Building C object zephyr/drivers/gpio/CMakeFiles/drivers__gpio.dir/gpio_mcux.c.obj
+[2025-12-26T05:27:53.034Z] [99/152] Linking C static library zephyr/drivers/gpio/libdrivers__gpio.a
+[2025-12-26T05:27:53.034Z] [100/152] Building C object zephyr/drivers/pinctrl/CMakeFiles/drivers__pinctrl.dir/pinctrl_nxp_port.c.obj
+[2025-12-26T05:27:53.034Z] [101/152] Linking C static library zephyr/drivers/pinctrl/libdrivers__pinctrl.a
+[2025-12-26T05:27:53.034Z] [102/152] Building C object zephyr/drivers/timer/CMakeFiles/drivers__timer.dir/sys_clock_init.c.obj
+[2025-12-26T05:27:53.585Z] [103/152] Building C object modules/hal_nxp/CMakeFiles/modules__hal_nxp.dir/workspace/firmware/modules/hal/nxp/mcux/mcux-sdk-ng/drivers/common/fsl_common.c.obj
+[2025-12-26T05:27:53.585Z] [104/152] Building C object modules/hal_nxp/CMakeFiles/modules__hal_nxp.dir/workspace/firmware/modules/hal/nxp/mcux/mcux-sdk-ng/drivers/common/fsl_common_arm.c.obj
+[2025-12-26T05:27:53.585Z] [105/152] Building C object zephyr/drivers/timer/CMakeFiles/drivers__timer.dir/cortex_m_systick.c.obj
+[2025-12-26T05:27:53.585Z] [106/152] Building C object zephyr/drivers/serial/CMakeFiles/drivers__serial.dir/uart_mcux_lpuart.c.obj
+[2025-12-26T05:27:53.585Z] [107/152] Linking C static library zephyr/drivers/serial/libdrivers__serial.a
+[2025-12-26T05:27:53.585Z] [108/152] Linking C static library zephyr/drivers/timer/libdrivers__timer.a
+[2025-12-26T05:27:53.835Z] [109/152] Building C object modules/hal_nxp/CMakeFiles/modules__hal_nxp.dir/workspace/firmware/modules/hal/nxp/mcux/mcux-sdk-ng/drivers/lpflexcomm/fsl_lpflexcomm.c.obj
+[2025-12-26T05:27:54.086Z] [110/152] Building C object modules/hal_nxp/CMakeFiles/modules__hal_nxp.dir/workspace/firmware/modules/hal/nxp/mcux/mcux-sdk-ng/drivers/mcx_spc/fsl_spc.c.obj
+[2025-12-26T05:27:54.336Z] [111/152] Building C object modules/hal_nxp/CMakeFiles/modules__hal_nxp.dir/workspace/firmware/modules/hal/nxp/mcux/mcux-sdk-ng/devices/MCX/MCXN/MCXN947/drivers/fsl_reset.c.obj
+[2025-12-26T05:27:54.336Z] [112/152] Building C object modules/hal_nxp/CMakeFiles/modules__hal_nxp.dir/workspace/firmware/modules/hal/nxp/mcux/mcux-sdk-ng/devices/MCX/MCXN/MCXN947/system_MCXN947_cm33_core0.c.obj
+[2025-12-26T05:27:54.587Z] [113/152] Building C object modules/hal_nxp/CMakeFiles/modules__hal_nxp.dir/workspace/firmware/modules/hal/nxp/mcux/mcux-sdk-ng/drivers/cache/cache64/fsl_cache.c.obj
+[2025-12-26T05:27:55.137Z] [114/152] Building C object modules/hal_nxp/CMakeFiles/modules__hal_nxp.dir/workspace/firmware/modules/hal/nxp/mcux/mcux-sdk-ng/drivers/lpflexcomm/lpuart/fsl_lpuart.c.obj
+[2025-12-26T05:27:55.137Z] [115/152] Building C object zephyr/kernel/CMakeFiles/kernel.dir/banner.c.obj
+[2025-12-26T05:27:55.137Z] [116/152] Building C object zephyr/kernel/CMakeFiles/kernel.dir/busy_wait.c.obj
+[2025-12-26T05:27:55.388Z] [117/152] Building C object zephyr/kernel/CMakeFiles/kernel.dir/main_weak.c.obj
+[2025-12-26T05:27:55.638Z] [118/152] Building C object modules/hal_nxp/CMakeFiles/modules__hal_nxp.dir/workspace/firmware/modules/hal/nxp/mcux/mcux-sdk-ng/devices/MCX/MCXN/MCXN947/drivers/fsl_clock.c.obj
+[2025-12-26T05:27:55.638Z] [119/152] Linking C static library modules/hal_nxp/libmodules__hal_nxp.a
+[2025-12-26T05:27:55.638Z] [120/152] Building C object zephyr/kernel/CMakeFiles/kernel.dir/device.c.obj
+[2025-12-26T05:27:55.889Z] [121/152] Building C object zephyr/kernel/CMakeFiles/kernel.dir/errno.c.obj
+[2025-12-26T05:27:56.139Z] [122/152] Building C object zephyr/kernel/CMakeFiles/kernel.dir/version.c.obj
+[2025-12-26T05:27:56.139Z] [123/152] Building C object zephyr/kernel/CMakeFiles/kernel.dir/fatal.c.obj
+[2025-12-26T05:27:56.390Z] [124/152] Building C object zephyr/kernel/CMakeFiles/kernel.dir/init.c.obj
+[2025-12-26T05:27:56.640Z] [125/152] Building C object zephyr/kernel/CMakeFiles/kernel.dir/kheap.c.obj
+[2025-12-26T05:27:56.640Z] [126/152] Building C object zephyr/kernel/CMakeFiles/kernel.dir/float.c.obj
+[2025-12-26T05:27:56.640Z] [127/152] Building C object zephyr/kernel/CMakeFiles/kernel.dir/mem_slab.c.obj
+[2025-12-26T05:27:57.191Z] [128/152] Building C object zephyr/kernel/CMakeFiles/kernel.dir/idle.c.obj
+[2025-12-26T05:27:57.191Z] [129/152] Building C object zephyr/kernel/CMakeFiles/kernel.dir/mailbox.c.obj
+[2025-12-26T05:27:57.741Z] [130/152] Building C object zephyr/kernel/CMakeFiles/kernel.dir/mutex.c.obj
+[2025-12-26T05:27:57.741Z] [131/152] Building C object zephyr/kernel/CMakeFiles/kernel.dir/msg_q.c.obj
+[2025-12-26T05:27:57.992Z] [132/152] Building C object zephyr/kernel/CMakeFiles/kernel.dir/sem.c.obj
+[2025-12-26T05:27:57.992Z] [133/152] Building C object zephyr/kernel/CMakeFiles/kernel.dir/queue.c.obj
+[2025-12-26T05:27:57.992Z] [134/152] Building C object zephyr/kernel/CMakeFiles/kernel.dir/system_work_q.c.obj
+[2025-12-26T05:27:57.992Z] [135/152] Building C object zephyr/kernel/CMakeFiles/kernel.dir/stack.c.obj
+[2025-12-26T05:27:58.904Z] [136/152] Building C object zephyr/kernel/CMakeFiles/kernel.dir/condvar.c.obj
+[2025-12-26T05:27:58.904Z] [137/152] Building C object zephyr/kernel/CMakeFiles/kernel.dir/thread.c.obj
+[2025-12-26T05:27:59.155Z] [138/152] Building C object zephyr/kernel/CMakeFiles/kernel.dir/pipe.c.obj
+[2025-12-26T05:27:59.155Z] [139/152] Building C object zephyr/kernel/CMakeFiles/kernel.dir/work.c.obj
+[2025-12-26T05:27:59.155Z] [140/152] Building C object zephyr/kernel/CMakeFiles/kernel.dir/timeslicing.c.obj
+[2025-12-26T05:28:00.066Z] [141/152] Building C object zephyr/kernel/CMakeFiles/kernel.dir/timer.c.obj
+[2025-12-26T05:28:00.066Z] [142/152] Building C object zephyr/kernel/CMakeFiles/kernel.dir/sched.c.obj
+[2025-12-26T05:28:00.066Z] [143/152] Building C object zephyr/kernel/CMakeFiles/kernel.dir/mempool.c.obj
+[2025-12-26T05:28:00.066Z] [144/152] Building C object zephyr/kernel/CMakeFiles/kernel.dir/timeout.c.obj
+[2025-12-26T05:28:00.066Z] [145/152] Building C object zephyr/kernel/CMakeFiles/kernel.dir/dynamic_disabled.c.obj
+[2025-12-26T05:28:00.066Z] [146/152] Linking C static library zephyr/kernel/libkernel.a
+[2025-12-26T05:28:00.066Z] [147/152] Linking C executable zephyr/zephyr_pre0.elf
+[2025-12-26T05:28:00.316Z] [148/152] Generating linker.cmd
+[2025-12-26T05:28:00.566Z] [149/152] Generating isr_tables.c, isr_tables_vt.ld, isr_tables_swi.ld
+[2025-12-26T05:28:00.566Z] [150/152] Building C object zephyr/CMakeFiles/zephyr_final.dir/misc/empty_file.c.obj
+[2025-12-26T05:28:00.817Z] [151/152] Building C object zephyr/CMakeFiles/zephyr_final.dir/isr_tables.c.obj
+[2025-12-26T05:28:01.367Z] [152/152] Linking C executable zephyr/zephyr.elf
+[2025-12-26T05:28:01.368Z] Memory region         Used Size  Region Size  %age Used
+[2025-12-26T05:28:01.368Z]            FLASH:       26940 B         2 MB      1.28%
+[2025-12-26T05:28:01.368Z]              RAM:        5728 B       320 KB      1.75%
+[2025-12-26T05:28:01.368Z]            SRAMX:          0 GB        96 KB      0.00%
+[2025-12-26T05:28:01.368Z]         IDT_LIST:          0 GB        32 KB      0.00%
+[2025-12-26T05:28:01.368Z] Generating files from /workspace/firmware/build/zephyr/zephyr.elf for board: frdm_mcxn947
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] archiveArtifacts
+[2025-12-26T05:28:02.876Z] Archiving artifacts
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Python Simulation Models)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
+[2025-12-26T05:28:03.441Z] + echo === Testing Python Simulation Models ===
+[2025-12-26T05:28:03.441Z] === Testing Python Simulation Models ===
+[2025-12-26T05:28:03.441Z] + docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c 
+[2025-12-26T05:28:03.441Z]                             cd simulation/models
+[2025-12-26T05:28:03.441Z]                             python3 -c "
+[2025-12-26T05:28:03.441Z] import sys
+[2025-12-26T05:28:03.441Z] try:
+[2025-12-26T05:28:03.441Z]     import numpy
+[2025-12-26T05:28:03.441Z]     import scipy
+[2025-12-26T05:28:03.441Z]     import matplotlib
+[2025-12-26T05:28:03.441Z]     print('✓ All Python packages available')
+[2025-12-26T05:28:03.441Z]     print('  NumPy:', numpy.__version__)
+[2025-12-26T05:28:03.441Z]     print('  SciPy:', scipy.__version__)
+[2025-12-26T05:28:03.441Z]     print('  Matplotlib:', matplotlib.__version__)
+[2025-12-26T05:28:03.441Z] except ImportError as e:
+[2025-12-26T05:28:03.441Z]     print('❌ Missing Python package:', e)
+[2025-12-26T05:28:03.441Z]     sys.exit(1)
+[2025-12-26T05:28:03.441Z] "
+[2025-12-26T05:28:03.441Z]                         
+[2025-12-26T05:28:03.992Z] Kobayashi Maru Development Environment
+[2025-12-26T05:28:03.992Z] ARM GCC: arm-none-eabi-gcc (Arm GNU Toolchain 13.2.rel1 (Build arm-13.7)) 13.2.1 20231009
+[2025-12-26T05:28:03.992Z] Renode: Available
+[2025-12-26T05:28:03.992Z] Python: Python 3.12.3
+[2025-12-26T05:28:03.992Z] Workspace: /workspace
+[2025-12-26T05:28:03.992Z] 
+[2025-12-26T05:28:04.242Z] ✓ All Python packages available
+[2025-12-26T05:28:04.242Z]   NumPy: 2.4.0
+[2025-12-26T05:28:04.242Z]   SciPy: 1.16.3
+[2025-12-26T05:28:04.242Z]   Matplotlib: 3.10.8
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Renode Simulation Test)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
+[2025-12-26T05:28:05.803Z] + echo === Running Renode Simulation Test ===
+[2025-12-26T05:28:05.803Z] === Running Renode Simulation Test ===
+[2025-12-26T05:28:05.803Z] + docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c 
+[2025-12-26T05:28:05.803Z]                             cd simulation/renode
+[2025-12-26T05:28:05.803Z]                             echo 'Starting Renode simulation test...'
+[2025-12-26T05:28:05.803Z] 
+[2025-12-26T05:28:05.803Z]                             # Optionally clean .pyc files in simulation/models
+[2025-12-26T05:28:05.803Z]                             if [ "false" = "true" ]; then
+[2025-12-26T05:28:05.803Z]                                 echo 'Cleaning .pyc files in simulation/models...'
+[2025-12-26T05:28:05.803Z]                                 find ../models -name '*.pyc' -delete
+[2025-12-26T05:28:05.803Z]                             fi
+[2025-12-26T05:28:05.803Z] 
+[2025-12-26T05:28:05.803Z]                             # Fail if Zephyr firmware does not exist
+[2025-12-26T05:28:05.803Z]                             if [ ! -f '../../firmware/build/zephyr/zephyr.elf' ]; then
+[2025-12-26T05:28:05.803Z]                                 echo '❌ Zephyr firmware ELF not found: ../../firmware/build/zephyr/zephyr.elf'
+[2025-12-26T05:28:05.803Z]                                 exit 1
+[2025-12-26T05:28:05.803Z]                             fi
+[2025-12-26T05:28:05.803Z] 
+[2025-12-26T05:28:05.803Z]                             echo '=== Renode syntax check ==='
+[2025-12-26T05:28:05.803Z]                                     renode --console --disable-xwt                                         -e "include @TRL3_mcxn947_zephyr.resc; quit"                                 2>&1 | tee renode_syntax.log
+[2025-12-26T05:28:05.803Z] 
+[2025-12-26T05:28:05.803Z]                             if grep -qE 'Could not tokenize|syntax error|parse error|Bad parameters for command include' renode_syntax.log; then
+[2025-12-26T05:28:05.803Z]                                 echo '❌ Renode script syntax error detected'
+[2025-12-26T05:28:05.803Z]                                 exit 1
+[2025-12-26T05:28:05.803Z]                             fi
+[2025-12-26T05:28:05.803Z] 
+[2025-12-26T05:28:05.803Z]                             echo '✓ Renode syntax OK'
+[2025-12-26T05:28:05.803Z] 
+[2025-12-26T05:28:05.803Z]                             echo '=== Renode runtime simulation ==='
+[2025-12-26T05:28:05.803Z]                                     timeout 30s renode --console --disable-xwt TRL3_mcxn947_zephyr.resc                                 2>&1 | tee renode_output.log
+[2025-12-26T05:28:05.803Z] 
+[2025-12-26T05:28:05.803Z]                             RENODE_EXIT_CODE=${PIPESTATUS[0]}
+[2025-12-26T05:28:05.803Z] 
+[2025-12-26T05:28:05.803Z]                             # Check for fatal runtime errors
+[2025-12-26T05:28:05.803Z]                             if grep -qE 'Could not find|Could not resolve|Error E[0-9]+|There was an error|Exception was thrown|Fatal error|Unhandled exception' renode_output.log; then
+[2025-12-26T05:28:05.803Z]                                 echo '❌ Renode simulation failed with fatal errors'
+[2025-12-26T05:28:05.803Z]                                 exit 1
+[2025-12-26T05:28:05.803Z]                             fi
+[2025-12-26T05:28:05.803Z] 
+[2025-12-26T05:28:05.803Z]                             # Exit code 124 is timeout, which is expected
+[2025-12-26T05:28:05.803Z]                             if [ $RENODE_EXIT_CODE -eq 124 ]; then
+[2025-12-26T05:28:05.803Z]                                 echo '✓ Renode simulation started successfully (timed out as expected)'
+[2025-12-26T05:28:05.803Z]                             elif [ $RENODE_EXIT_CODE -eq 0 ]; then
+[2025-12-26T05:28:05.803Z]                                 echo '✓ Renode simulation completed successfully'
+[2025-12-26T05:28:05.803Z]                             else
+[2025-12-26T05:28:05.803Z]                                 echo '❌ Renode simulation failed with exit code:' $RENODE_EXIT_CODE
+[2025-12-26T05:28:05.803Z]                                 exit 1
+[2025-12-26T05:28:05.803Z]                             fi
+[2025-12-26T05:28:05.803Z] 
+[2025-12-26T05:28:05.803Z]                             echo 'Renode simulation test finished'
+[2025-12-26T05:28:05.803Z]                         
+[2025-12-26T05:28:06.354Z] Kobayashi Maru Development Environment
+[2025-12-26T05:28:06.354Z] ARM GCC: arm-none-eabi-gcc (Arm GNU Toolchain 13.2.rel1 (Build arm-13.7)) 13.2.1 20231009
+[2025-12-26T05:28:06.354Z] Renode: Available
+[2025-12-26T05:28:06.354Z] Python: Python 3.12.3
+[2025-12-26T05:28:06.354Z] Workspace: /workspace
+[2025-12-26T05:28:06.354Z] 
+[2025-12-26T05:28:06.354Z] Starting Renode simulation test...
+[2025-12-26T05:28:06.354Z] === Renode syntax check ===
+[2025-12-26T05:28:08.837Z] 05:28:08.2766 [INFO] Loaded monitor commands from: /opt/renode/scripts/monitor.py
+[2025-12-26T05:28:08.837Z] [0mRenode, version 1.16.0 (20ad06d9-202508030050)
+[2025-12-26T05:28:08.837Z] 
+[2025-12-26T05:28:08.837Z] [2025-12-26T05:28:08.837Z] [31;1m(monitor) [0minclude @TRL3_mcxn947_zephyr.resc;  quit
+[2025-12-26T05:28:08.837Z] [2025-12-26T05:28:08.837Z] 05:28:08.3555 [INFO] Including script: /workspace/simulation/renode/TRL3_mcxn947_zephyr.resc
+[2025-12-26T05:28:08.837Z] 05:28:08.3889 [INFO] System bus created.
+[2025-12-26T05:28:11.320Z] 05:28:10.7723 [INFO] sysbus: Loading block of 26560 bytes length at 0x10000000.
+[2025-12-26T05:28:11.320Z] 05:28:10.7933 [INFO] sysbus: Loading block of 376 bytes length at 0x100067C0.
+[2025-12-26T05:28:11.320Z] 05:28:10.7935 [INFO] sysbus: Loading block of 4 bytes length at 0x10006938.
+[2025-12-26T05:28:11.320Z] 05:28:10.7936 [INFO] sysbus: Loading block of 5352 bytes length at 0x30000178.
+[2025-12-26T05:28:11.320Z] 05:28:10.8418 [INFO] cpu0: Guessing VectorTableOffset value to be 0x10000000.
+[2025-12-26T05:28:11.320Z] 05:28:10.8491 [INFO] cpu0: Setting initial values: PC = 0x100019F1, SP = 0x30001660.
+[2025-12-26T05:28:11.320Z] 05:28:10.8532 [INFO] robot: Machine started.
+[2025-12-26T05:28:11.320Z] 05:28:10.9402 [WARNING] nvic0: Unhandled read from offset 0xD8C.
+[2025-12-26T05:28:11.320Z] 05:28:10.9408 [WARNING] nvic0: Unhandled write to offset 0xD8C, value 0xC03.
+[2025-12-26T05:28:11.320Z] 05:28:10.9566 [WARNING] nvic0: Changing value of the SHCSR register to 0x70000, the register isn't supported by Renode
+[2025-12-26T05:28:11.320Z] 05:28:10.9679 [WARNING] nvic0: Unhandled write to offset 0xD24. Unhandled bits: [19] when writing value 0xF0000. Tags: RESERVED (0x1).
+[2025-12-26T05:28:11.320Z] 05:28:10.9680 [WARNING] nvic0: Unhandled write to offset 0xD38, value 0x0.
+[2025-12-26T05:28:11.320Z] 05:28:10.9722 [WARNING] nvic0: Unhandled write to offset 0xD2C, value 0xFFFFFFFF.
+[2025-12-26T05:28:11.320Z] 05:28:10.9856 [WARNING] sysbus: [cpu0: 0x100050A4] (tag: 'UNKNOWN1') WriteDoubleWord to non existing peripheral at 0x50045040, value 0x3.
+[2025-12-26T05:28:11.320Z] 05:28:10.9866 [WARNING] sysbus: [cpu0: 0x100050AA] (tag: 'UNKNOWN1') ReadDoubleWord from non existing peripheral at 0x50045040, returning 0xF0000000.
+[2025-12-26T05:28:11.320Z] 05:28:10.9867 [WARNING] sysbus: [cpu0: 0x100050B0] (tag: 'UNKNOWN1') WriteDoubleWord to non existing peripheral at 0x50045040, value 0xF0000000.
+[2025-12-26T05:28:11.320Z] 05:28:10.9868 [WARNING] sysbus: [cpu0: 0x100050B2] (tag: 'UNKNOWN1') ReadDoubleWord from non existing peripheral at 0x50045040, returning 0xF0000000.
+[2025-12-26T05:28:11.320Z] 05:28:10.9868 [WARNING] sysbus: [cpu0: 0x100050B8] (tag: 'UNKNOWN1') ReadDoubleWord from non existing peripheral at 0x50045040, returning 0xF0000000.
+[2025-12-26T05:28:11.320Z] 05:28:10.9868 [WARNING] sysbus: [cpu0: 0x100050BE] (tag: 'UNKNOWN1') WriteDoubleWord to non existing peripheral at 0x50045040, value 0xB0000000.
+[2025-12-26T05:35:17.569Z] 05:35:06.3852 [INFO] robot: Machine paused.
+[2025-12-26T05:35:17.569Z] [;032mR[0m[;032me[0m[;032mn[0m[;032mo[0m[;032md[0m[;032me[0m[;032m [0m[;032mi[0m[;032ms[0m[;032m [0m[;032mq[0m[;032mu[0m[;032mi[0m[;032mt[0m[;032mt[0m[;032mi[0m[;032mn[0m[;032mg[0m[;032m[2025-12-26T05:35:17.569Z] [0m[;032m
+[2025-12-26T05:35:17.569Z] [0m[;032m[2025-12-26T05:35:17.569Z] [0m[0m[;032mR[0m[;032me[0m[;032mn[0m[;032mo[0m[;032md[0m[;032me[0m[;032m [0m[;032mi[0m[;032ms[0m[;032m [0m[;032mq[0m[;032mu[0m[;032mi[0m[;032mt[0m[;032mt[0m[;032mi[0m[;032mn[0m[;032mg[0m[;032m[2025-12-26T05:35:17.569Z] [0m[;032m
+[2025-12-26T05:35:17.569Z] [0m[;032m[2025-12-26T05:35:17.569Z] [0m[0m[0m05:35:06.4350 [INFO] robot: Disposed.
+[2025-12-26T05:35:17.569Z] ✓ Renode syntax OK
+[2025-12-26T05:35:17.569Z] === Renode runtime simulation ===
+[2025-12-26T05:35:17.569Z] 05:35:08.8881 [INFO] Loaded monitor commands from: /opt/renode/scripts/monitor.py
+[2025-12-26T05:35:17.569Z] [0mRenode, version 1.16.0 (20ad06d9-202508030050)
+[2025-12-26T05:35:17.569Z] 
+[2025-12-26T05:35:17.569Z] [2025-12-26T05:35:17.569Z] [31;1m(monitor) [0mi $CWD/TRL3_mcxn947_zephyr.resc
+[2025-12-26T05:35:17.569Z] [2025-12-26T05:35:17.569Z] 05:35:09.1711 [INFO] Including script: /workspace/simulation/renode/TRL3_mcxn947_zephyr.resc
+[2025-12-26T05:35:17.569Z] 05:35:09.2030 [INFO] System bus created.
+[2025-12-26T05:35:17.569Z] 05:35:11.4338 [INFO] sysbus: Loading block of 26560 bytes length at 0x10000000.
+[2025-12-26T05:35:17.569Z] 05:35:11.4550 [INFO] sysbus: Loading block of 376 bytes length at 0x100067C0.
+[2025-12-26T05:35:17.569Z] 05:35:11.4554 [INFO] sysbus: Loading block of 4 bytes length at 0x10006938.
+[2025-12-26T05:35:17.569Z] 05:35:11.4555 [INFO] sysbus: Loading block of 5352 bytes length at 0x30000178.
+[2025-12-26T05:35:17.569Z] 05:35:11.5037 [INFO] cpu0: Guessing VectorTableOffset value to be 0x10000000.
+[2025-12-26T05:35:17.569Z] 05:35:11.5112 [INFO] cpu0: Setting initial values: PC = 0x100019F1, SP = 0x30001660.
+[2025-12-26T05:35:17.569Z] 05:35:11.5160 [INFO] robot: Machine started.
+[2025-12-26T05:35:17.569Z] 05:35:11.6006 [WARNING] nvic0: Unhandled read from offset 0xD8C.
+[2025-12-26T05:35:17.569Z] 05:35:11.6013 [WARNING] nvic0: Unhandled write to offset 0xD8C, value 0xC03.
+[2025-12-26T05:35:17.569Z] 05:35:11.6174 [WARNING] nvic0: Changing value of the SHCSR register to 0x70000, the register isn't supported by Renode
+[2025-12-26T05:35:17.569Z] 05:35:11.6288 [WARNING] nvic0: Unhandled write to offset 0xD24. Unhandled bits: [19] when writing value 0xF0000. Tags: RESERVED (0x1).
+[2025-12-26T05:35:17.569Z] 05:35:11.6289 [WARNING] nvic0: Unhandled write to offset 0xD38, value 0x0.
+[2025-12-26T05:35:17.569Z] 05:35:11.6330 [WARNING] nvic0: Unhandled write to offset 0xD2C, value 0xFFFFFFFF.
+[2025-12-26T05:35:17.569Z] 05:35:11.6457 [WARNING] sysbus: [cpu0: 0x100050A4] (tag: 'UNKNOWN1') WriteDoubleWord to non existing peripheral at 0x50045040, value 0x3.
+[2025-12-26T05:35:17.569Z] 05:35:11.6469 [WARNING] sysbus: [cpu0: 0x100050AA] (tag: 'UNKNOWN1') ReadDoubleWord from non existing peripheral at 0x50045040, returning 0xF0000000.
+[2025-12-26T05:35:17.569Z] 05:35:11.6470 [WARNING] sysbus: [cpu0: 0x100050B0] (tag: 'UNKNOWN1') WriteDoubleWord to non existing peripheral at 0x50045040, value 0xF0000000.
+[2025-12-26T05:35:17.569Z] 05:35:11.6470 [WARNING] sysbus: [cpu0: 0x100050B2] (tag: 'UNKNOWN1') ReadDoubleWord from non existing peripheral at 0x50045040, returning 0xF0000000.
+[2025-12-26T05:35:17.569Z] 05:35:11.6471 [WARNING] sysbus: [cpu0: 0x100050B8] (tag: 'UNKNOWN1') ReadDoubleWord from non existing peripheral at 0x50045040, returning 0xF0000000.
+[2025-12-26T05:35:17.569Z] 05:35:11.6472 [WARNING] sysbus: [cpu0: 0x100050BE] (tag: 'UNKNOWN1') WriteDoubleWord to non existing peripheral at 0x50045040, value 0xB0000000.
+[2025-12-26T05:35:39.367Z] 05:35:36.7285 [INFO] robot: Machine paused.
+[2025-12-26T05:35:39.367Z] 05:35:36.7918 [INFO] robot: Disposed.
+[2025-12-26T05:35:39.367Z] [;032mR[0m[;032me[0m[;032mn[0m[;032mo[0m[;032md[0m[;032me[0m[;032m [0m[;032mi[0m[;032ms[0m[;032m [0m[;032mq[0m[;032mu[0m[;032mi[0m[;032mt[0m[;032mt[0m[;032mi[0m[;032mn[0m[;032mg[0m[;032m[2025-12-26T05:35:39.367Z] [0m[;032m
+[2025-12-26T05:35:39.367Z] [0m[;032m[2025-12-26T05:35:39.367Z] [0m[0m[0m✓ Renode simulation started successfully (timed out as expected)
+[2025-12-26T05:35:39.367Z] Renode simulation test finished
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Renode Debug Run)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
+[2025-12-26T05:35:40.023Z] + echo === Running Renode Debug Run (temporary) ===
+[2025-12-26T05:35:40.023Z] === Running Renode Debug Run (temporary) ===
+[2025-12-26T05:35:40.023Z] + docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c 
+[2025-12-26T05:35:40.023Z]                             cd simulation/renode
+[2025-12-26T05:35:40.023Z]                             echo 'Starting debug Renode run...'
+[2025-12-26T05:35:40.023Z]                             timeout 30s renode --console --disable-xwt TRL3_mcxn947_zephyr.resc 2>&1 | tee renode_debug_output.log
+[2025-12-26T05:35:40.023Z]                             mkdir -p /workspace/artifacts
+[2025-12-26T05:35:40.023Z]                             cp renode_debug_output.log /workspace/artifacts/ || true
+[2025-12-26T05:35:40.023Z]                         
+[2025-12-26T05:35:40.574Z] Kobayashi Maru Development Environment
+[2025-12-26T05:35:40.574Z] ARM GCC: arm-none-eabi-gcc (Arm GNU Toolchain 13.2.rel1 (Build arm-13.7)) 13.2.1 20231009
+[2025-12-26T05:35:40.574Z] Renode: Available
+[2025-12-26T05:35:40.574Z] Python: Python 3.12.3
+[2025-12-26T05:35:40.574Z] Workspace: /workspace
+[2025-12-26T05:35:40.574Z] 
+[2025-12-26T05:35:40.574Z] Starting debug Renode run...
+[2025-12-26T05:35:42.435Z] 05:35:42.4011 [INFO] Loaded monitor commands from: /opt/renode/scripts/monitor.py
+[2025-12-26T05:35:42.686Z] [0mRenode, version 1.16.0 (20ad06d9-202508030050)
+[2025-12-26T05:35:42.686Z] 
+[2025-12-26T05:35:42.686Z] [2025-12-26T05:35:42.686Z] [31;1m(monitor) [0mi $CWD/TRL3_mcxn947_zephyr.resc
+[2025-12-26T05:35:42.686Z] [2025-12-26T05:35:42.686Z] 05:35:42.6827 [INFO] Including script: /workspace/simulation/renode/TRL3_mcxn947_zephyr.resc
+[2025-12-26T05:35:42.936Z] 05:35:42.7160 [INFO] System bus created.
+[2025-12-26T05:35:45.419Z] 05:35:44.9778 [INFO] sysbus: Loading block of 26560 bytes length at 0x10000000.
+[2025-12-26T05:35:45.419Z] 05:35:44.9990 [INFO] sysbus: Loading block of 376 bytes length at 0x100067C0.
+[2025-12-26T05:35:45.419Z] 05:35:44.9991 [INFO] sysbus: Loading block of 4 bytes length at 0x10006938.
+[2025-12-26T05:35:45.419Z] 05:35:44.9992 [INFO] sysbus: Loading block of 5352 bytes length at 0x30000178.
+[2025-12-26T05:35:45.419Z] 05:35:45.0475 [INFO] cpu0: Guessing VectorTableOffset value to be 0x10000000.
+[2025-12-26T05:35:45.419Z] 05:35:45.0548 [INFO] cpu0: Setting initial values: PC = 0x100019F1, SP = 0x30001660.
+[2025-12-26T05:35:45.419Z] 05:35:45.0588 [INFO] robot: Machine started.
+[2025-12-26T05:35:45.419Z] 05:35:45.1446 [WARNING] nvic0: Unhandled read from offset 0xD8C.
+[2025-12-26T05:35:45.419Z] 05:35:45.1453 [WARNING] nvic0: Unhandled write to offset 0xD8C, value 0xC03.
+[2025-12-26T05:35:45.419Z] 05:35:45.1612 [WARNING] nvic0: Changing value of the SHCSR register to 0x70000, the register isn't supported by Renode
+[2025-12-26T05:35:45.419Z] 05:35:45.1723 [WARNING] nvic0: Unhandled write to offset 0xD24. Unhandled bits: [19] when writing value 0xF0000. Tags: RESERVED (0x1).
+[2025-12-26T05:35:45.419Z] 05:35:45.1724 [WARNING] nvic0: Unhandled write to offset 0xD38, value 0x0.
+[2025-12-26T05:35:45.419Z] 05:35:45.1766 [WARNING] nvic0: Unhandled write to offset 0xD2C, value 0xFFFFFFFF.
+[2025-12-26T05:35:45.419Z] 05:35:45.1896 [WARNING] sysbus: [cpu0: 0x100050A4] (tag: 'UNKNOWN1') WriteDoubleWord to non existing peripheral at 0x50045040, value 0x3.
+[2025-12-26T05:35:45.419Z] 05:35:45.1907 [WARNING] sysbus: [cpu0: 0x100050AA] (tag: 'UNKNOWN1') ReadDoubleWord from non existing peripheral at 0x50045040, returning 0xF0000000.
+[2025-12-26T05:35:45.419Z] 05:35:45.1908 [WARNING] sysbus: [cpu0: 0x100050B0] (tag: 'UNKNOWN1') WriteDoubleWord to non existing peripheral at 0x50045040, value 0xF0000000.
+[2025-12-26T05:35:45.419Z] 05:35:45.1909 [WARNING] sysbus: [cpu0: 0x100050B2] (tag: 'UNKNOWN1') ReadDoubleWord from non existing peripheral at 0x50045040, returning 0xF0000000.
+[2025-12-26T05:35:45.419Z] 05:35:45.1910 [WARNING] sysbus: [cpu0: 0x100050B8] (tag: 'UNKNOWN1') ReadDoubleWord from non existing peripheral at 0x50045040, returning 0xF0000000.
+[2025-12-26T05:35:45.419Z] 05:35:45.1911 [WARNING] sysbus: [cpu0: 0x100050BE] (tag: 'UNKNOWN1') WriteDoubleWord to non existing peripheral at 0x50045040, value 0xB0000000.
+[2025-12-26T05:36:11.821Z] 05:36:10.3016 [INFO] robot: Machine paused.
+[2025-12-26T05:36:11.821Z] 05:36:10.3508 [INFO] robot: Disposed.
+[2025-12-26T05:36:11.821Z] [;032mR[0m[;032me[0m[;032mn[0m[;032mo[0m[;032md[0m[;032me[0m[;032m [0m[;032mi[0m[;032ms[0m[;032m [0m[;032mq[0m[;032mu[0m[;032mi[0m[;032mt[0m[;032mt[0m[;032mi[0m[;032mn[0m[;032mg[0m[;032m[2025-12-26T05:36:11.821Z] [0m[;032m
+[2025-12-26T05:36:11.821Z] [0m[;032m[2025-12-26T05:36:11.822Z] [0m
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Static Analysis)
+[Pipeline] parallel
+[Pipeline] { (Branch: Firmware Analysis)
+[Pipeline] stage
+[Pipeline] { (Firmware Analysis)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
+[2025-12-26T05:36:12.569Z] + echo === Running Firmware Static Analysis ===
+[2025-12-26T05:36:12.569Z] === Running Firmware Static Analysis ===
+[2025-12-26T05:36:12.569Z] + nproc
+[2025-12-26T05:36:12.569Z] + nproc
+[2025-12-26T05:36:12.569Z] + docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c 
+[2025-12-26T05:36:12.569Z]                                     cd firmware
+[2025-12-26T05:36:12.569Z]                                     # Main firmware code structure
+[2025-12-26T05:36:12.569Z]                                     echo 'Main firmware source files:'
+[2025-12-26T05:36:12.569Z]                                     find . -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' | head -20
+[2025-12-26T05:36:12.569Z]                                     echo 'Main firmware lines of code:'
+[2025-12-26T05:36:12.569Z]                                     find . -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' | xargs wc -l | tail -1
+[2025-12-26T05:36:12.569Z]                                     # Zephyr app code structure
+[2025-12-26T05:36:12.569Z]                                     echo 'Zephyr app source files:'
+[2025-12-26T05:36:12.569Z]                                     find zephyr_app/src -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' | head -20
+[2025-12-26T05:36:12.569Z]                                     echo 'Zephyr app lines of code:'
+[2025-12-26T05:36:12.569Z]                                     find zephyr_app/src -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' | xargs wc -l | tail -1
+[2025-12-26T05:36:12.569Z] 
+[2025-12-26T05:36:12.569Z]                                     # Run cppcheck if available
+[2025-12-26T05:36:12.569Z]                                     if command -v cppcheck > /dev/null; then
+[2025-12-26T05:36:12.569Z]                                         echo 'Running cppcheck on main firmware (src/ and include/, parallelized, excluding zephyr and third_party)...'
+[2025-12-26T05:36:12.569Z]                                         cppcheck -j 4 --enable=all --inline-suppr --quiet src/ include/ --exclude=zephyr --exclude=third_party 2> ../artifacts/cppcheck_firmware.txt || true
+[2025-12-26T05:36:12.569Z]                                         echo 'Running cppcheck on zephyr_app...'
+[2025-12-26T05:36:12.569Z]                                         cppcheck -j 4 --enable=all --inline-suppr --quiet zephyr_app/src 2> ../artifacts/cppcheck_zephyr_app.txt || true
+[2025-12-26T05:36:12.569Z]                                         echo 'cppcheck reports saved to artifacts/'
+[2025-12-26T05:36:12.569Z]                                     else
+[2025-12-26T05:36:12.569Z]                                         echo 'cppcheck not found, skipping C/C++ static analysis.'
+[2025-12-26T05:36:12.569Z]                                     fi
+[2025-12-26T05:36:12.569Z]                                 
+[2025-12-26T05:36:13.120Z] Kobayashi Maru Development Environment
+[2025-12-26T05:36:13.120Z] ARM GCC: arm-none-eabi-gcc (Arm GNU Toolchain 13.2.rel1 (Build arm-13.7)) 13.2.1 20231009
+[2025-12-26T05:36:13.120Z] Renode: Available
+[2025-12-26T05:36:13.120Z] Python: Python 3.12.3
+[2025-12-26T05:36:13.120Z] Workspace: /workspace
+[2025-12-26T05:36:13.120Z] 
+[2025-12-26T05:36:13.120Z] Main firmware source files:
+[2025-12-26T05:36:13.120Z] ./zephyr/boards/96boards/wistrio/rf.c
+[2025-12-26T05:36:13.120Z] ./zephyr/boards/silabs/dev_kits/sltb004a/board.c
+[2025-12-26T05:36:13.120Z] ./zephyr/boards/silabs/starter_kits/slstk3701a/board.c
+[2025-12-26T05:36:13.120Z] ./zephyr/boards/silabs/starter_kits/slstk3701a/board.h
+[2025-12-26T05:36:13.120Z] ./zephyr/boards/silabs/radio_boards/slwrb4321a/board.c
+[2025-12-26T05:36:13.120Z] ./zephyr/boards/silabs/radio_boards/slwrb4321a/board.h
+[2025-12-26T05:36:13.120Z] ./zephyr/boards/heltec/heltec_wifi_lora32_v2/board_init.c
+[2025-12-26T05:36:13.120Z] ./zephyr/boards/heltec/heltec_wireless_stick_lite_v3/board_init.c
+[2025-12-26T05:36:13.120Z] ./zephyr/boards/particle/argon/board.c
+[2025-12-26T05:36:13.120Z] ./zephyr/boards/particle/xenon/board.c
+[2025-12-26T05:36:13.120Z] ./zephyr/boards/particle/boron/board.c
+[2025-12-26T05:36:13.120Z] ./zephyr/boards/u-blox/ubx_evk_iris_w1/macronix_flash_config.c
+[2025-12-26T05:36:13.120Z] ./zephyr/boards/u-blox/ubx_evk_iris_w1/fidelex_flash_config.c
+[2025-12-26T05:36:13.120Z] ./zephyr/boards/shields/lcd_par_s035/shield.c
+[2025-12-26T05:36:13.120Z] ./zephyr/boards/qemu/arc/arc_mpu_regions.c
+[2025-12-26T05:36:13.120Z] ./zephyr/boards/qemu/cortex_m0/nrf_timer_timer.c
+[2025-12-26T05:36:13.120Z] ./zephyr/boards/raytac/mdbt50q_cx_40_dongle/board.c
+[2025-12-26T05:36:13.120Z] ./zephyr/boards/pjrc/teensy4/flexspi_nor_config.c
+[2025-12-26T05:36:13.120Z] ./zephyr/boards/wch/ch32v003f4p6_dev_board/board.c
+[2025-12-26T05:36:13.120Z] ./zephyr/boards/native/common/extra_args/extra_args.c
+[2025-12-26T05:36:13.120Z] Main firmware lines of code:
+[2025-12-26T05:38:19.368Z]   372995 total
+[2025-12-26T05:38:19.368Z] Zephyr app source files:
+[2025-12-26T05:38:19.368Z] zephyr_app/src/main.c
+[2025-12-26T05:38:19.368Z] Zephyr app lines of code:
+[2025-12-26T05:38:19.368Z] 53 zephyr_app/src/main.c
+[2025-12-26T05:38:19.368Z] Running cppcheck on main firmware (src/ and include/, parallelized, excluding zephyr and third_party)...
+[2025-12-26T05:38:19.368Z] cppcheck: error: unrecognized command line option: "--exclude=zephyr".
+[2025-12-26T05:38:19.368Z] Running cppcheck on zephyr_app...
+[2025-12-26T05:38:19.368Z] cppcheck: unusedFunction check can't be used with '-j' option. Disabling unusedFunction check.
+[2025-12-26T05:38:19.368Z] cppcheck reports saved to artifacts/
+[2025-12-26T05:38:19.368Z] + cd simulation/models
+[2025-12-26T05:38:19.368Z] + echo Python model files:
+[2025-12-26T05:38:19.368Z] Python model files:
+[2025-12-26T05:38:19.368Z] + find . -name *.py
+[2025-12-26T05:38:19.368Z] + head -10
+[2025-12-26T05:38:19.368Z] ./canfd_model.py
+[2025-12-26T05:38:19.368Z] ./motor_model.py
+[2025-12-26T05:38:19.368Z] ./turret_model.py
+[2025-12-26T05:38:19.368Z] + echo Python syntax check:
+[2025-12-26T05:38:19.368Z] Python syntax check:
+[2025-12-26T05:38:19.368Z] + export PYTHONPYCACHEPREFIX=/tmp/pycache
+[2025-12-26T05:38:19.368Z] + find . -name *.py -exec python3 -m py_compile {} ;
+[Pipeline] archiveArtifacts
+[2025-12-26T05:38:19.418Z] Archiving artifacts
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // parallel
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
+[2025-12-26T05:38:20.252Z] + echo === Build Artifacts ===
+[2025-12-26T05:38:20.252Z] === Build Artifacts ===
+[2025-12-26T05:38:20.252Z] + docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev find /workspace -name *.elf -o -name *.hex -o -name *.bin
+[2025-12-26T05:38:20.252Z] + head -10
+[2025-12-26T05:38:21.595Z] Kobayashi Maru Development Environment
+[2025-12-26T05:38:21.595Z] ARM GCC: arm-none-eabi-gcc (Arm GNU Toolchain 13.2.rel1 (Build arm-13.7)) 13.2.1 20231009
+[2025-12-26T05:38:21.595Z] Renode: Available
+[2025-12-26T05:38:21.595Z] Python: Python 3.12.3
+[2025-12-26T05:38:21.595Z] Workspace: /workspace
+[2025-12-26T05:38:21.595Z] 
+[2025-12-26T05:38:21.595Z] /workspace/firmware/zephyr/boards/intel/socfpga_std/cyclonev_socdk/support/blaster_6810.hex
+[2025-12-26T05:38:21.595Z] /workspace/firmware/zephyr/tests/application_development/gen_inc_file/src/file.bin
+[2025-12-26T05:38:21.595Z] /workspace/firmware/zephyr/samples/net/sockets/dumb_http_server_mt/src/response_big.html.bin
+[2025-12-26T05:38:21.595Z] /workspace/firmware/zephyr/samples/net/sockets/dumb_http_server_mt/src/response_100k.html.bin
+[2025-12-26T05:38:21.595Z] write /dev/stdout: broken pipe
+[2025-12-26T05:38:21.595Z] + echo === Collecting Renode Logs ===
+[2025-12-26T05:38:21.595Z] === Collecting Renode Logs ===
+[2025-12-26T05:38:21.595Z] + docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c 
+[2025-12-26T05:38:21.595Z]                         mkdir -p /workspace/artifacts
+[2025-12-26T05:38:21.595Z]                         [ -f simulation/renode/renode_output.log ] && cp simulation/renode/renode_output.log /workspace/artifacts/ || true
+[2025-12-26T05:38:21.595Z]                     
+[2025-12-26T05:38:22.147Z] Kobayashi Maru Development Environment
+[2025-12-26T05:38:22.147Z] ARM GCC: arm-none-eabi-gcc (Arm GNU Toolchain 13.2.rel1 (Build arm-13.7)) 13.2.1 20231009
+[2025-12-26T05:38:22.147Z] Renode: Available
+[2025-12-26T05:38:22.147Z] Python: Python 3.12.3
+[2025-12-26T05:38:22.147Z] Workspace: /workspace
+[2025-12-26T05:38:22.147Z] 
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
+[2025-12-26T05:38:22.851Z] + echo === Collecting Artifacts ===
+[2025-12-26T05:38:22.851Z] === Collecting Artifacts ===
+[2025-12-26T05:38:22.851Z] + mkdir -p artifacts
+[2025-12-26T05:38:22.851Z] + docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c 
+[2025-12-26T05:38:22.851Z]                         find /workspace -name '*.elf' -o -name '*.hex' -o -name '*.bin' | while read file; do
+[2025-12-26T05:38:22.851Z]                             if [ -f $file ]; then
+[2025-12-26T05:38:22.851Z]                                 cp $file /workspace/artifacts/ 2>/dev/null || true
+[2025-12-26T05:38:22.851Z]                             fi
+[2025-12-26T05:38:22.851Z]                         done
+[2025-12-26T05:38:22.851Z]                     
+[2025-12-26T05:38:23.402Z] Kobayashi Maru Development Environment
+[2025-12-26T05:38:23.402Z] ARM GCC: arm-none-eabi-gcc (Arm GNU Toolchain 13.2.rel1 (Build arm-13.7)) 13.2.1 20231009
+[2025-12-26T05:38:23.402Z] Renode: Available
+[2025-12-26T05:38:23.402Z] Python: Python 3.12.3
+[2025-12-26T05:38:23.402Z] Workspace: /workspace
+[2025-12-26T05:38:23.402Z] 
+[Pipeline] archiveArtifacts
+[2025-12-26T05:38:25.327Z] Archiving artifacts
+[2025-12-26T05:38:25.331Z] Recording fingerprints
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] echo
+[2025-12-26T05:38:25.485Z] Docker-based build completed successfully! 🐳🎉
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
+[2025-12-26T05:38:25.859Z] + docker compose -f docker/docker-compose.dev.yml down
+[2025-12-26T05:38:25.859Z]  Network docker_kobayashi-net  Removing
+[2025-12-26T05:38:25.859Z]  Network docker_kobayashi-net  Resource is still in use
+[2025-12-26T05:38:25.859Z] + docker system prune -f
+[2025-12-26T05:38:25.859Z] Total reclaimed space: 0B
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // timestamps
+[Pipeline] }
+[Pipeline] // timeout
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
