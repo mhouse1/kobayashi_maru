@@ -27,6 +27,11 @@ pipeline {
             defaultValue: false,
             description: 'Clean .pyc files in simulation/models before Renode simulation'
         )
+        booleanParam(
+            name: 'RENODE_DEBUG_RUN',
+            defaultValue: false,
+            description: 'Run an extra Renode debug run (temporary, guarded)'
+        )
     }
     
     environment {
@@ -298,6 +303,26 @@ except ImportError as e:
                         unstable(message: 'Renode simulation had warnings')
                         currentBuild.result = 'UNSTABLE'
                     }
+                }
+            }
+        }
+
+        stage('Renode Debug Run') {
+            when {
+                expression { params.RENODE_DEBUG_RUN == true }
+            }
+            steps {
+                script {
+                    sh '''
+                        echo "=== Running Renode Debug Run (temporary) ==="
+                        docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
+                            cd simulation/renode
+                            echo 'Starting debug Renode run...'
+                            timeout 30s renode --console --disable-xwt TRL3_mcxn947_zephyr.resc 2>&1 | tee renode_debug_output.log
+                            mkdir -p /workspace/artifacts
+                            cp renode_debug_output.log /workspace/artifacts/ || true
+                        "
+                    '''
                 }
             }
         }

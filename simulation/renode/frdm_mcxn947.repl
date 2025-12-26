@@ -243,3 +243,112 @@ canfd_sim: Python.PythonPeripheral @ sysbus 0x50003000
     size: 0x100
     initable: true
     filename: "/workspace/simulation/models/canfd_model.py"
+
+// ---------------------------------------------------------------------
+// Lightweight stubs for unmapped peripheral addresses observed in TRL3 logs
+// ---------------------------------------------------------------------
+stub_0xE002ED88: Python.PythonPeripheral @ sysbus 0xE002ED88
+    size: 0x4
+    initable: true
+    script: '''
+if getattr(request, 'IsRead', False) or getattr(request, 'is_read', False):
+    request.value = 0x0
+if getattr(request, 'IsWrite', False) or getattr(request, 'is_write', False):
+    pass
+'''
+
+stub_0x50000E44: Python.PythonPeripheral @ sysbus 0x50000E44
+    size: 0x4
+    initable: true
+    script: '''
+if getattr(request, 'IsRead', False) or getattr(request, 'is_read', False):
+    request.value = 0x0
+'''
+
+stub_0x50000400: Python.PythonPeripheral @ sysbus 0x50000400
+    size: 0x4
+    initable: true
+    script: '''
+if getattr(request, 'IsRead', False) or getattr(request, 'is_read', False):
+    request.value = 0x0
+'''
+
+stub_0x50000824: Python.PythonPeripheral @ sysbus 0x50000824
+    size: 0x4
+    initable: true
+    script: '''
+if getattr(request, 'IsRead', False) or getattr(request, 'is_read', False):
+    request.value = 0x0
+'''
+
+stub_0x50026028: Python.PythonPeripheral @ sysbus 0x50026028
+    size: 0x8
+    initable: true
+    script: '''
+if getattr(request, 'IsRead', False) or getattr(request, 'is_read', False):
+    request.value = 0x0
+'''
+
+stub_0x50045100: Python.PythonPeripheral @ sysbus 0x50045100
+    size: 0x100
+    initable: true
+    script: '''
+if getattr(request, 'IsRead', False) or getattr(request, 'is_read', False):
+    request.value = 0x0
+'''
+
+stub_0x50045144: Python.PythonPeripheral @ sysbus 0x50045144
+    size: 0x4
+    initable: true
+    script: '''
+if getattr(request, 'IsRead', False) or getattr(request, 'is_read', False):
+    request.value = 0x0
+'''
+
+stub_0x50045010: Python.PythonPeripheral @ sysbus 0x50045010
+    size: 0x4
+    initable: true
+    script: '''
+if getattr(request, 'IsRead', False) or getattr(request, 'is_read', False):
+    request.value = 0x0
+'''
+
+stub_0x50044014: Python.PythonPeripheral @ sysbus 0x50044014
+    size: 0x4
+    initable: true
+    script: '''
+if getattr(request, 'IsRead', False) or getattr(request, 'is_read', False):
+    request.value = 0x0
+'''
+
+stub_0x50045300: Python.PythonPeripheral @ sysbus 0x50045300
+    size: 0x4
+    initable: true
+    script: '''
+if getattr(request, 'IsRead', False) or getattr(request, 'is_read', False):
+    request.value = 0x0
+'''
+
+stub_0x50000228: Python.PythonPeripheral @ sysbus 0x50000228
+    size: 0x4
+    initable: true
+    script: '''
+if getattr(request, 'IsRead', False) or getattr(request, 'is_read', False):
+    request.value = 0x0
+'''
+
+stub_0x50024008: Python.PythonPeripheral @ sysbus 0x50024008
+    size: 0x4
+    initable: true
+    script: '''
+if getattr(request, 'IsRead', False) or getattr(request, 'is_read', False):
+    request.value = 0x0
+'''
+
+stub_0x50025008: Python.PythonPeripheral @ sysbus 0x50025008
+    size: 0x4
+    initable: true
+    script: '''
+if getattr(request, 'IsRead', False) or getattr(request, 'is_read', False):
+    request.value = 0x0
+'''
