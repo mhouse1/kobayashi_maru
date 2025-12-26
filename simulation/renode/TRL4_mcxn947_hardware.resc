@@ -1,5 +1,5 @@
-// TRL-4 Renode scenario: hardware integration and extended tests
-// Combines TRL-3 baseline, extended runtime, detailed comments, and hardware peripheral connectors
+# TRL-4 Renode scenario: hardware integration and extended tests
+# Combines TRL-3 baseline, extended runtime, detailed comments, and hardware peripheral connectors
 
 $repl?=$ORIGIN/frdm_mcxn947.repl
 $firmware?=@/workspace/firmware/build/zephyr/zephyr.elf
@@ -34,14 +34,14 @@ connector Connect flexcomm4lpuart4 pixel_terminal
 # connector Connect flexcomm2lpuart2 hardware_console
 
 # -------------------------
-# Hardware peripheral placeholders
+# Hardware peripheral placeholders (commented out – enable and set adapters as needed)
 # Connect GPIO, CAN-FD, ADC, PWM, Ethernet adapters as needed
 # Replace <hardware_adapter> with actual adapter names
-connector Connect gpio0 <hardware_gpio_adapter>
-connector Connect can0 <hardware_can_adapter>
-connector Connect adc0 <hardware_adc_adapter>
-connector Connect pwm0 <hardware_pwm_adapter>
-connector Connect eth0 <hardware_ethernet_adapter>
+# connector Connect gpio0 hardware_gpio_adapter
+# connector Connect can0 hardware_can_adapter
+# connector Connect adc0 hardware_adc_adapter
+# connector Connect pwm0 hardware_pwm_adapter
+# connector Connect eth0 hardware_ethernet_adapter
 
 # -------------------------
 # Time synchronization (simulation only)
