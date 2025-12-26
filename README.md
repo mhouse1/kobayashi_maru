@@ -3,17 +3,18 @@
 # 🤖 Kobayashi Maru
 ## Heavy Duty 4WD Robot Platform
 
-[![TRL Level](https://img.shields.io/badge/TRL-2%20Complete-blue?style=for-the-badge)](docs/TRL2_VALIDATION_CHECKLIST.md)
+[![TRL Level](https://img.shields.io/badge/TRL-3%20Complete-blue?style=for-the-badge)](docs/TRL3_Completion_zephyr_on_MCXN947.md)
 [![License](https://img.shields.io/badge/License-GPL%20v3-green?style=for-the-badge)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-MCXN947-orange?style=for-the-badge)](https://www.nxp.com/products/processors-and-microcontrollers/arm-microcontrollers/general-purpose-mcus/mcx-arm-cortex-m/mcx-n-series-microcontrollers/mcx-n94x-and-n54x-mcus-with-dual-core-arm-cortex-m33-edgelock-secure-subsystem-and-neural-processing-unit:MCX-N94X-N54X)
-[![Framework](https://img.shields.io/badge/Framework-QP%2FC%2B%2B-purple?style=for-the-badge)](https://www.state-machine.com/qpcpp/)
+[![RTOS](https://img.shields.io/badge/Framework-Zephyr-blue?style=for-the-badge)](https://www.zephyrproject.org/)
+[![Simulation](https://img.shields.io/badge/Simulation-Renode-9cf?style=for-the-badge)](https://renode.io/)
 
-**🎯 Technology Readiness Level:** TRL 2 Complete  
-**✅ Status:** Concept validated through simulation  
-**🔧 Current State:** Architecture defined • Firmware operational in Renode • CI/CD established  
-**🚀 Next Milestone:** TRL 3 component validation on physical hardware
+**🎯 Technology Readiness Level:** TRL 3 Complete  
+**✅ Status:** TRL-3 completed via simulation — see TRL-3 Completion Assessment  
+**🔧 Current State:** Architecture defined • Firmware validated in Renode • CI/CD established  
+**🚀 Next Milestone:** TRL 4 hardware validation and timing verification
 
-[Documentation](docs/) • [Architecture](docs/ARCHITECTURE.md) • [TRL Status](docs/TRL2_VALIDATION_CHECKLIST.md)
+[Documentation](docs/) • [Architecture](docs/ARCHITECTURE.md) • [TRL-3 Completion](docs/TRL3_Completion_zephyr_on_MCXN947.md)
 
 </div>
 
@@ -30,8 +31,8 @@ Heavy-duty autonomous 4WD robot platform with modular AI architecture:
 - 🎯 **Pan/tilt turret** for camera/sensor pointing
 - 🌐 **Ethernet communication** for platform-independent control
 - 🚌 **CAN-FD communication** between motor modules
-- 🖥️ **Renode simulation** for development and testing
-- ⚡ **Quantum QP/C++ Framework** for real-time middleware
+- 🖥️ **Renode** — Simulation framework for hardware/peripheral modeling and test
+- ⚡ **Zephyr RTOS** — Real-time OS and firmware framework for MCU targets
 
 ## 🏗️ Hybrid C/C++ Architecture
 
@@ -39,7 +40,7 @@ The firmware uses a recommended hybrid approach common in embedded systems:
 
 | Language | Usage |
 |:---------|:------|
-| **C++** | MCU modules (QP framework), middleware integration, turret control, high-level motion control, vision + path planning on Pixel 10 Pro |
+| **C++** | MCU modules (Zephyr-based), middleware integration, turret control, high-level motion control, vision + path planning on Pixel 10 Pro |
 | **C** | Low-level drivers, ISRs, performance-critical routines |
 
 **Architecture Layers:**
@@ -69,16 +70,17 @@ For detailed architecture documentation, see [docs/ARCHITECTURE.md](docs/ARCHITE
 ```
 kobayashi_maru/
 ├── firmware/               # Embedded firmware for FRDM-MCXN947
-│   ├── src/
-│   │   ├── bsp/           # Board Support Package
-│   │   ├── drivers/       # Hardware drivers
-│   │   ├── subsystems/    # Robot subsystem modules
-│   │   ├── qp_app/        # QP Active Objects
-│   │   └── main.c         # Application entry point
-│   ├── include/           # Header files
-│   └── config/            # Configuration files
+│   ├── zephyr_app/
+│   │   ├── src/                    # Application source
+│   │   │   ├── bsp/                # Board Support Package (low-level, C)
+│   │   │   ├── drivers/            # Hardware drivers (C)
+│   │   │   ├── components/         # Higher-level modules (C or C++)
+│   │   │   └── main.c              # Application entry point (C preferred)
+│   │   ├── CMakeLists.txt
+│   │   └── prj.conf
+│   └── config/                     # Configuration files
 ├── simulation/            # Renode simulation files
-│   ├── renode/            # Platform descriptions and scripts
+│   ├── renode/            # Platform descriptions and scripts (.repl, .resc)
 │   └── models/            # Python peripheral models
 ├── docs/                  # Documentation
 │   └── ARCHITECTURE.md    # System architecture details
@@ -86,6 +88,8 @@ kobayashi_maru/
 
 Note: AI unit applications are developed separately and communicate
 via Ethernet TCP/IP (see docs/ARCHITECTURE.md for protocol details)
+
+> Note: The Zephyr application entrypoint is `main.c` (C) by default — prefer C for `main.c`, BSP, and low-level drivers for maximum portability and minimal runtime overhead. Use C++ only for higher-level modules (middleware, control logic). If using C++ enable `CONFIG_CPLUSPLUS=y` and build with a constrained subset (disable exceptions and RTTI: `-fno-exceptions -fno-rtti`).
 ```
 
 <div style="page-break-after: always;"></div>
@@ -97,6 +101,8 @@ via Ethernet TCP/IP (see docs/ARCHITECTURE.md for protocol details)
 **Processor:** Dual Arm Cortex-M33 @ 150 MHz
 
 **Memory:** 2 MB Flash, 512 KB RAM
+
+**Typical memory map (firmware / Renode):** Flash @ 0x10000000, RAM @ 0x30000000
 
 **Key Features:**
 - Ethernet 10/100 (or external PHY module)
@@ -162,28 +168,27 @@ via Ethernet TCP/IP (see docs/ARCHITECTURE.md for protocol details)
 ### Prerequisites
 
 - [Renode](https://renode.io/) - For simulation
-- ARM GCC Toolchain - For firmware compilation
+- Zephyr SDK / `west` toolchain - For firmware compilation (`ZEPHYR_BASE` required)
 - AI Unit Application - Android/Python app for chosen platform
-- QP/C Framework - Real-time embedded framework
 - Ethernet network (100 Mbps recommended)
 
 ### Running the Simulation
 
 ```bash
-# Start Renode simulation
+# Start Renode simulation (from repo root)
 cd simulation/renode
-renode robot_simulation.resc
+renode TRL3_mcxn947_zephyr.resc
 
 # Connect to AI unit terminal (in another terminal)
 telnet localhost 3456
 ```
 
-### Building the Firmware
+### Building the Firmware (Zephyr)
 
 ```bash
-cd firmware
-# Build with ARM GCC (configure toolchain first)
-make
+cd firmware/zephyr_app
+# Build with west/Zephyr (example target shown)
+west build -b frdm_mcxn947/mcxn947/cpu0 .
 ```
 
 <div style="page-break-after: always;"></div>
@@ -231,13 +236,9 @@ struct StatusMessage {  // 24 bytes total
 
 <div style="page-break-after: always;"></div>
 
-## ⚙️ QP Framework Active Objects
+## Firmware Architecture
 
-### Hardware Interrupts (Highest Priority)
-
-**Emergency Stop GPIO:** 1-2 μs response (interrupt latency: ~60-100 cycles @ 150 MHz)
-- Immediately disables motors
-- Hardware-level safety mechanism
+The firmware runs as a Zephyr application on the FRDM-MCXN947 target. Hardware drivers and BSP live under `firmware/zephyr_app/src/` and utilize Zephyr device driver and build model. Emergency stop and high-priority handlers are implemented using Zephyr interrupt API and thread priorities.
 
 ### Active Objects (Software Priorities)
 

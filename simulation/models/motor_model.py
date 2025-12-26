@@ -1,7 +1,11 @@
+print("=== LOADING motor_model.py ===")
 """
 Motor Model for Renode Simulation
 Simulates a brushless DC motor with encoder feedback for 4WD robot
+
 """
+import os
+print("[motor_model.py] Loaded from: {}".format(os.path.abspath(__file__)))
 
 class MotorModel:
     """
@@ -29,7 +33,8 @@ class MotorModel:
     STATUS_OVER_CURRENT = 0x04
     STATUS_OVER_TEMP = 0x08
     
-    def __init__(self):
+    def __init__(self, base_address=0x50001000):
+        self.base_address = base_address
         self.control = 0
         self.speed_setpoint = 0
         self.actual_speed = 0
@@ -37,8 +42,9 @@ class MotorModel:
         self.current = 0
         self.status = 0
         self.canfd_id = 0x100
-        
-    def read(self, offset):
+
+    def read(self, request):
+        offset = request.address - self.base_address
         if offset == self.REG_CONTROL:
             return self.control
         elif offset == self.REG_SPEED_SET:
@@ -54,8 +60,14 @@ class MotorModel:
         elif offset == self.REG_CANFD_ID:
             return self.canfd_id
         return 0
-        
-    def write(self, offset, value):
+
+    def write(self, request):
+        offset = request.address - self.base_address
+        value = request.value
+        try:
+            print("[motor_model.py] write() called with offset:", offset, "value:", value)
+        except Exception:
+            pass
         if offset == self.REG_CONTROL:
             self.control = value
             self._update_motor_state()
@@ -64,7 +76,6 @@ class MotorModel:
             self._update_motor_state()
         elif offset == self.REG_CANFD_ID:
             self.canfd_id = value
-            
     def _update_motor_state(self):
         """Simulate motor response to control inputs"""
         if self.control & self.CTRL_ENABLE:
@@ -94,10 +105,25 @@ class MotorModel:
 
 
 # Renode peripheral interface
-motor = MotorModel()
+# Support multiple instances mapped to different base addresses
+# Use a registry keyed by peripheral base so each PythonPeripheral
+# instance gets its own MotorModel with the correct base_address.
+_models = {}
 
-def read(offset):
-    return motor.read(offset)
+def _get_base_from_request(request):
+    # Peripherals in the REPL use size 0x100, align down to that boundary
+    return request.address & ~0xFF
 
-def write(offset, value):
-    motor.write(offset, value)
+def _get_model_for_request(request):
+    base = _get_base_from_request(request)
+    if base not in _models:
+        _models[base] = MotorModel(base_address=base)
+    return _models[base]
+
+def read(request):
+    model = _get_model_for_request(request)
+    return model.read(request)
+
+def write(request):
+    model = _get_model_for_request(request)
+    model.write(request)

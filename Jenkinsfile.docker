@@ -2,9 +2,14 @@ pipeline {
     agent any
     
     parameters {
+        booleanParam(
+            name: 'REFRESH_JENKINS_CONFIG',
+            defaultValue: false,
+            description: 'Update build config and exit (refresh-only)' 
+        )
         string(
             name: 'BRANCH_NAME',
-            defaultValue: 'trl3_cleanup',
+            defaultValue: 'trl3_zephyr',
             description: 'Git branch to build'
         )
         booleanParam(
@@ -22,6 +27,17 @@ pipeline {
             choices: ['Release', 'Debug'],
             description: 'Firmware build type'
         )
+        booleanParam(
+            name: 'CLEAN_PYTHON_CACHE',
+            defaultValue: false,
+            description: 'Clean .pyc files in simulation/models before Renode simulation'
+        )
+        booleanParam(
+            name: 'RENODE_DEBUG_RUN',
+            defaultValue: false,
+            description: 'Run an extra Renode debug run (temporary, guarded)'
+        )
+
     }
     
     environment {
@@ -31,11 +47,24 @@ pipeline {
     
     options {
         buildDiscarder(logRotator(numToKeepStr: '10'))
-        timeout(time: 30, unit: 'MINUTES')
+        timeout(time: 60, unit: 'MINUTES')
         timestamps()
     }
     
     stages {
+
+        stage('Update build config') {
+            steps {
+                script {
+                    if ("${params.REFRESH_JENKINS_CONFIG}" == "true") {
+                        echo " #################### updated build config"
+                        currentBuild.result = "ABORTED"
+                        error("updated jenkins config, aborting build")
+                    }
+                }
+            }
+        }
+
         stage('Setup Docker Environment') {
             steps {
                 script {
@@ -101,6 +130,38 @@ pipeline {
                 '''
             }
         }
+
+        stage('Toolchain Verification') {
+            when {
+                expression { params.SKIP_TESTS == false }
+            }
+            steps {
+                script {
+                    sh '''
+                        echo "=== Running Toolchain Verification ==="
+                        docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
+                            echo 'Testing complete toolchain...'
+                            
+                            # Test ARM GCC
+                            echo 'ARM GCC:'
+                            arm-none-eabi-gcc --version | head -1
+                            
+                            # Test Python environment
+                            echo 'Python environment:'
+                            python3 -c \\"import numpy; print('NumPy working:', numpy.__version__)\\\"
+                            
+                            # Test Renode availability
+                            echo 'Renode:'
+                            command -v renode && echo 'Renode available' || echo 'Renode not found'
+                            
+                            echo '✓ Toolchain verification completed'
+                        "
+                    '''
+                }
+            }
+        }
+
+        // ...existing code...
         
         stage('Build Firmware') {
             steps {
@@ -110,48 +171,57 @@ pipeline {
                         echo "=== Building Firmware in Container ${params.CLEAN_BUILD ? '(CLEAN BUILD)' : ''} ==="
                         docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
                             cd firmware
-                            if [ -f 'Makefile' ]; then
-                                make clean || true
-                                make -j\$(nproc) BUILD_TYPE=\${BUILD_TYPE}
-                            elif [ -f 'CMakeLists.txt' ]; then
-                                ${cleanCmd}
-                                mkdir -p build && cd build
-                                cmake -DCMAKE_BUILD_TYPE=\${BUILD_TYPE} ..
-                                make -j\$(nproc)
+                            # If a Zephyr app exists, skip the generic Make/CMake flow and use west build below
+                            if [ -d zephyr_app ]; then
+                                echo 'zephyr_app detected — skipping generic Make/CMake build'
                             else
-                                echo 'No build system found (Makefile or CMakeLists.txt)'
-                                echo 'Creating dummy build for testing...'
-                                mkdir -p build
-                                echo 'Dummy firmware build' > build/firmware.elf
+                                if [ -f 'Makefile' ]; then
+                                    make clean || true
+                                    make -j\$(nproc) BUILD_TYPE=\${BUILD_TYPE}
+                                elif [ -f 'CMakeLists.txt' ]; then
+                                    if [ -d build ]; then
+                                        echo 'Removing existing build directory before cmake build (CMakeLists.txt branch)'
+                                        rm -rf build
+                                    fi
+                                    mkdir -p build && cd build
+                                    cmake -DCMAKE_BUILD_TYPE=\${BUILD_TYPE} ..
+                                    make -j\$(nproc)
+                                else
+                                    echo 'No build system found (Makefile or CMakeLists.txt)'
+                                    echo 'Creating dummy build for testing...'
+                                    mkdir -p build
+                                    echo 'Dummy firmware build' > build/firmware.elf
+                                fi
                             fi
+                        "
+
+                        echo "=== Building Zephyr App ==="
+                        docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
+                            cd firmware
+                            # Remove any previous west workspace, zephyr directory, and build directory in firmware/
+                            if [ -d .west ]; then
+                                echo 'Removing previous west workspace in firmware/'
+                                rm -rf .west
+                            fi
+                            if [ -d zephyr ]; then
+                                echo 'Removing existing zephyr directory in firmware/'
+                                rm -rf zephyr
+                            fi
+                            if [ -d build ]; then
+                                echo 'Removing existing build directory in firmware/'
+                                rm -rf build
+                            fi
+                            # Ensure this is a west workspace
+                            if [ ! -f .west/config ]; then
+                                echo 'Initializing west workspace...'
+                                west init
+                                west update
+                            fi
+                            west build -b frdm_mcxn947/mcxn947/cpu0 zephyr_app
                         "
                     """
                 }
-            }
-        }
-        
-        stage('Firmware Metrics') {
-            steps {
-                script {
-                    sh '''
-                        echo "=== Firmware Size Metrics ==="
-                        docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
-                            cd firmware/build
-                            if [ -f robot_firmware.elf ]; then
-                                echo 'Firmware size analysis:'
-                                arm-none-eabi-size robot_firmware.elf
-                                echo ''
-                                echo 'Section details:'
-                                arm-none-eabi-size -A robot_firmware.elf | head -20
-                            else
-                                echo 'No firmware.elf found'
-                            fi
-                        " | tee firmware_metrics.log
-                    '''
-                    
-                    // Archive metrics
-                    archiveArtifacts artifacts: 'firmware_metrics.log', allowEmptyArchive: true
-                }
+                archiveArtifacts artifacts: 'firmware/build/zephyr/zephyr.elf,firmware/build/zephyr/zephyr.bin,firmware/build/zephyr/zephyr.hex,firmware/build/firmware_metrics.log', allowEmptyArchive: true
             }
         }
         
@@ -197,25 +267,44 @@ except ImportError as e:
                         docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
                             cd simulation/renode
                             echo 'Starting Renode simulation test...'
-                            
-                            # Check if firmware exists, create dummy if not
-                            if [ ! -f '../../firmware/build/robot_firmware.elf' ]; then
-                                mkdir -p ../../firmware/build
-                                echo 'Dummy firmware for testing' > ../../firmware/build/robot_firmware.elf
+
+                            # Optionally clean .pyc files in simulation/models
+                            if [ \\"${CLEAN_PYTHON_CACHE}\\" = \\"true\\" ]; then
+                                echo 'Cleaning .pyc files in simulation/models...'
+                                find ../models -name '*.pyc' -delete
                             fi
-                            
-                            # Run Renode with timeout - capture output and check for errors
-                            timeout 30s renode --console --disable-xwt robot_simulation.resc 2>&1 | tee renode_output.log
-                            RENODE_EXIT_CODE=\\$?
-                            
-                            # Check for specific error patterns (broader regex to catch all error formats)
-                            if grep -qE 'Could not find|Could not resolve|Error E[0-9]+|There was an error|Exception was thrown' renode_output.log; then
-                                echo '❌ Renode simulation failed with configuration errors:'
-                                grep -E 'Could not find|Could not resolve|Error E[0-9]+|There was an error|Exception was thrown' renode_output.log | head -20
+
+                            # Fail if Zephyr firmware does not exist
+                            if [ ! -f '../../firmware/build/zephyr/zephyr.elf' ]; then
+                                echo '❌ Zephyr firmware ELF not found: ../../firmware/build/zephyr/zephyr.elf'
                                 exit 1
                             fi
-                            
-                            # Exit code 124 is timeout, which is expected for simulation
+
+                            echo '=== Renode syntax check ==='
+                                    renode --console --disable-xwt \
+                                        -e \\"include @TRL3_mcxn947_zephyr.resc; quit\\" \
+                                2>&1 | tee renode_syntax.log
+
+                            if grep -qE 'Could not tokenize|syntax error|parse error|Bad parameters for command include' renode_syntax.log; then
+                                echo '❌ Renode script syntax error detected'
+                                exit 1
+                            fi
+
+                            echo '✓ Renode syntax OK'
+
+                            echo '=== Renode runtime simulation ==='
+                                    timeout 30s renode --console --disable-xwt TRL3_mcxn947_zephyr.resc \
+                                2>&1 | tee renode_output.log
+
+                            RENODE_EXIT_CODE=\\${PIPESTATUS[0]}
+
+                            # Check for fatal runtime errors
+                            if grep -qE 'Could not find|Could not resolve|Error E[0-9]+|There was an error|Exception was thrown|Fatal error|Unhandled exception' renode_output.log; then
+                                echo '❌ Renode simulation failed with fatal errors'
+                                exit 1
+                            fi
+
+                            # Exit code 124 is timeout, which is expected
                             if [ \\$RENODE_EXIT_CODE -eq 124 ]; then
                                 echo '✓ Renode simulation started successfully (timed out as expected)'
                             elif [ \\$RENODE_EXIT_CODE -eq 0 ]; then
@@ -224,7 +313,7 @@ except ImportError as e:
                                 echo '❌ Renode simulation failed with exit code:' \\$RENODE_EXIT_CODE
                                 exit 1
                             fi
-                            
+
                             echo 'Renode simulation test finished'
                         "
                         '''
@@ -236,6 +325,27 @@ except ImportError as e:
                 }
             }
         }
+
+        stage('Renode Debug Run') {
+            when {
+                expression { params.RENODE_DEBUG_RUN == true }
+            }
+            steps {
+                script {
+                    sh '''
+                        echo "=== Running Renode Debug Run (temporary) ==="
+                        docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
+                            cd simulation/renode
+                            echo 'Starting debug Renode run...'
+                            timeout 30s renode --console --disable-xwt TRL3_mcxn947_zephyr.resc 2>&1 | tee renode_debug_output.log
+                            mkdir -p /workspace/artifacts
+                            cp renode_debug_output.log /workspace/artifacts/ || true
+                        "
+                    '''
+                }
+            }
+        }
+
         
         stage('Static Analysis') {
             when {
@@ -249,69 +359,43 @@ except ImportError as e:
                                 echo "=== Running Firmware Static Analysis ==="
                                 docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
                                     cd firmware
-                                    
-                                    # Simple code structure analysis
-                                    echo 'Source files:'
+                                    # Main firmware code structure
+                                    echo 'Main firmware source files:'
                                     find . -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' | head -20
-                                    
-                                    echo 'Lines of code:'
+                                    echo 'Main firmware lines of code:'
                                     find . -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' | xargs wc -l | tail -1
+                                    # Zephyr app code structure
+                                    echo 'Zephyr app source files:'
+                                    find zephyr_app/src -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' | head -20
+                                    echo 'Zephyr app lines of code:'
+                                    find zephyr_app/src -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' | xargs wc -l | tail -1
+
+                                    # Run cppcheck if available
+                                    if command -v cppcheck > /dev/null; then
+                                        echo 'Running cppcheck on main firmware (src/ and include/, parallelized, excluding zephyr and third_party)...'
+                                        cppcheck -j $(nproc) --enable=all --inline-suppr --quiet src/ include/ --exclude=zephyr --exclude=third_party 2> ../artifacts/cppcheck_firmware.txt || true
+                                        echo 'Running cppcheck on zephyr_app...'
+                                        cppcheck -j $(nproc) --enable=all --inline-suppr --quiet zephyr_app/src 2> ../artifacts/cppcheck_zephyr_app.txt || true
+                                        echo 'cppcheck reports saved to artifacts/'
+                                    else
+                                        echo 'cppcheck not found, skipping C/C++ static analysis.'
+                                    fi
                                 "
-                            '''
-                        }
-                    }
-                }
-                
-                stage('Simulation Analysis') {
-                    steps {
-                        script {
-                            sh '''
-                                echo \"=== Running Simulation Model Analysis ===\"
-                                docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
-                                    cd simulation/models
-                                    
-                                    echo 'Python model files:'
-                                    find . -name '*.py' | head -10
-                                    
-                                    echo 'Python syntax check:'
+                                cd simulation/models
+                                echo 'Python model files:'
+                                find . -name '*.py' | head -10
+                                echo 'Python syntax check:'
+                                    export PYTHONPYCACHEPREFIX=/tmp/pycache
                                     find . -name '*.py' -exec python3 -m py_compile {} \\; || echo 'Some syntax issues found'
-                                "
                             '''
+                            archiveArtifacts artifacts: 'artifacts/cppcheck_firmware.txt,artifacts/cppcheck_zephyr_app.txt', allowEmptyArchive: true
                         }
                     }
                 }
             }
         }
         
-        stage('Integration Test') {
-            when {
-                expression { params.SKIP_TESTS == false }
-            }
-            steps {
-                script {
-                    sh '''
-                        echo "=== Running Integration Test ==="
-                        docker compose -f docker/docker-compose.dev.yml run --rm kobayashi-dev bash -c "
-                            echo 'Testing complete toolchain...'
-                            
-                            # Test ARM GCC
-                            echo 'ARM GCC:'
-                            arm-none-eabi-gcc --version | head -1
-                            
-                            # Test Python environment
-                            echo 'Python environment:'
-                            python3 -c \\"import numpy; print('NumPy working:', numpy.__version__)\\\"
-                            
-                            # Test Renode availability
-                            echo 'Renode:'
-                            command -v renode && echo 'Renode available' || echo 'Renode not found'
-                            
-                            echo '✓ Integration test completed'
-                        "
-                    '''
-                }
-            }
-        }
+
     }
     
     post {
@@ -346,8 +430,8 @@ except ImportError as e:
                     " || true
                 '''
                 
-                // Archive artifacts if any exist
-                archiveArtifacts artifacts: 'artifacts/**/*', fingerprint: true, allowEmptyArchive: true
+                // Archive Zephyr firmware files and metrics log
+                archiveArtifacts artifacts: 'artifacts/zephyr.elf,artifacts/zephyr.bin,artifacts/zephyr.hex,artifacts/firmware_metrics.log', fingerprint: true, allowEmptyArchive: true
             }
             
             echo 'Docker-based build completed successfully! 🐳🎉'

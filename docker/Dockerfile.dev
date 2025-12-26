@@ -20,7 +20,26 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     ca-certificates \
     gnupg \
+    python3-setuptools \
+    python3-wheel \
+    ninja-build \
+    gperf \
+    ccache \
+    device-tree-compiler \
+    make \
+    gcc-multilib \
+    g++-multilib \
+    libsdl2-dev \
+    udev \
+    cppcheck \
     && rm -rf /var/lib/apt/lists/*
+
+# Install west and Zephyr Python requirements
+RUN python3 -m pip install --upgrade pip && \
+    python3 -m pip install west && \
+    west --version || true
+# Optionally, Zephyr requirements.txt can be installed after west init/update
+# RUN pip install -r zephyr/scripts/requirements.txt || true
 
 # ARM Development Stage
 FROM base as arm-dev
@@ -38,7 +57,9 @@ RUN python3 -m pip install --break-system-packages \
     scipy \
     matplotlib \
     pyserial \
-    pytest
+    pytest \
+    jsonschema \
+    pyelftools
 
 # Simulation Stage
 FROM arm-dev as simulation
@@ -66,9 +87,26 @@ RUN cd /tmp && \
 
 # Final Development Image
 FROM simulation as kobayashi-dev
+# Install Zephyr SDK 0.16.4
+RUN cd /tmp \
+    && wget -q https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v0.16.4/zephyr-sdk-0.16.4_linux-x86_64.tar.xz \
+    && tar -xf zephyr-sdk-0.16.4_linux-x86_64.tar.xz -C /opt \
+    && rm zephyr-sdk-0.16.4_linux-x86_64.tar.xz \
+    && /opt/zephyr-sdk-0.16.4/setup.sh -t all -h
+
+# Set Zephyr SDK environment variable
+ENV ZEPHYR_SDK_INSTALL_DIR=/opt/zephyr-sdk-0.16.4
 
 # Create workspace
 WORKDIR /workspace
+
+
+    # Install west using pip3 (PEP 668 workaround for Ubuntu 24.04+)
+    RUN pip3 install --break-system-packages --user west && \
+        /root/.local/bin/west --version
+    ENV PATH="/root/.local/bin:${PATH}"
+
+
 
 # Create entrypoint script
 RUN echo '#!/bin/bash\n\

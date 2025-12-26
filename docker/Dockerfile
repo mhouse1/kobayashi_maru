@@ -48,7 +48,27 @@ RUN apt-get update && apt-get upgrade -y && \
         minicom \
         picocom \
         dfu-util && \
-    rm -rf /var/lib/apt/lists/*
+
+# Zephyr dependencies
+RUN apt-get update && apt-get install -y \
+    python3-setuptools \
+    python3-wheel \
+    gperf \
+    ccache \
+    device-tree-compiler \
+    make \
+    gcc-multilib \
+    g++-multilib \
+    libsdl2-dev \
+    udev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install west and Zephyr Python requirements
+RUN python3 -m pip install --upgrade pip && \
+    python3 -m pip install west && \
+    west --version || true
+# Optionally, Zephyr requirements.txt can be installed after west init/update
+# RUN pip install -r zephyr/scripts/requirements.txt || true
 
 # Install OpenJDK 17 for Jenkins
 RUN apt-get update && \

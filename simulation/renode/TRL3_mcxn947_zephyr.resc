@@ -1,0 +1,48 @@
+# TRL-3 Robot Simulation for FRDM-MCXN947
+# Verifies CPU boot, memory map, UART output, and scheduler
+
+$repl?=$ORIGIN/frdm_mcxn947.repl
+$firmware?=@/workspace/firmware/build/zephyr/zephyr.elf
+
+using sysbus
+
+# -------------------------
+# Machine setup
+# -------------------------
+mach create "robot"
+mach set "robot"
+machine LoadPlatformDescription $repl
+
+# -------------------------
+# UART analyzers
+# -------------------------
+# Use actual UART from repl
+showAnalyzer flexcomm4lpuart4 Antmicro.Renode.Analyzers.LoggingUartAnalyzer
+
+# -------------------------
+# Pixel terminal (always-on)
+# -------------------------
+emulation CreateServerSocketTerminal 3456 "pixel_terminal" false
+connector Connect flexcomm4lpuart4 pixel_terminal
+
+# -------------------------
+# Time synchronization
+# -------------------------
+emulation SetGlobalQuantum "0.001"
+
+# -------------------------
+# Firmware load
+# -------------------------
+# Load ELF at addresses defined in the ELF
+sysbus LoadELF $firmware
+
+# -------------------------
+# Minimal runtime for TRL-3
+# Run short window to verify firmware boots and peripherals
+# -------------------------
+emulation RunFor "6.0"
+
+# -------------------------
+# End simulation cleanly
+# -------------------------
+quit

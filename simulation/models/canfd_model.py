@@ -1,7 +1,10 @@
+print("=== LOADING canfd_model.py ===")
 """
 CAN-FD Model for Renode Simulation
 Simulates CAN-FD bus communication for robot modules
 """
+import os
+print("[canfd_model.py] Loaded from: {}".format(os.path.abspath(__file__)))
 
 class CANFDMessage:
     """CAN-FD message structure"""
@@ -80,7 +83,25 @@ class CANFDModel:
         self.tx_queue = []
         self.rx_queue = []
         
-    def read(self, offset):
+    def __init__(self, base_address=0x50003000):
+        self.base_address = base_address
+        self.control = 0
+        self.status = 0
+        self.tx_id = 0
+        self.tx_dlc = 0
+        self.tx_data = bytearray(64)
+        self.rx_id = 0
+        self.rx_dlc = 0
+        self.rx_data = bytearray(64)
+        self.filter_id = 0
+        self.filter_mask = 0
+        self.baudrate = 5000000  # 5 Mbps CAN-FD
+        self.error_count = 0
+        self.tx_queue = []
+        self.rx_queue = []
+
+    def read(self, request):
+        offset = request.address - self.base_address
         if offset == self.REG_CONTROL:
             return self.control
         elif offset == self.REG_STATUS:
@@ -118,8 +139,14 @@ class CANFDModel:
         elif offset == self.REG_ERROR_CNT:
             return self.error_count
         return 0
-        
-    def write(self, offset, value):
+
+    def write(self, request):
+        offset = request.address - self.base_address
+        value = request.value
+        try:
+            print("[canfd_model.py] write() called with offset:", offset, "value:", value)
+        except Exception:
+            pass
         if offset == self.REG_CONTROL:
             self.control = value
             if value & self.CTRL_TX_REQ:
@@ -142,7 +169,6 @@ class CANFDModel:
             self.filter_mask = value
         elif offset == self.REG_BAUDRATE:
             self.baudrate = value
-            
     def _transmit(self):
         """Simulate CAN-FD message transmission"""
         if not (self.control & self.CTRL_ENABLE):
@@ -179,8 +205,8 @@ class CANFDModel:
 # Renode peripheral interface
 canfd = CANFDModel()
 
-def read(offset):
-    return canfd.read(offset)
+def read(request):
+    return canfd.read(request)
 
-def write(offset, value):
-    canfd.write(offset, value)
+def write(request):
+    canfd.write(request)
